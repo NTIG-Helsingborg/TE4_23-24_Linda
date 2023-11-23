@@ -4,7 +4,6 @@ const db = require("better-sqlite3")("database.db");
 const port = 3000;
 
 app.get("/randomize", (req, res) => {
-  console.log(req);
   res.send("Hello World!");
 });
 
