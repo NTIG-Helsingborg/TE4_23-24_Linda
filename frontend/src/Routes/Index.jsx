@@ -1,9 +1,11 @@
 import reactLogo from "../assets/react.svg";
+import Header from "../components/Header.jsx";
 
 const Index = () => {
   /* START SIDA */
   return (
     <>
+    <Header />
       <div>
         <a href="https://vitejs.dev" target="_blank" rel="noreferrer"></a>
         <a href="https://react.dev" target="_blank" rel="noreferrer">
