@@ -5,7 +5,7 @@ const Index = () => {
   /* START SIDA */
   return (
     <>
-    <Header />
+      <Header />
       <div>
         <a href="https://vitejs.dev" target="_blank" rel="noreferrer"></a>
         <a href="https://react.dev" target="_blank" rel="noreferrer">
@@ -14,7 +14,13 @@ const Index = () => {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => fetch("/randomize")}></button>
+        <button
+          onClick={() =>
+            fetch("/randomize?groupCount=2")
+              .then((response) => response.json())
+              .then((json) => console.log(json))
+          }
+        ></button>
         <p>
           Edit <code>src/App.jsx</code> and save to test HMR
         </p>
