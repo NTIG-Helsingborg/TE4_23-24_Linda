@@ -2,7 +2,22 @@ const express = require("express");
 const app = express();
 const db = require("better-sqlite3")("database.db");
 const port = 3000;
-
+initDatabase();
+function initDatabase() {
+  db.prepare(
+    `
+    CREATE TABLE IF NOT EXISTS students (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        image_filepath TEXT,
+        class_id INTEGER,
+        mustSitWith TEXT,  
+        cannotSitWith TEXT, 
+        FOREIGN KEY (class_id) REFERENCES classes(id)
+    )
+`
+  ).run();
+}
 app.get("/randomize", (req, res) => {
   const groupCount = req.query.groupCount || 2; // Default to 2 groups
   const preferenceScale = 0.5; // 50% of student preferences are considered
