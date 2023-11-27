@@ -11,9 +11,6 @@ const Index = () => {
       <Header />
       <div id="main">
         <GroupDisplay />
-        <p className="read-the-docs">
-          Click on the Vite and React logos to learn more
-        </p>
       </div>
     </>
   );

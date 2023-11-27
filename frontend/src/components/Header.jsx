@@ -6,10 +6,21 @@ const Header = () => {
   return (
     <>
       <div id="header">
-      <img src={NTILoga}/>
+        <img src={NTILoga} />
         <div id="TopHeader">
           <h3>Edit Class</h3>
-          <h3>New Groups</h3>
+          <h3
+            onClick={() =>
+              fetch("/randomize", {
+                method: "POST",
+                body: JSON.stringify({}),
+              })
+                .then((response) => response.json())
+                .then((json) => console.log(json))
+            }
+          >
+            New Groups
+          </h3>
           <h3>Archives</h3>
         </div>
         <div id="BottomHeader">
