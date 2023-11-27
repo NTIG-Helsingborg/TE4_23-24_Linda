@@ -4,40 +4,6 @@ const db = require("better-sqlite3")("database.db");
 app.use(express.text());
 const port = 3000;
 
-// Create databases
-db.prepare(
-  ` CREATE TABLE IF NOT EXISTS students (
-      id INTEGER PRIMARY KEY,
-      name TEXT,
-      image_filepath TEXT,
-      class_id INTEGER,
-      mustSitWith TEXT,  
-      cannotSitWith TEXT, 
-      FOREIGN KEY (class_id) REFERENCES classes(id)
-  )`
-).run();
-db.prepare(
-  ` CREATE TABLE IF NOT EXISTS classes (
-      id INTEGER PRIMARY KEY,
-      name TEXT,
-      year INTEGER,
-      focus TEXT,
-      groups INTEGER,
-      mentorName TEXT
-  )`
-).run();
-db.prepare(
-  `CREATE TABLE IF NOT EXISTS groups (
-      id INTEGER PRIMARY KEY,
-      class_id INTEGER,
-      group_index INTEGER,
-      group_name TEXT,
-      group_leader INTEGER,
-      FOREIGN KEY (class_id) REFERENCES classes(id),
-      FOREIGN KEY (group_leader) REFERENCES students(id)
-  )`
-).run();
-
 app.post("/randomize", (req, res) => {
   const groupCount = 5;
 
@@ -48,7 +14,7 @@ app.post("/randomize", (req, res) => {
 function randomizeGroups(students, groupCount) {
   //Create empty group arrays
   let groups = Array.from({ length: groupCount }, () => []);
-  //Shuffle students depending if they have a preference or not f
+  //Shuffle students depending if they have a preference or not
   students.sort((a, b) => {
     //!!(a.mustSitWith || a.cannotSitWith) converts the presence of preferences into a boolean (true or false) and then into 1 or 0 for sorting purposes.
     const aHasPreferences = !!(a.mustSitWith || a.cannotSitWith);
@@ -179,7 +145,3 @@ const students = [
     mustSitWith: ["Lucas", "Mason"],
   },
 ];
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
