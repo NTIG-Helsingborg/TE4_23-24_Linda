@@ -7,13 +7,16 @@ const Index = () => {
   /* START SIDA */
   return (
     <>
-      <Header />
+        <Header />
       <div id="main">
         <h1>Vite + React</h1>
         <div className="card">
-          <button
+            <button
             onClick={() =>
-              fetch("/randomize?groupCount=2")
+              fetch("/randomize", {
+              method: "POST",
+              body: JSON.stringify({}),
+            })
                 .then((response) => response.json())
                 .then((json) => console.log(json))
             }

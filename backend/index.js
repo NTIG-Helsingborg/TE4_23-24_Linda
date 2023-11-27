@@ -1,115 +1,89 @@
 const express = require("express");
 const app = express();
 const db = require("better-sqlite3")("database.db");
+app.use(express.text());
 const port = 3000;
-initDatabase();
-function initDatabase() {
-  db.prepare(
-    `
-    CREATE TABLE IF NOT EXISTS students (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        image_filepath TEXT,
-        class_id INTEGER,
-        mustSitWith TEXT,  
-        cannotSitWith TEXT, 
-        FOREIGN KEY (class_id) REFERENCES classes(id)
-    )
-`
-  ).run();
+
+// Create databases
+db.prepare(
+  ` CREATE TABLE IF NOT EXISTS students (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+      image_filepath TEXT,
+      class_id INTEGER,
+      mustSitWith TEXT,  
+      cannotSitWith TEXT, 
+      FOREIGN KEY (class_id) REFERENCES classes(id)
+  )`
+).run();
+db.prepare(
+  ` CREATE TABLE IF NOT EXISTS classes (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+      year INTEGER,
+      focus TEXT,
+      groups INTEGER,
+      mentorName TEXT
+  )`
+).run();
+function createClassTables() {
+  const classes = db.prepare("SELECT * FROM classes").all();
+  classes.forEach((classInfo) => {
+    const className = `class_${classInfo.name.replace(/\s/g, "")}`; // Add a prefix to the table name
+
+    db.prepare(
+      `CREATE TABLE IF NOT EXISTS ${className} (
+        student_id INTEGER PRIMARY KEY,
+        group_id INTEGER,
+        is_group_leader BOOLEAN
+      )`
+    ).run();
+
+    const classStudents = db
+      .prepare("SELECT * FROM students WHERE class_id = :classId")
+      .all({ classId: classInfo.id });
+
+    classStudents.forEach((student) => {
+      db.prepare(
+        `INSERT INTO ${className} (student_id, group_id, is_group_leader) VALUES (?, ?, ?)`
+      ).run(student.id, 0, false);
+    });
+  });
 }
-app.get("/randomize", (req, res) => {
-  const groupCount = req.query.groupCount || 2; // Default to 2 groups
-  const preferenceScale = 0.5; // 50% of student preferences are considered
+createClassTables();
 
-  // Randomize the student list
-  const shuffledStudents = students.sort(() => 0.5 - Math.random());
+app.post("/randomize", (req, res) => {
+  const groupCount = 2;
 
-  const groups = randomizeGroups(shuffledStudents, groupCount, preferenceScale);
+  const groups = randomizeGroups(students, groupCount);
   res.json({ groups });
 });
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
-
-//This is just a temporary list generated with ChatGPT, wont be used in production
-const students = [
-  {
-    name: "Alice",
-    mustSitWith: ["Bob", "Charlie"],
-    cannotSitWith: ["Ivan", "Judy"],
-    neutralWith: ["Dave", "Eve", "Frank", "Grace", "Heidi"],
-  },
-  {
-    name: "Bob",
-    mustSitWith: ["Alice", "Charlie"],
-    cannotSitWith: ["Dave", "Eve"],
-    neutralWith: ["Frank", "Grace", "Heidi", "Ivan", "Judy"],
-  },
-  {
-    name: "Charlie",
-    mustSitWith: ["Alice", "Bob"],
-    cannotSitWith: ["Frank", "Grace"],
-    neutralWith: ["Heidi", "Ivan", "Judy", "Dave", "Eve"],
-  },
-  {
-    name: "Dave",
-    mustSitWith: ["Eve", "Frank"],
-    cannotSitWith: ["Alice", "Bob"],
-    neutralWith: ["Charlie", "Grace", "Heidi", "Ivan", "Judy"],
-  },
-  {
-    name: "Eve",
-    mustSitWith: ["Dave", "Frank"],
-    cannotSitWith: ["Charlie", "Grace"],
-    neutralWith: ["Heidi", "Ivan", "Judy", "Alice", "Bob"],
-  },
-  {
-    name: "Frank",
-    mustSitWith: ["Dave", "Eve"],
-    cannotSitWith: ["Heidi", "Ivan"],
-    neutralWith: ["Judy", "Alice", "Bob", "Charlie", "Grace"],
-  },
-  {
-    name: "Grace",
-    mustSitWith: ["Heidi", "Ivan"],
-    cannotSitWith: ["Dave", "Eve"],
-    neutralWith: ["Judy", "Alice", "Bob", "Charlie", "Frank"],
-  },
-  {
-    name: "Heidi",
-    mustSitWith: ["Grace", "Ivan"],
-    cannotSitWith: ["Alice", "Bob"],
-    neutralWith: ["Charlie", "Dave", "Eve", "Frank", "Judy"],
-  },
-  {
-    name: "Ivan",
-    mustSitWith: ["Grace", "Heidi"],
-    cannotSitWith: ["Frank", "Judy"],
-    neutralWith: ["Alice", "Bob", "Charlie", "Dave", "Eve"],
-  },
-  {
-    name: "Judy",
-    mustSitWith: ["Ivan", "Grace"],
-    cannotSitWith: ["Alice", "Charlie"],
-    neutralWith: ["Bob", "Dave", "Eve", "Frank", "Heidi"],
-  },
-];
-function randomizeGroups(students, groupCount, preferenceScale) {
+function randomizeGroups(students, groupCount) {
+  //Create empty group arrays
   let groups = Array.from({ length: groupCount }, () => []);
-  let shuffledStudents = [...students].sort(() => 0.5 - Math.random());
-  let priorityStudentsCount = Math.ceil(
-    shuffledStudents.length * preferenceScale
-  );
-  let priorityStudents = shuffledStudents.slice(0, priorityStudentsCount);
-  let otherStudents = shuffledStudents.slice(priorityStudentsCount);
-  for (prStudent of priorityStudents) {
-    console.log("Preffered: " + prStudent.name);
-  }
-  console.log("---------");
+  //Shuffle students depending if they have a preference or not
+  students.sort((a, b) => {
+    //!!(a.mustSitWith || a.cannotSitWith) converts the presence of preferences into a boolean (true or false) and then into 1 or 0 for sorting purposes.
+    const aHasPreferences = !!(a.mustSitWith || a.cannotSitWith);
+    const bHasPreferences = !!(b.mustSitWith || b.cannotSitWith);
+    //bHasPreferences - aHasPreferences effectively sorts students with preferences (1) before those without (0)
+    return bHasPreferences - aHasPreferences;
+  });
+  // Find the index of the last student with preferences in the original array.
+  let lastIndexWithPreference = students
+    .slice()
+    .reverse()
+    .findIndex((student) => !student.mustSitWith && !student.cannotSitWith);
+
+  //Add students with preferences into groups
+  for (let i = 0; i < lastIndexWithPreference; i++) {}
+
+  //Get all the students that are neutral
+
+  //Add neutral students into groups while ensuring group count is applied
+
   // Function to find a suitable group for a student, considering preferences
-  function findSuitableGroup(student, groups) {
+  /* function findSuitableGroup(student, groups) {
     return groups.find((group) => {
       const groupHasMustSitWith = student.mustSitWith.every((name) =>
         group.includes(name)
@@ -139,10 +113,10 @@ function randomizeGroups(students, groupCount, preferenceScale) {
       );
     }
     suitableGroup.push(student.name);
-  });
+  }); */
 
   // Assign other students, trying to respect their preferences
-  otherStudents.forEach((student) => {
+  /*otherStudents.forEach((student) => {
     let suitableGroup = findSuitableGroup(student, groups);
     if (!suitableGroup) {
       suitableGroup = groups.reduce(
@@ -154,7 +128,49 @@ function randomizeGroups(students, groupCount, preferenceScale) {
       );
     }
     suitableGroup.push(student.name);
-  });
+  });*/
 
   return groups;
 }
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
+});
+
+//This is just a temporary list generated with ChatGPT, wont be used in production
+const students = [
+  { name: "Emma" },
+  { name: "Liam", cannotSitWith: ["Evelyn"] },
+  { name: "Olivia", mustSitWith: ["Ava"] },
+  { name: "Noah", cannotSitWith: ["Evelyn"] },
+  {
+    name: "Ava",
+    mustSitWith: ["Olivia", "Sophia"],
+  },
+  { name: "Isabella" },
+  { name: "Sophia", mustSitWith: ["Ava"] },
+  { name: "Mia" },
+  {
+    name: "Charlotte",
+    cannotSitWith: ["Amelia", "Harper"],
+  },
+  {
+    name: "Amelia",
+    mustSitWith: ["Evelyn", "Abigail"],
+    cannotSitWith: ["Charlotte"],
+  },
+  { name: "Harper", cannotSitWith: ["Charlotte"] },
+  {
+    name: "Evelyn",
+    cannotSitWith: ["Liam", "Noah"],
+    mustSitWith: ["Amelia"],
+  },
+  { name: "Abigail", mustSitWith: ["Amelia"] },
+  { name: "Ethan" },
+  {
+    name: "Logan",
+    mustSitWith: ["Lucas", "Mason"],
+  },
+  { name: "Lucas", mustSitWith: ["Logan"] },
+  { name: "Mason", mustSitWith: ["Logan"] },
+];
