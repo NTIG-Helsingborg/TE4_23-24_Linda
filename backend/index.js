@@ -18,6 +18,19 @@ db.prepare(
   )
 `
 ).run();
+db.prepare(
+  `
+  CREATE TABLE IF NOT EXISTS classess (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+      image_filepath TEXT,
+      class_id INTEGER,
+      mustSitWith TEXT,  
+      cannotSitWith TEXT, 
+      FOREIGN KEY (class_id) REFERENCES classes(id)
+  )
+`
+).run();
 
 app.post("/randomize", (req, res) => {
   const groupCount = 2;
@@ -36,10 +49,7 @@ function randomizeGroups(students, groupCount, preferenceScale) {
   );
   let priorityStudents = shuffledStudents.slice(0, priorityStudentsCount);
   let otherStudents = shuffledStudents.slice(priorityStudentsCount);
-  for (prStudent of priorityStudents) {
-    console.log("Preffered: " + prStudent.name);
-  }
-  console.log("---------");
+
   // Function to find a suitable group for a student, considering preferences
   function findSuitableGroup(student, groups) {
     return groups.find((group) => {
