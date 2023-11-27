@@ -11,6 +11,7 @@ db.prepare(
       name TEXT,
       image_filepath TEXT,
       class_id INTEGER,
+      group_id INTEGER,
       mustSitWith TEXT,  
       cannotSitWith TEXT, 
       FOREIGN KEY (class_id) REFERENCES classes(id)
@@ -23,7 +24,8 @@ db.prepare(
       year INTEGER,
       focus TEXT,
       groups INTEGER,
-      mentorName TEXT
+      mentorName TEXT,
+      date_created DATE
   )`
 ).run();
 db.prepare(
@@ -33,11 +35,11 @@ db.prepare(
       group_index INTEGER,
       group_name TEXT,
       group_leader INTEGER,
-      FOREIGN KEY (class_id) REFERENCES classes(id),
-      FOREIGN KEY (group_leader) REFERENCES students(id)
+      FOREIGN KEY (class_id) REFERENCES classes(id)
   )`
 ).run();
 
+/////////// RANDOMIZE FUNCTION
 app.post("/randomize", (req, res) => {
   const groupCount = 5;
 
@@ -48,14 +50,21 @@ app.post("/randomize", (req, res) => {
 function randomizeGroups(students, groupCount) {
   //Create empty group arrays
   let groups = Array.from({ length: groupCount }, () => []);
-  //Shuffle students depending if they have a preference or not f
+  //Shuffle students depending if they have a preference or not
   students.sort((a, b) => {
-    //!!(a.mustSitWith || a.cannotSitWith) converts the presence of preferences into a boolean (true or false) and then into 1 or 0 for sorting purposes.
-    const aHasPreferences = !!(a.mustSitWith || a.cannotSitWith);
-    const bHasPreferences = !!(b.mustSitWith || b.cannotSitWith);
-    //bHasPreferences - aHasPreferences effectively sorts students with preferences (1) before those without (0)
-    return bHasPreferences - aHasPreferences;
+    // Assign priority: 2 for mustSitWith, 1 for cannotSitWith, 0 for neutral
+    const getPriority = (student) => {
+      if (student.mustSitWith) return 2;
+      if (student.cannotSitWith) return 1;
+      return 0;
+    };
+    const aPriority = getPriority(a);
+    const bPriority = getPriority(b);
+
+    // Sort based on priority (higher priority comes first)
+    return bPriority - aPriority;
   });
+
   // Find the index of the last student with preferences in the original array.
   let lastIndexWithPreference = students.findIndex(
     (student) => !student.mustSitWith && !student.cannotSitWith
@@ -114,8 +123,35 @@ function randomizeGroups(students, groupCount) {
   console.log("Neutral students: ");
   console.log(neutralStudents);
   console.log("-----------------");
-  //Add neutral students into groups while ensuring group count is applied
+  // Function to find a suitable group for a neutral student
+  function findSuitableGroupForNeutral(student) {
+    // Sort groups by their current size (smallest first)
+    let sortedGroups = groups.slice().sort((a, b) => a.length - b.length);
 
+    // Find a group that does not contain any 'cannot sit with' students
+    for (let group of sortedGroups) {
+      if (
+        !student.cannotSitWith ||
+        !student.cannotSitWith.some((name) => group.includes(name))
+      ) {
+        return group;
+      }
+    }
+    // If no suitable group is found, return the least filled group
+    return sortedGroups[0];
+  }
+  // Function to find if a student is already in a group
+  function isStudentPlaced(studentName) {
+    return groups.some((group) => group.includes(studentName));
+  }
+  // Add neutral students to groups, checking for 'cannot sit with' conflicts
+  neutralStudents.forEach((student) => {
+    if (!isStudentPlaced(student.name)) {
+      let group = findSuitableGroupForNeutral(student);
+      group.push(student.name);
+    }
+  });
+  /*
   // Iterate over neutral students
   neutralStudents.forEach((student) => {
     // Find a group that does not contain any students they 'cannot sit with'
@@ -141,7 +177,7 @@ function randomizeGroups(students, groupCount) {
     }
 
     suitableGroup.push(student.name);
-  });
+  });*/
 
   return groups;
 }
@@ -176,7 +212,7 @@ const students = [
   { name: "Ethan" },
   {
     name: "Logan",
-    mustSitWith: ["Lucas", "Mason"],
+    mustSitWith: ["Mason"],
   },
 ];
 

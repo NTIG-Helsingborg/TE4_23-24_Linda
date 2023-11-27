@@ -3,6 +3,12 @@ const app = express();
 const db = require("better-sqlite3")("database.db");
 app.use(express.text());
 
+// CLEAR STUDENTS
+function clearStudentsTable() {
+  db.prepare("DELETE FROM students").run();
+  console.log("Students table cleared.");
+}
+
 // FILL CLASSES
 function fillClassesTable() {
   function generateRandomMentorName() {
@@ -172,16 +178,35 @@ function fillStudentsTable() {
   console.log("Students table filled with random information.");
 }
 
-// CLEAR STUDENTS
-function clearStudentsTable() {
-  db.prepare("DELETE FROM students").run();
-  console.log("Students table cleared.");
+// FILL GROUPS
+function fillGroupsTable() {
+  const classes = db.prepare("SELECT * FROM classes").all();
+
+  classes.forEach((classInfo) => {
+    for (let i = 1; i <= 6; i++) {
+      const groupName = `Group ${i}`;
+      db.prepare(
+        `INSERT INTO groups (class_id, group_index, group_name, group_leader) VALUES (?, ?, ?, ?)`
+      ).run(classInfo.id, i, groupName, 0);
+
+      const groupId = db.prepare("SELECT last_insert_rowid()").get()[
+        "last_insert_rowid()"
+      ];
+
+      db.prepare(`UPDATE students SET group_id = ? WHERE class_id = ?`).run(
+        groupId,
+        classInfo.id
+      );
+    }
+  });
 }
 
 /////////////// RUN COMMANDS
 
-// clearStudentsTable();
+clearStudentsTable();
 
 fillClassesTable();
 
 fillStudentsTable();
+
+fillGroupsTable();
