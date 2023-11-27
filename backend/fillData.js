@@ -3,20 +3,21 @@ const app = express();
 const db = require("better-sqlite3")("database.db");
 app.use(express.text());
 
-// Function to generate a random mentor name
-function generateRandomMentorName() {
-  const mentorNames = [
-    "John Doe",
-    "Jane Smith",
-    "David Johnson",
-    "Emily Wilson",
-    "Alex Brown",
-    "Megan Taylor",
-  ];
-  const randomIndex = Math.floor(Math.random() * mentorNames.length);
-  return mentorNames[randomIndex];
-}
+// FILL CLASSES
 function fillClassesTable() {
+  function generateRandomMentorName() {
+    const mentorNames = [
+      "John Doe",
+      "Jane Smith",
+      "David Johnson",
+      "Emily Wilson",
+      "Alex Brown",
+      "Megan Taylor",
+    ];
+    const randomIndex = Math.floor(Math.random() * mentorNames.length);
+    return mentorNames[randomIndex];
+  }
+
   const classInfo = [
     { year: 1, focus: "TEK", lastNumber: 1 },
     { year: 1, focus: "TEK", lastNumber: 2 },
@@ -61,5 +62,126 @@ function fillClassesTable() {
   console.log("Classes table filled with specific information.");
 }
 
-// Call the function to fill the classes table
-fillClassesTable();
+// FILL STUDENTS
+function fillStudentsTable() {
+  function generateRandomSwedishFullName() {
+    const swedishFirstNames = [
+      "Elsa",
+      "Olle",
+      "Astrid",
+      "Gustav",
+      "Ingrid",
+      "Karl",
+      "Linnéa",
+      "Oskar",
+      "Emelie",
+      "Johan",
+      "Sofia",
+      "Viktor",
+      "Agnes",
+      "Erik",
+      "Lovisa",
+      "Axel",
+      "Maria",
+      "Filip",
+      "Matilda",
+      "Isak",
+      "Frida",
+      "Nils",
+      "Alma",
+      "Gabriel",
+      "Ebba",
+      "William",
+      "Elise",
+      "Oscar",
+      "Hanna",
+      "Lucas",
+      "Ellen",
+      "Linus",
+      "Ida",
+      "Simon",
+      "Anna",
+      "Emil",
+      "Julia",
+      "Theo",
+      "Emma",
+      "Hugo",
+      "Elin",
+      "Sebastian",
+      "Evelina",
+      "Joel",
+      "Maja",
+      "Noah",
+      "Klara",
+      "Alice",
+      "Vilhelm",
+    ];
+
+    const swedishLastNames = [
+      "Andersson",
+      "Johansson",
+      "Karlsson",
+      "Nilsson",
+      "Eriksson",
+      "Larsson",
+      "Olsson",
+      "Persson",
+      "Svensson",
+      "Gustafsson",
+      "Pettersson",
+      "Jonsson",
+      "Jansson",
+      "Hansson",
+      "Bengtsson",
+      "Magnusson",
+      "Olofsson",
+      "Lindberg",
+      "Lindström",
+      "Lundqvist",
+    ];
+
+    const randomFirstNameIndex = Math.floor(
+      Math.random() * swedishFirstNames.length
+    );
+    const randomLastNameIndex = Math.floor(
+      Math.random() * swedishLastNames.length
+    );
+
+    const firstName = swedishFirstNames[randomFirstNameIndex];
+    const lastName = swedishLastNames[randomLastNameIndex];
+
+    return `${firstName} ${lastName}`;
+  }
+
+  const classes = db.prepare("SELECT * FROM classes").all();
+  const totalStudents = 350; // Adjust the total number of students as needed
+
+  for (let i = 0; i < totalStudents; i++) {
+    const studentName = generateRandomSwedishFullName();
+    const classIndex = i % classes.length; // Get the class index in a circular manner
+    const classId = classes[classIndex].id;
+
+    // Insert data into the students table
+    const insertStudent = db.prepare(`
+            INSERT INTO students (name, class_id)
+            VALUES (?, ?)
+          `);
+
+    insertStudent.run(studentName, classId);
+  }
+  console.log("Students table filled with random information.");
+}
+
+// CLEAR STUDENTS
+function clearStudentsTable() {
+  db.prepare("DELETE FROM students").run();
+  console.log("Students table cleared.");
+}
+
+/////////////// RUN COMMANDS
+
+// clearStudentsTable();
+
+// fillClassesTable();
+
+// fillStudentsTable();

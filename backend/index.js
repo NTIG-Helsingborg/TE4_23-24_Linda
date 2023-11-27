@@ -28,6 +28,7 @@ db.prepare(
 ).run();
 function createClassTables() {
   const classes = db.prepare("SELECT * FROM classes").all();
+
   classes.forEach((classInfo) => {
     const className = `class_${classInfo.name.replace(/\s/g, "")}`; // Add a prefix to the table name
 
@@ -44,9 +45,14 @@ function createClassTables() {
       .all({ classId: classInfo.id });
 
     classStudents.forEach((student) => {
-      db.prepare(
-        `INSERT INTO ${className} (student_id, group_id, is_group_leader) VALUES (?, ?, ?)`
-      ).run(student.id, 0, false);
+      const existingStudent = db
+        .prepare(`SELECT * FROM ${className} WHERE student_id = ?`)
+        .get(student.id);
+      if (!existingStudent) {
+        db.prepare(
+          `INSERT INTO ${className} (student_id, group_id, is_group_leader) VALUES (?, ?, ?)`
+        ).run(student.id, 0, 0);
+      }
     });
   });
 }
@@ -70,65 +76,58 @@ function randomizeGroups(students, groupCount) {
     return bHasPreferences - aHasPreferences;
   });
   // Find the index of the last student with preferences in the original array.
-  let lastIndexWithPreference = students
-    .slice()
-    .reverse()
-    .findIndex((student) => !student.mustSitWith && !student.cannotSitWith);
-
+  let lastIndexWithPreference = students.findIndex(
+    (student) => !student.mustSitWith && !student.cannotSitWith
+  );
+  lastIndexWithPreference =
+    lastIndexWithPreference === -1 ? students.length : lastIndexWithPreference;
+  console.log(lastIndexWithPreference);
+  // Function to find a suitable group for a student
+  function findSuitableGroup(student, groups) {
+    return groups.find((group) => {
+      // Check if the group already contains someone the student cannot sit with
+      const hasConflictingStudent =
+        student.cannotSitWith &&
+        student.cannotSitWith.some((name) => group.includes(name));
+      // Check if the group is missing someone the student must sit with
+      const isMissingMustSitWith =
+        student.mustSitWith &&
+        !student.mustSitWith.every((name) => group.includes(name));
+      return !hasConflictingStudent && !isMissingMustSitWith;
+    });
+  }
   //Add students with preferences into groups
-  for (let i = 0; i < lastIndexWithPreference; i++) {}
+  for (let i = 0; i < lastIndexWithPreference; i++) {
+    const student = students[i];
+    let group = findSuitableGroup(student, groups);
+
+    if (!group) {
+      // If no suitable group is found, place the student in the least filled group
+      group = groups.reduce((prev, current) =>
+        prev.length < current.length ? prev : current
+      );
+    }
+
+    if (!group.includes(student.name)) {
+      // Add the student to the group if they are not already in it
+      group.push(student.name);
+    }
+
+    // Handle "mustSitWith" preferences
+    if (student.mustSitWith) {
+      // Iterate over each 'mustSitWith' partner
+      student.mustSitWith.forEach((partnerName) => {
+        // Add the partner to the same group if they aren't already there
+        if (!group.includes(partnerName)) {
+          group.push(partnerName);
+        }
+      });
+    }
+  }
 
   //Get all the students that are neutral
 
   //Add neutral students into groups while ensuring group count is applied
-
-  // Function to find a suitable group for a student, considering preferences
-  /* function findSuitableGroup(student, groups) {
-    return groups.find((group) => {
-      const groupHasMustSitWith = student.mustSitWith.every((name) =>
-        group.includes(name)
-      );
-      const groupHasCannotSitWith = student.cannotSitWith.some((name) =>
-        group.includes(name)
-      );
-      const studentNotAlreadyInGroup = !group.includes(student.name);
-      return (
-        groupHasMustSitWith &&
-        !groupHasCannotSitWith &&
-        studentNotAlreadyInGroup
-      );
-    });
-  }
-
-  // Assign priority students first
-  priorityStudents.forEach((student) => {
-    let suitableGroup = findSuitableGroup(student, groups);
-    if (!suitableGroup) {
-      suitableGroup = groups.reduce(
-        (smallestGroup, currentGroup) =>
-          smallestGroup.length <= currentGroup.length
-            ? smallestGroup
-            : currentGroup,
-        groups[0]
-      );
-    }
-    suitableGroup.push(student.name);
-  }); */
-
-  // Assign other students, trying to respect their preferences
-  /*otherStudents.forEach((student) => {
-    let suitableGroup = findSuitableGroup(student, groups);
-    if (!suitableGroup) {
-      suitableGroup = groups.reduce(
-        (smallestGroup, currentGroup) =>
-          smallestGroup.length <= currentGroup.length
-            ? smallestGroup
-            : currentGroup,
-        groups[0]
-      );
-    }
-    suitableGroup.push(student.name);
-  });*/
 
   return groups;
 }
@@ -137,18 +136,18 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
 
-//This is just a temporary list generated with ChatGPT, wont be used in production
+//This is just a temporary list generated with ChatGPT, wont be used in production (student count is 15)
 const students = [
   { name: "Emma" },
-  { name: "Liam", cannotSitWith: ["Evelyn"] },
-  { name: "Olivia", mustSitWith: ["Ava"] },
-  { name: "Noah", cannotSitWith: ["Evelyn"] },
+  { name: "Liam" },
+  { name: "Olivia" },
+  { name: "Noah" },
   {
     name: "Ava",
     mustSitWith: ["Olivia", "Sophia"],
   },
   { name: "Isabella" },
-  { name: "Sophia", mustSitWith: ["Ava"] },
+  { name: "Sophia" },
   { name: "Mia" },
   {
     name: "Charlotte",
@@ -157,20 +156,16 @@ const students = [
   {
     name: "Amelia",
     mustSitWith: ["Evelyn", "Abigail"],
-    cannotSitWith: ["Charlotte"],
   },
-  { name: "Harper", cannotSitWith: ["Charlotte"] },
+  { name: "Harper" },
   {
     name: "Evelyn",
     cannotSitWith: ["Liam", "Noah"],
-    mustSitWith: ["Amelia"],
   },
-  { name: "Abigail", mustSitWith: ["Amelia"] },
+  { name: "Abigail" },
   { name: "Ethan" },
   {
     name: "Logan",
     mustSitWith: ["Lucas", "Mason"],
   },
-  { name: "Lucas", mustSitWith: ["Logan"] },
-  { name: "Mason", mustSitWith: ["Logan"] },
 ];
