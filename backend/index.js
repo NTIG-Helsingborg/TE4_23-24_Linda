@@ -19,7 +19,7 @@ db.prepare(
 `
 ).run();
 
-app.get("/randomize", (req, res) => {
+app.post("/randomize", (req, res) => {
   const groupCount = 2;
   const preferenceScale = 0.5;
 
@@ -101,60 +101,50 @@ const students = [
     name: "Alice",
     mustSitWith: ["Bob", "Charlie"],
     cannotSitWith: ["Ivan", "Judy"],
-    neutralWith: ["Dave", "Eve", "Frank", "Grace", "Heidi"],
   },
   {
     name: "Bob",
     mustSitWith: ["Alice", "Charlie"],
     cannotSitWith: ["Dave", "Eve"],
-    neutralWith: ["Frank", "Grace", "Heidi", "Ivan", "Judy"],
   },
   {
     name: "Charlie",
     mustSitWith: ["Alice", "Bob"],
     cannotSitWith: ["Frank", "Grace"],
-    neutralWith: ["Heidi", "Ivan", "Judy", "Dave", "Eve"],
   },
   {
     name: "Dave",
     mustSitWith: ["Eve", "Frank"],
     cannotSitWith: ["Alice", "Bob"],
-    neutralWith: ["Charlie", "Grace", "Heidi", "Ivan", "Judy"],
   },
   {
     name: "Eve",
     mustSitWith: ["Dave", "Frank"],
     cannotSitWith: ["Charlie", "Grace"],
-    neutralWith: ["Heidi", "Ivan", "Judy", "Alice", "Bob"],
   },
   {
     name: "Frank",
     mustSitWith: ["Dave", "Eve"],
     cannotSitWith: ["Heidi", "Ivan"],
-    neutralWith: ["Judy", "Alice", "Bob", "Charlie", "Grace"],
   },
   {
     name: "Grace",
     mustSitWith: ["Heidi", "Ivan"],
     cannotSitWith: ["Dave", "Eve"],
-    neutralWith: ["Judy", "Alice", "Bob", "Charlie", "Frank"],
   },
   {
     name: "Heidi",
     mustSitWith: ["Grace", "Ivan"],
     cannotSitWith: ["Alice", "Bob"],
-    neutralWith: ["Charlie", "Dave", "Eve", "Frank", "Judy"],
   },
   {
     name: "Ivan",
     mustSitWith: ["Grace", "Heidi"],
     cannotSitWith: ["Frank", "Judy"],
-    neutralWith: ["Alice", "Bob", "Charlie", "Dave", "Eve"],
   },
   {
     name: "Judy",
     mustSitWith: ["Ivan", "Grace"],
     cannotSitWith: ["Alice", "Charlie"],
-    neutralWith: ["Bob", "Dave", "Eve", "Frank", "Heidi"],
   },
 ];
