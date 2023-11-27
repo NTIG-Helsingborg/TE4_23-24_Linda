@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-import reactLogo from "../assets/react.svg";
 import Header from "../components/Header.jsx";
 import GroupDisplay from "../components/GroupDisplay";
 
@@ -8,6 +7,7 @@ const Index = () => {
   /* START SIDA */
   return (
     <>
+      <div id="background"></div>
       <Header />
       <div id="main">
         <GroupDisplay />
