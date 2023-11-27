@@ -59,7 +59,7 @@ function createClassTables() {
 createClassTables();
 
 app.post("/randomize", (req, res) => {
-  const groupCount = 2;
+  const groupCount = 5;
 
   const groups = randomizeGroups(students, groupCount);
   res.json({ groups });
@@ -82,6 +82,7 @@ function randomizeGroups(students, groupCount) {
   lastIndexWithPreference =
     lastIndexWithPreference === -1 ? students.length : lastIndexWithPreference;
   console.log(lastIndexWithPreference);
+
   // Function to find a suitable group for a student
   function findSuitableGroup(student, groups) {
     return groups.find((group) => {
