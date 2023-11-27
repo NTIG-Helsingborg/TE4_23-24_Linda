@@ -48,7 +48,7 @@ app.post("/randomize", (req, res) => {
 function randomizeGroups(students, groupCount) {
   //Create empty group arrays
   let groups = Array.from({ length: groupCount }, () => []);
-  //Shuffle students depending if they have a preference or not
+  //Shuffle students depending if they have a preference or not f
   students.sort((a, b) => {
     //!!(a.mustSitWith || a.cannotSitWith) converts the presence of preferences into a boolean (true or false) and then into 1 or 0 for sorting purposes.
     const aHasPreferences = !!(a.mustSitWith || a.cannotSitWith);
