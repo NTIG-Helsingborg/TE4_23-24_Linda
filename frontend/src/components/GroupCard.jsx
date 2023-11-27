@@ -24,7 +24,7 @@ const GroupCard = ({}) => {
           <div id="group">
             {students.map((student, studentIndex) => (
               <div
-                className={`student st${group.length}`}
+                className={`student`}
                 key={studentIndex}
               >
                 <img src={react} alt={""} className="img" />
