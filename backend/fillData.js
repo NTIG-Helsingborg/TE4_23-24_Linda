@@ -182,6 +182,6 @@ function clearStudentsTable() {
 
 // clearStudentsTable();
 
-// fillClassesTable();
+fillClassesTable();
 
-// fillStudentsTable();
+fillStudentsTable();
