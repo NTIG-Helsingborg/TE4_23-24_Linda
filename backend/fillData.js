@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const db = require("better-sqlite3")("database.db");
-app.use(express.text());
+app.use(express.json());
 
 // CLEAR STUDENTS
 function clearStudentsTable() {
