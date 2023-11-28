@@ -13,15 +13,15 @@ const Header = () => {
             groupCount: 6,
         }),
     })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then((json) => console.log(json))
-        .catch((error) => console.error("Error during fetch:", error));
-};
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((json) => console.log(json))
+      .catch((error) => console.error("Error during fetch:", error));
+  };
   return (
     <>
       <div id="header">

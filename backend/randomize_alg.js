@@ -90,7 +90,7 @@ const randomizeGroups = (db) => (classId, groupCount) => {
     return shuffled;
   }
 
-  // Update the DB
+  // UPDATE DB INFO
   db.transaction((groups, classId) => {
     groups.forEach((group, groupId) => {
       group.forEach((studentId) => {
@@ -101,6 +101,23 @@ const randomizeGroups = (db) => (classId, groupCount) => {
     });
   })(groups, classId);
 
+  const updateClassesQuery = db.prepare(
+    ` UPDATE classes SET groups = ? WHERE id = ?`
+  );
+  updateClassesQuery.run(groupCount, classId);
+
+  db.prepare(`DELETE FROM groups WHERE class_id = ?`).run(classId);
+
+  groups.forEach((group, index) => {
+    const groupIndex = index + 1;
+    const groupName = `Group ${groupIndex}`;
+    const groupLeader = null;
+    db.prepare(
+      ` INSERT INTO groups (class_id, group_index, group_name, group_leader) VALUES (?, ?, ?, ?) `
+    ).run(classId, groupIndex, groupName, groupLeader);
+  });
+
+  // Debug
   const groupsWithNames = groups.map((group) =>
     group.map((studentId) => {
       const student = db
@@ -109,7 +126,6 @@ const randomizeGroups = (db) => (classId, groupCount) => {
       return student ? student.name : null;
     })
   );
-
   console.log("Groups after update: ", groupsWithNames);
 };
 
