@@ -1,6 +1,20 @@
 import GroupCard from "./GroupCard";
 const GroupDisplay = () => {
-  const groupCount = 3;
+  // Change this value to change the amount of groups there are in a class
+    const groupCount = 6;
+
+  var groupRows = 2;
+  var groupAmount = 2;
+  if (groupCount < 3) {
+    groupRows = 2;
+    groupAmount = 3;
+  } else if (groupCount > 6) {
+    groupRows = 4;
+    groupAmount = 7;
+  } else {
+    groupRows = 3;
+    groupAmount = 3;
+  }
 
   return (
     <>
@@ -8,9 +22,9 @@ const GroupDisplay = () => {
         <div className="card">
           <div
             id="groupDisplay"
-            style={{ gridTemplateColumns: `repeat(${groupCount}, 1fr)` }}
+            style={{ gridTemplateColumns: `repeat(${groupRows}, 1fr)` }}
           >
-            <GroupCard />
+            <GroupCard groupCount={groupCount} groupAmount={groupAmount}/>
           </div>
         </div>
       </div>

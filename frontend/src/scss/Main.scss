@@ -150,11 +150,6 @@ button {
     font-weight: bold;
     font-size: larger;
     text-decoration: underline;
-    .bold {
-      font-weight: bold;
-      font-size: larger;
-      text-decoration: underline;
-    }
   }
 }
 
@@ -172,19 +167,22 @@ button {
 /// GroupCard ///
 #card {
   margin-inline: auto;
-  width: 400px;
-  min-height: 436px;
+  width: 330px;
+  min-height: 400px;
   background-color: #081645;
 
   border-radius: 25px;
+
   #title {
     margin: 0;
     font-size: 1.5em;
     background-color: #747bff;
   }
-  #group {
+  .group {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 10px;
   }
 
   .student {
@@ -192,8 +190,8 @@ button {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     box-sizing: border-box;
     .img {
       width: 100px;
@@ -205,4 +203,30 @@ button {
       margin-top: 15px;
     }
   }
+}
+
+#group3{
+    #card{
+        width: 400px;
+        
+        .student{
+            width: 200px;
+            height: 200px;
+        }
+        .group{
+         gap: 0px;
+         padding: 0px;
+        }
+    }
+}
+
+#group7 {
+    #card{
+        width: 330px;
+        
+        .student{
+            width: 150px;
+            height: 150px;
+        }
+    }
 }
