@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 const db = require("better-sqlite3")("database.db");
+const multer = require("multer");
+const path = require("path");
 app.use(express.json());
 const port = 3000;
 
