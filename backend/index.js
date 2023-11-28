@@ -64,7 +64,7 @@ app.post("/randomize", (req, res) => {
 app.post("/getGroups", (req, res) => {
   const className = req.body.className;
 
-  if (!className && classId != "") {
+  if (!className && className != "") {
     return res.status(400).json({
       error: "className is required in the request body",
       requestBody: req.body,
