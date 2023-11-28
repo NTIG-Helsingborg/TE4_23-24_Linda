@@ -6,6 +6,7 @@ const port = 3000;
 
 // IMPORTS
 const randomizeGroups = require("./randomize_alg")(db);
+const dbInformation = require("./dbInformation");
 //const databaseData = require("./fillData.js");
 
 // Initialize
@@ -61,44 +62,19 @@ app.post("/randomize", (req, res) => {
 
 //Retrieve groups by class
 app.post("/getGroups", (req, res) => {
-  const classId = req.body.classId;
+  const className = req.body.className;
 
-  if (!classId && classId != 0) {
+  if (!className && classId != "") {
     return res.status(400).json({
-      error: "classId is required in the request body",
+      error: "className is required in the request body",
       requestBody: req.body,
     });
   }
-  // SQL query to get all students in the specified class
-  const students = db
-    .prepare("SELECT group_id,name FROM students WHERE class_id = ?")
-    .all(classId);
+  const groupedStudentsArray = dbInformation.getGroups(db)(className);
 
-  // Organize students into groups based on group_id
-  const groupedStudentsObject = students.reduce((acc, student) => {
-    if (!acc[student.group_id]) {
-      acc[student.group_id] = [];
-    }
-    acc[student.group_id].push(student.name);
-    return acc;
-  }, {});
-
-  // Retrieve group names for each groupId
-  const getGroupName = (groupId) => {
-    const stmt = db.prepare("SELECT group_name FROM groups WHERE id = ?");
-    const group = stmt.get(groupId);
-    return group ? group.group_name : "Unknown Group";
-  };
-
-  // Construct the final array with groupId, groupName, and students
-  const groupedStudentsArray = Object.entries(groupedStudentsObject).map(
-    ([groupId, studentNames]) => {
-      const groupName = getGroupName(groupId);
-      return { groupId, groupName, students: studentNames };
-    }
+  res.json(
+    JSON.stringify({ result: groupedStudentsArray, className: className })
   );
-
-  res.json(JSON.stringify({ result: groupedStudentsArray, classID: classId }));
 });
 
 // ACTIVATE SERVER

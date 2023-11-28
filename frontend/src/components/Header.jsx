@@ -9,7 +9,7 @@ const Header = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        classId: 1,
+        classId: 3,
         groupCount: 6,
       }),
     })
@@ -22,33 +22,13 @@ const Header = () => {
       .then((json) => console.log(json))
       .catch((error) => console.error("Error during fetch:", error));
   };
-
-  fetch("/getGroups", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      //Update with the class ID you want to retrieve
-      classId: 10,
-    }),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then((json) => console.log(JSON.parse(json)))
-    .catch((error) => console.error("Error during fetch:", error));
-
   return (
     <>
       <div id="header">
         <img src={NTILoga} alt="NTI Logo" />
         <div id="TopHeader">
           <h3>Edit Class</h3>
-          <h3 onClick={handleNewGroups}>New Groups</h3>
+          <h3>New Groups</h3>
           <h3>Archives</h3>
         </div>
         <div id="BottomHeader">
