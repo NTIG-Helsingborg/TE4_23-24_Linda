@@ -6,6 +6,7 @@ app.use(express.json());
 // CLEAR STUDENTS
 function clearStudentsTable() {
   db.prepare("DELETE FROM students").run();
+  db.prepare("DELETE FROM classes").run();
   console.log("Students table cleared.");
 }
 
