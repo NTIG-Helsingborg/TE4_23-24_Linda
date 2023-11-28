@@ -178,28 +178,6 @@ function fillStudentsTable() {
   console.log("Students table filled with random information.");
 }
 
-// FILL GROUPS
-function fillGroupsTable() {
-  const classes = db.prepare("SELECT * FROM classes").all();
-
-  classes.forEach((classInfo) => {
-    for (let i = 1; i <= 6; i++) {
-      const groupName = `Group ${i}`;
-      db.prepare(
-        `INSERT INTO groups (class_id, group_index, group_name, group_leader) VALUES (?, ?, ?, ?)`
-      ).run(classInfo.id, i, groupName, 0);
-
-      const groupId = db.prepare("SELECT last_insert_rowid()").get()[
-        "last_insert_rowid()"
-      ];
-      db.prepare(`UPDATE students SET group_id = ? WHERE class_id = ?`).run(
-        groupId,
-        classInfo.id
-      );
-    }
-  });
-}
-
 // STUDENT PREFERENCES
 function updateStudentPreferences(classId) {
   // Clear all preferences for the class
@@ -290,6 +268,4 @@ fillClassesTable();
 
 fillStudentsTable();
 
-fillGroupsTable();
-
-for (i = 1; i < 15; i++) updateStudentPreferences(i);
+// for (i = 1; i < 15; i++) updateStudentPreferences(i);
