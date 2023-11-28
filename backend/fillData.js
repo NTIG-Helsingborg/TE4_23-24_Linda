@@ -201,12 +201,96 @@ function fillGroupsTable() {
   });
 }
 
+// STUDENT PREFERENCES
+function updateStudentPreferences(classId) {
+  // Clear all preferences for the class
+  db.prepare(
+    `
+    UPDATE students
+    SET mustSitWith = NULL, cannotSitWith = NULL
+    WHERE class_id = ?
+  `
+  ).run(classId);
+
+  // Fetch random students from the class
+  const randomStudents = db
+    .prepare(
+      `
+    SELECT id
+    FROM students
+    WHERE class_id = ?
+    ORDER BY RANDOM()
+    LIMIT 3
+  `
+    )
+    .all(classId);
+
+  const updateQuery = db.prepare(`
+    UPDATE students
+    SET mustSitWith = ?, cannotSitWith = ?
+    WHERE id = ?
+  `);
+
+  // Iterate over each random student and update preferences
+  randomStudents.forEach((student) => {
+    // Fetch another random student in the same class
+    const randomOtherStudentA = db
+      .prepare(
+        `
+      SELECT id
+      FROM students
+      WHERE class_id = ? AND id != ?
+      ORDER BY RANDOM()
+      LIMIT 1
+    `
+      )
+      .get(classId, student.id);
+    const randomOtherStudentB = db
+      .prepare(
+        `
+      SELECT id
+      FROM students
+      WHERE class_id = ? AND id != ?
+      ORDER BY RANDOM()
+      LIMIT 1
+    `
+      )
+      .get(classId, student.id);
+
+    if (randomOtherStudentA && randomOtherStudentB) {
+      const mustSitWith = [randomOtherStudentA.id];
+      const cannotSitWith = [randomOtherStudentB.id];
+
+      const preferences = {
+        mustSitWith: JSON.stringify(mustSitWith),
+        cannotSitWith: JSON.stringify(cannotSitWith),
+      };
+
+      // Update preferences for the current student
+      updateQuery.run(
+        preferences.mustSitWith,
+        preferences.cannotSitWith,
+        student.id
+      );
+
+      // Update preferences for the other student
+      updateQuery.run(
+        JSON.stringify([student.id]), // reciprocal mustSitWith
+        JSON.stringify([randomOtherStudentA.id]), // reciprocal cannotSitWith
+        randomOtherStudentA.id
+      );
+    }
+  });
+}
+
 /////////////// RUN COMMANDS
 
-clearStudentsTable();
+// clearStudentsTable();
 
-fillClassesTable();
+// fillClassesTable();
 
-fillStudentsTable();
+// fillStudentsTable();
 
-fillGroupsTable();
+// fillGroupsTable();
+
+for (i = 1; i < 15; i++) updateStudentPreferences(i);
