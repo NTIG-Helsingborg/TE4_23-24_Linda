@@ -35,13 +35,54 @@ const getGroups = (db) => (className) => {
 };
 //Function to set the student preferences
 const setStudentPreference = (db) => (studentID, preferenceArray) => {
-  const mustSitWithArr = preferenceArray.mustSitWith;
-  const cannotSitWithArr = preferenceArray.cannotSitWithArr;
+  const mustSitWithArr = JSON.parse(preferenceArray.mustSitWith);
+  const cannotSitWithArr = JSON.parse(preferenceArray.cannotSitWith);
 
-  const stmt = db.prepare(
+  db.prepare(
     "UPDATE students SET mustSitWith = ?, cannotSitWith = ? WHERE id = ?"
-  );
-  stmt.run(mustSitWithArr, cannotSitWithArr, studentId);
+  ).run(preferenceArray.mustSitWith, preferenceArray.cannotSitWith, studentID);
+
+  //Update the other students mustSitWith value
+  mustSitWithArr.forEach((partnerId) => {
+    // Retrieve current mustSitWith for the partner student
+    const getStmt = db.prepare("SELECT mustSitWith FROM students WHERE id = ?");
+    const result = getStmt.get(partnerId);
+    let partnerMustSitWith = result
+      ? JSON.parse(result.mustSitWith || "[]")
+      : [];
+
+    // Add the original student's ID if not already present
+    if (!partnerMustSitWith.includes(studentID)) {
+      partnerMustSitWith.push(studentID);
+
+      // Update the partner student's mustSitWith
+      const updatePartnerStmt = db.prepare(
+        "UPDATE students SET mustSitWith = ? WHERE id = ?"
+      );
+      updatePartnerStmt.run(JSON.stringify(partnerMustSitWith), partnerId);
+    }
+  });
+  cannotSitWithArr.forEach((partnerId) => {
+    // Retrieve current mustSitWith for the partner student
+    const getStmt = db.prepare(
+      "SELECT cannotSitWith FROM students WHERE id = ?"
+    );
+    const result = getStmt.get(partnerId);
+    let partnerCannotSitWith = result
+      ? JSON.parse(result.mustSitWith || "[]")
+      : [];
+
+    // Add the original student's ID if not already present
+    if (!partnerCannotSitWith.includes(studentID)) {
+      partnerCannotSitWith.push(studentID);
+
+      // Update the partner student's mustSitWith
+      const updatePartnerStmt = db.prepare(
+        "UPDATE students SET cannotSitWith = ? WHERE id = ?"
+      );
+      updatePartnerStmt.run(JSON.stringify(partnerCannotSitWith), partnerId);
+    }
+  });
 };
 
 module.exports = { getGroups, setStudentPreference };
