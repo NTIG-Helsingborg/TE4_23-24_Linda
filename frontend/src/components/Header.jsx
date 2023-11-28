@@ -9,7 +9,7 @@ const Header = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        classId: 3,
+        classId: 2,
         groupCount: 6,
       }),
     })
