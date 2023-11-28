@@ -84,5 +84,25 @@ const setStudentPreference = (db) => (studentID, preferenceArray) => {
     }
   });
 };
+const getStudentPreference = (db) => (studentID) => {
+  // SQL query to get the student's preferences
+  const stmt = db.prepare(
+    "SELECT mustSitWith, cannotSitWith FROM students WHERE id = ?"
+  );
+  const result = stmt.get(studentID);
 
-module.exports = { getGroups, setStudentPreference };
+  if (result) {
+    // Assuming mustSitWith and cannotSitWith are stored as JSON strings
+    const preferenceArray = {
+      mustSitWith: JSON.parse(result.mustSitWith || "[]"),
+      cannotSitWith: JSON.parse(result.cannotSitWith || "[]"),
+    };
+
+    return preferenceArray;
+  } else {
+    // Handle the case where no student is found
+    return { error: "Student not found", mustSitWith: [], cannotSitWith: [] };
+  }
+};
+
+module.exports = { getGroups, setStudentPreference, getStudentPreference };

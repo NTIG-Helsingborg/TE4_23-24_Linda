@@ -121,6 +121,19 @@ app.post("/setStudentPreference", (req, res) => {
   }
   dbInformation.setStudentPreference(db)(studentID, preferenceArray);
 });
+app.post("/getStudentPreference", (req, res) => {
+  const studentID = req.body.studentID;
+
+  if (!studentID) {
+    return res.status(400).json({
+      error: "Student ID is required in the request body",
+      requestBody: req.body,
+    });
+  }
+  const studentPreference = dbInformation.getStudentPreference(db)(studentID);
+
+  res.json(JSON.stringify({ result: studentPreference }));
+});
 //USED FOR TESTING SINCE FRONTEND IS NOT FINISHED
 /*
 const studentID = 1;
