@@ -1,17 +1,21 @@
-import Header from "../components/Header.jsx";
-import GroupDisplay from "../components/GroupDisplay";
+import { useState } from "react";
 
-const Index = () => {
-  /* START SIDA */
+const File_Test = () => {
+  const [file, setFile] = useState();
+  function handleChange(e) {
+    console.log(e.target.files);
+    setFile(URL.createObjectURL(e.target.files[0]));
+  }
+
   return (
     <>
       <div id="background"></div>
-      <Header />
       <div id="main">
-        <GroupDisplay />
+        <input type="file" onChange={handleChange} />
+        <img src={file} />
       </div>
     </>
   );
 };
 
-export default Index;
+export default File_Test;
