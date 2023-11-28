@@ -13,7 +13,7 @@ const GroupDisplay = () => {
       },
       body: JSON.stringify({
         // Update with the class ID you want to retrieve
-        classId: 3,
+        className: "1TEK1"
       }),
     })
       .then((response) => {

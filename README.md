@@ -12,7 +12,7 @@ https://nodejs.org/en/download/package-manager
 ```bash
 cd path/to/HELP-A-TEACHER/backend
 npm install
-node main.js
+node index.js
 ```
 
 **Launch frontend**
