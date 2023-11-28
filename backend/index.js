@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const db = require("better-sqlite3")("database.db");
 const multer = require("multer");
+const crypto = require("crypto");
 const path = require("path");
 app.use(express.json());
 const port = 3000;
@@ -17,7 +18,7 @@ const storage = multer.diskStorage({
     cb(null, path.join(__dirname, "profile_imgs/")); // Set the destination folder
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname);
+    cb(null, `${crypto.randomUUID()}.${file.originalname.split(".")[1]}`);
   },
 });
 const upload = multer({ storage: storage });
