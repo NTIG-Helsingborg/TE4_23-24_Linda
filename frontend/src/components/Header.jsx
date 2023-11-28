@@ -9,7 +9,7 @@ const Header = () => {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            classId: 3,
+            classId: 1,
             groupCount: 6,
         }),
     })
@@ -28,7 +28,7 @@ const Header = () => {
         <img src={NTILoga} alt="NTI Logo" />
         <div id="TopHeader">
           <h3>Edit Class</h3>
-          <h3>New Groups</h3>
+          <h3 onClick={handleNewGroups}>New Groups</h3>
           <h3>Archives</h3>
         </div>
         <div id="BottomHeader">

@@ -2,38 +2,38 @@ import GroupCard from "./GroupCard";
 import { useState, useEffect } from "react";
 
 const GroupDisplay = () => {
-    const [groupData, setGroupData] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
+  const [groupData, setGroupData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        fetch("/getGroups", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                // Update with the class ID you want to retrieve
-                classId: 7,
-            }),
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((json) => {
-                const dbClass = JSON.parse(json);
-                setGroupData(dbClass.result);
-                setIsLoading(false);
-            })
-            .catch((error) => console.error("Error during fetch:", error));
-    }, []);
+  useEffect(() => {
+    fetch("/getGroups", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        // Update with the class ID you want to retrieve
+        classId: 3,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((json) => {
+        const dbClass = JSON.parse(json);
+        setGroupData(dbClass.result);
+        setIsLoading(false);
+      })
+      .catch((error) => console.error("Error during fetch:", error));
+  }, []);
 
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
-        // Change this value to change the amount of groups there are in a class
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  // Change this value to change the amount of groups there are in a class
   const groupCount = 6;
   var groupRows = 2;
   var groupAmount = 2;
@@ -49,22 +49,28 @@ const GroupDisplay = () => {
   }
   console.log(groupData.length);
 
-    return (
-        <>
-            <div id="classDisplay">
-                <div className="card">
-                    <div
-                        id="groupDisplay"
-                        style={{ gridTemplateColumns: `repeat(${groupRows}, 1fr)` }}
-                    >
-                        <GroupCard groupCount={groupCount} groupAmount={groupAmount} groupData={groupData}/>
-                    </div>
-                </div>
-            </div>
-        </>
-    );
+  return (
+    <>
+      <div id="classDisplay">
+        <div
+          id="groupDisplay"
+          style={{ gridTemplateColumns: `repeat(${groupRows}, 1fr)` }}
+        >
+          {groupData.map((group) => {
+            return (
+              <div id={`group${groupAmount}`}>
+                <GroupCard
+                  key={group.groupId}
+                  groupName={group.groupName}
+                  groupStudents={group.students}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default GroupDisplay;
-
-
