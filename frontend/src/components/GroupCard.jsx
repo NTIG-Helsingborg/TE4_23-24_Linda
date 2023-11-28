@@ -1,6 +1,6 @@
 import react from "../assets/NtiPush.jpg";
 
-const GroupCard = ({ groupCount, groupAmount}) => {
+const GroupCard = ({ groupCount, groupAmount, groupData}) => {
 
 
     const groups = [
@@ -18,6 +18,7 @@ const GroupCard = ({ groupCount, groupAmount}) => {
         { name: "Marko Urpers", image: "image3.jpg" },
         { name: "Bob Bobbington The third", image: "image4.jpg" },
     ];
+    console.log(groupData[0].students)
     return (
         <>
             {groups.slice(0, groupCount).map((group, index) => (

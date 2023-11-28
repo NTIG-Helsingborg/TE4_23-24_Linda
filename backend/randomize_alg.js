@@ -19,7 +19,6 @@ const randomizeGroups = (db) => (classId, groupCount) => {
         )
       );
     }
-
     if (assignedGroup) {
       assignedGroup.push(student.id);
     } else {
@@ -29,11 +28,16 @@ const randomizeGroups = (db) => (classId, groupCount) => {
 
   // Function to handle cannotSitWith preferences
   const handleCannotSitWith = (student, groups) => {
-    let assignedGroup = groups.find((group) =>
-      group.every(
-        (member) =>
-          !student.mustSitWith || !student.mustSitWith.includes(member)
-      )
+    let assignedGroup = groups.find(
+      (group) =>
+        group.every(
+          (member) =>
+            !student.mustSitWith || !student.mustSitWith.includes(member)
+        ) &&
+        group.every(
+          (member) =>
+            !student.cannotSitWith || !student.cannotSitWith.includes(member)
+        )
     );
 
     if (assignedGroup) {
@@ -56,10 +60,7 @@ const randomizeGroups = (db) => (classId, groupCount) => {
     (student) => student.cannotSitWith
   );
 
-  // Assign students with mustSitWith preferences to the same group
   mustSitWithPrefs.forEach((student) => handleMustSitWith(student, groups));
-
-  // Assign students with cannotSitWith preferences to different groups
   cannotSitWithPrefs.forEach((student) => handleCannotSitWith(student, groups));
 
   // Students WITHOUT PREFERENCES
@@ -67,12 +68,19 @@ const randomizeGroups = (db) => (classId, groupCount) => {
     (student) => !student.mustSitWith && !student.cannotSitWith
   );
   const shuffledStudents = shuffleArray(studentsWithoutPrefs);
-  let groupIndex = 0;
+
   shuffledStudents.forEach((student) => {
-    groups[groupIndex].push(student.id);
-    groupIndex = (groupIndex + 1) % groupCount; // Cycle through groups
+    // Find the group with the fewest students
+    const smallestGroup = groups.reduce(
+      (minGroup, currentGroup) =>
+        currentGroup.length < minGroup.length ? currentGroup : minGroup,
+      groups[0]
+    );
+
+    smallestGroup.push(student.id);
   });
 
+  // Function to shuffle array
   function shuffleArray(array) {
     const shuffled = array.slice();
     for (let i = shuffled.length - 1; i > 0; i--) {
