@@ -76,6 +76,26 @@ app.post("/getGroups", (req, res) => {
     JSON.stringify({ result: groupedStudentsArray, className: className })
   );
 });
+app.post("/setStudentPreference", (req, res) => {
+  const studentID = req.body.studentID;
+  const preferenceArray = req.body.preferenceArray;
+
+  if (!preferenceArray) {
+    return res.status(400).json({
+      error: "Preference Array is required in the request body",
+      requestBody: req.body,
+    });
+  } else if (!studentID) {
+    return res.status(400).json({
+      error: "Student ID is required in the request body",
+      requestBody: req.body,
+    });
+  }
+  dbInformation.setStudentPreference(db)(studentID, preferenceArray);
+});
+//const studentID = 1;
+
+//dbInformation.setStudentPreference(db)(studentID, preferenceArray);
 
 // ACTIVATE SERVER
 app.listen(port, () => {
