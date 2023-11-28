@@ -1,7 +1,6 @@
 import react from "../assets/NtiPush.jpg";
 
 const GroupCard = ({ groupCount, groupAmount}) => {
-    //var groupAmount = 2;
 
 
     const groups = [

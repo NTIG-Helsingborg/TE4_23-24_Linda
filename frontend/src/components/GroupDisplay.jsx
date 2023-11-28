@@ -1,13 +1,13 @@
 import GroupCard from "./GroupCard";
 const GroupDisplay = () => {
   // Change this value to change the amount of groups there are in a class
-    const groupCount = 5;
+    const groupCount = 6;
 
   var groupRows = 2;
   var groupAmount = 2;
   if (groupCount < 3) {
     groupRows = 2;
-    groupAmount = 2;
+    groupAmount = 3;
   } else if (groupCount > 6) {
     groupRows = 4;
     groupAmount = 7;
