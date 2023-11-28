@@ -6,6 +6,7 @@ const port = 3000;
 
 // IMPORTS
 const randomizeGroups = require("./randomize_alg")(db);
+//const databaseData = require("./fillData.js");
 
 // Initialize
 db.prepare(
@@ -42,39 +43,6 @@ db.prepare(
   )`
 ).run();
 
-const students = [
-  { name: "Emma" },
-  { name: "Liam" },
-  { name: "Olivia" },
-  { name: "Noah" },
-  {
-    name: "Ava",
-    mustSitWith: ["Olivia", "Sophia"],
-  },
-  { name: "Isabella" },
-  { name: "Sophia" },
-  { name: "Mia" },
-  {
-    name: "Charlotte",
-    cannotSitWith: ["Amelia", "Harper"],
-  },
-  {
-    name: "Amelia",
-    mustSitWith: ["Evelyn", "Abigail"],
-  },
-  { name: "Harper" },
-  {
-    name: "Evelyn",
-    cannotSitWith: ["Liam", "Noah"],
-  },
-  { name: "Abigail" },
-  { name: "Ethan" },
-  {
-    name: "Logan",
-    mustSitWith: ["Mason"],
-  },
-];
-
 // RANDOMIZE FUNCTION
 app.post("/randomize", (req, res) => {
   const classId = req.body.classId;
@@ -89,6 +57,48 @@ app.post("/randomize", (req, res) => {
 
   randomizeGroups(classId, groupCount);
   res.json({ message: "Groups randomized successfully!" });
+});
+
+//Retrieve groups by class
+app.post("/getGroups", (req, res) => {
+  const classId = req.body.classId;
+
+  if (!classId && classId != 0) {
+    return res.status(400).json({
+      error: "classId is required in the request body",
+      requestBody: req.body,
+    });
+  }
+  // SQL query to get all students in the specified class
+  const students = db
+    .prepare("SELECT group_id,name FROM students WHERE class_id = ?")
+    .all(classId);
+
+  // Organize students into groups based on group_id
+  const groupedStudentsObject = students.reduce((acc, student) => {
+    if (!acc[student.group_id]) {
+      acc[student.group_id] = [];
+    }
+    acc[student.group_id].push(student.name);
+    return acc;
+  }, {});
+
+  // Retrieve group names for each groupId
+  const getGroupName = (groupId) => {
+    const stmt = db.prepare("SELECT group_name FROM groups WHERE id = ?");
+    const group = stmt.get(groupId);
+    return group ? group.group_name : "Unknown Group";
+  };
+
+  // Construct the final array with groupId, groupName, and students
+  const groupedStudentsArray = Object.entries(groupedStudentsObject).map(
+    ([groupId, studentNames]) => {
+      const groupName = getGroupName(groupId);
+      return { groupId, groupName, students: studentNames };
+    }
+  );
+
+  res.json(JSON.stringify({ result: groupedStudentsArray, classID: classId }));
 });
 
 // ACTIVATE SERVER

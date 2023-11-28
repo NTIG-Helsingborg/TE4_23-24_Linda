@@ -7,6 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/randomize": "http://localhost:3000",
+      "/getGroups": "http://localhost:3000",
     },
   },
 });

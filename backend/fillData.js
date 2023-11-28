@@ -192,7 +192,6 @@ function fillGroupsTable() {
       const groupId = db.prepare("SELECT last_insert_rowid()").get()[
         "last_insert_rowid()"
       ];
-
       db.prepare(`UPDATE students SET group_id = ? WHERE class_id = ?`).run(
         groupId,
         classInfo.id
@@ -285,12 +284,12 @@ function updateStudentPreferences(classId) {
 
 /////////////// RUN COMMANDS
 
-// clearStudentsTable();
+clearStudentsTable();
 
-// fillClassesTable();
+fillClassesTable();
 
-// fillStudentsTable();
+fillStudentsTable();
 
-// fillGroupsTable();
+fillGroupsTable();
 
 for (i = 1; i < 15; i++) updateStudentPreferences(i);
