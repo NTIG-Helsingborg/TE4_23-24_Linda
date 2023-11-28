@@ -1,3 +1,4 @@
+//Used to get all the groups information for a specific class
 const getGroups = (db) => (className) => {
   const classId = db
     .prepare("SELECT id FROM classes WHERE name = ?")
@@ -32,4 +33,15 @@ const getGroups = (db) => (className) => {
   );
   return groupedStudentsArray;
 };
-module.exports = { getGroups };
+//Function to set the student preferences
+const setStudentPreference = (db) => (studentID, preferenceArray) => {
+  const mustSitWithArr = preferenceArray.mustSitWith;
+  const cannotSitWithArr = preferenceArray.cannotSitWithArr;
+
+  const stmt = db.prepare(
+    "UPDATE students SET mustSitWith = ?, cannotSitWith = ? WHERE id = ?"
+  );
+  stmt.run(mustSitWithArr, cannotSitWithArr, studentId);
+};
+
+module.exports = { getGroups, setStudentPreference };
