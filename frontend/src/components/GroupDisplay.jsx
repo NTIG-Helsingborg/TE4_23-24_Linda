@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import GroupCard from "./GroupCard";
 import { useState, useEffect } from "react";
 
@@ -13,7 +14,7 @@ const GroupDisplay = () => {
       },
       body: JSON.stringify({
         // Update with the class ID you want to retrieve
-        className: "1TEK1"
+        className: "1TEK1",
       }),
     })
       .then((response) => {

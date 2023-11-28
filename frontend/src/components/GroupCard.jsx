@@ -1,7 +1,6 @@
 import react from "../assets/NtiPush.jpg";
 
 const GroupCard = ({ groupStudents, groupName }) => {
-
   return (
     <>
       <div id="card">

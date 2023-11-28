@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const db = require("better-sqlite3")("database.db");
+const multer = require("multer");
 const path = require("path");
 app.use(express.json());
 const port = 3000;
@@ -9,6 +10,17 @@ const port = 3000;
 const randomizeGroups = require("./randomize_alg")(db);
 const dbInformation = require("./dbInformation");
 //const databaseData = require("./fillData.js");
+
+// Set up Multer for handling file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "profile_imgs/")); // Set the destination folder
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+const upload = multer({ storage: storage });
 
 // Initialize
 db.prepare(
@@ -45,6 +57,19 @@ db.prepare(
   )`
 ).run();
 
+// Handle image uploads
+app.post("/uploadImage", upload.single("image"), (req, res) => {
+  const imageFilepath = req.file.path;
+  const studentId = req.body.studentId;
+
+  db.prepare("UPDATE students SET image_filepath = ? WHERE id = ?").run(
+    imageFilepath,
+    studentId
+  );
+
+  res.json({ message: "Image uploaded successfully!" });
+});
+
 // RANDOMIZE FUNCTION
 app.post("/randomize", (req, res) => {
   const classId = req.body.classId;
@@ -77,6 +102,7 @@ app.post("/getGroups", (req, res) => {
     JSON.stringify({ result: groupedStudentsArray, className: className })
   );
 });
+
 app.post("/setStudentPreference", (req, res) => {
   const studentID = req.body.studentID;
   const preferenceArray = req.body.preferenceArray;
@@ -94,8 +120,8 @@ app.post("/setStudentPreference", (req, res) => {
   }
   dbInformation.setStudentPreference(db)(studentID, preferenceArray);
 });
-//const studentID = 1;
 
+//const studentID = 1;
 //dbInformation.setStudentPreference(db)(studentID, preferenceArray);
 
 // ACTIVATE SERVER
