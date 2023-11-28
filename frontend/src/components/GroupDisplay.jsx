@@ -1,7 +1,7 @@
 import GroupCard from "./GroupCard";
 const GroupDisplay = () => {
   // Change this value to change the amount of groups there are in a class
-    const groupCount = 6;
+    const groupCount = 18;
 
   var groupRows = 2;
   var groupAmount = 2;
