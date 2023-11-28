@@ -169,12 +169,9 @@ function fillStudentsTable() {
     const classId = classes[classIndex].id;
 
     // Insert data into the students table
-    const insertStudent = db.prepare(`
-            INSERT INTO students (name, class_id)
-            VALUES (?, ?)
-          `);
-
-    insertStudent.run(studentName, classId);
+    db.prepare(
+      ` INSERT INTO students (name, image_filepath, class_id) VALUES (?,?,?) `
+    ).run(studentName, `./Profile_Imgs/${studentName}`, classId);
   }
   console.log("Students table filled with random information.");
 }
@@ -263,9 +260,9 @@ function updateStudentPreferences(classId) {
 
 /////////////// RUN COMMANDS
 
-clearStudentsTable();
-
 fillClassesTable();
+
+clearStudentsTable();
 
 fillStudentsTable();
 

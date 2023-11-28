@@ -4,14 +4,14 @@ import ClassSelect from "./ClassSelect.jsx";
 const Header = () => {
   const handleNewGroups = () => {
     fetch("/randomize", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        classId: 3,
-        groupCount: 6,
-      }),
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            classId: 1,
+            groupCount: 6,
+        }),
     })
       .then((response) => {
         if (!response.ok) {
