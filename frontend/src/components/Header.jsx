@@ -22,6 +22,7 @@ const Header = () => {
       .then((json) => console.log(json))
       .catch((error) => console.error("Error during fetch:", error));
   };
+
   return (
     <>
       <div id="header">

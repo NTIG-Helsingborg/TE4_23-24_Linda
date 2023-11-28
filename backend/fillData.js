@@ -6,7 +6,6 @@ app.use(express.json());
 // CLEAR STUDENTS
 function clearStudentsTable() {
   db.prepare("DELETE FROM students").run();
-  //db.prepare("DELETE FROM classes").run();
   console.log("Students table cleared.");
 }
 
@@ -168,10 +167,10 @@ function fillStudentsTable() {
     const classIndex = i % classes.length; // Get the class index in a circular manner
     const classId = classes[classIndex].id;
 
-    // Insert data into the students table
-    db.prepare(
-      ` INSERT INTO students (name, image_filepath, class_id) VALUES (?,?,?) `
-    ).run(studentName, `./Profile_Imgs/${studentName}`, classId);
+    db.prepare(` INSERT INTO students (name, class_id) VALUES (?, ?) `).run(
+      studentName,
+      classId
+    );
   }
   console.log("Students table filled with random information.");
 }
@@ -260,9 +259,9 @@ function updateStudentPreferences(classId) {
 
 /////////////// RUN COMMANDS
 
-fillClassesTable();
-
 clearStudentsTable();
+
+fillClassesTable();
 
 fillStudentsTable();
 
