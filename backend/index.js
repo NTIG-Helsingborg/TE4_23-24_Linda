@@ -15,7 +15,7 @@ const dbInformation = require("./dbInformation");
 // Set up Multer for handling file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "profile_imgs/")); // Set the destination folder
+    cb(null, "./profile_imgs/"); // Set the destination folder
   },
   filename: function (req, file, cb) {
     cb(null, `${crypto.randomUUID()}.${file.originalname.split(".")[1]}`);
@@ -60,7 +60,7 @@ db.prepare(
 
 // Handle image uploads
 app.post("/uploadImage", upload.single("image"), (req, res) => {
-  const imageFilepath = req.file.path;
+  const imageFilepath = `./Profile_Imgs/${req.file.filename}`;
   const studentId = req.body.studentId;
 
   db.prepare("UPDATE students SET image_filepath = ? WHERE id = ?").run(
