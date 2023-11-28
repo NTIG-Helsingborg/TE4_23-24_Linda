@@ -23,6 +23,25 @@ const Header = () => {
       .catch((error) => console.error("Error during fetch:", error));
   };
 
+  fetch("/getGroups", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      //Update with the class ID you want to retrieve
+      classId: 1,
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((json) => console.log(JSON.parse(json)))
+    .catch((error) => console.error("Error during fetch:", error));
+
   return (
     <>
       <div id="header">

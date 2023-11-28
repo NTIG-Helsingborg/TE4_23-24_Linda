@@ -6,6 +6,7 @@ const port = 3000;
 
 // IMPORTS
 const randomizeGroups = require("./randomize_alg")(db);
+//const databaseData = require("./fillData.js");
 
 // Initialize
 db.prepare(
@@ -42,39 +43,6 @@ db.prepare(
   )`
 ).run();
 
-const students = [
-  { name: "Emma" },
-  { name: "Liam" },
-  { name: "Olivia" },
-  { name: "Noah" },
-  {
-    name: "Ava",
-    mustSitWith: ["Olivia", "Sophia"],
-  },
-  { name: "Isabella" },
-  { name: "Sophia" },
-  { name: "Mia" },
-  {
-    name: "Charlotte",
-    cannotSitWith: ["Amelia", "Harper"],
-  },
-  {
-    name: "Amelia",
-    mustSitWith: ["Evelyn", "Abigail"],
-  },
-  { name: "Harper" },
-  {
-    name: "Evelyn",
-    cannotSitWith: ["Liam", "Noah"],
-  },
-  { name: "Abigail" },
-  { name: "Ethan" },
-  {
-    name: "Logan",
-    mustSitWith: ["Mason"],
-  },
-];
-
 // RANDOMIZE FUNCTION
 app.post("/randomize", (req, res) => {
   const classId = req.body.classId;
@@ -89,6 +57,27 @@ app.post("/randomize", (req, res) => {
 
   randomizeGroups(classId, groupCount);
   res.json({ message: "Groups randomized successfully!" });
+});
+
+//Retrieve groups by class
+app.post("/getGroups", (req, res) => {
+  const classId = req.body.classId;
+
+  if (!classId && classId != 0) {
+    return res.status(400).json({
+      error: "classId is required in the request body",
+      requestBody: req.body,
+    });
+  }
+  // SQL query to get all students in the specified class
+  const students = db
+    .prepare("SELECT group_id FROM students WHERE class_id = ?")
+    .all(classId);
+
+  // Extract group_id from each student and store in an array
+  const groupIds = students.map((student) => student.group_id);
+
+  res.json(JSON.stringify({ result: groupIds, classID: classId }));
 });
 
 // ACTIVATE SERVER
