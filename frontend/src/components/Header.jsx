@@ -30,7 +30,7 @@ const Header = () => {
     },
     body: JSON.stringify({
       //Update with the class ID you want to retrieve
-      classId: 10,
+      className: "1TEK1",
     }),
   })
     .then((response) => {
