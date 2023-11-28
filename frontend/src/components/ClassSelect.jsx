@@ -33,6 +33,7 @@ const ClassSelect = () => {
             setToggleNat((prevState) => !prevState);
         }
     };
+    
 
     return (
         <>

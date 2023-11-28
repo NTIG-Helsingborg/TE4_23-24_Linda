@@ -1,8 +1,40 @@
 import GroupCard from "./GroupCard";
-const GroupDisplay = () => {
-  // Change this value to change the amount of groups there are in a class
-    const groupCount = 18;
+import { useState, useEffect } from "react";
 
+const GroupDisplay = () => {
+    const [groupData, setGroupData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        fetch("/getGroups", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                // Update with the class ID you want to retrieve
+                classId: 7,
+            }),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((json) => {
+                const dbClass = JSON.parse(json);
+                setGroupData(dbClass.result);
+                setIsLoading(false);
+            })
+            .catch((error) => console.error("Error during fetch:", error));
+    }, []);
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+        // Change this value to change the amount of groups there are in a class
+  const groupCount = 6;
   var groupRows = 2;
   var groupAmount = 2;
   if (groupCount < 3) {
@@ -15,20 +47,24 @@ const GroupDisplay = () => {
     groupRows = 3;
     groupAmount = 3;
   }
+  console.log(groupData.length);
 
-  return (
-    <>
-      <div id="classDisplay">
-        <div className="card">
-          <div
-            id="groupDisplay"
-            style={{ gridTemplateColumns: `repeat(${groupRows}, 1fr)` }}
-          >
-            <GroupCard groupCount={groupCount} groupAmount={groupAmount}/>
-          </div>
-        </div>
-      </div>
-    </>
-  );
+    return (
+        <>
+            <div id="classDisplay">
+                <div className="card">
+                    <div
+                        id="groupDisplay"
+                        style={{ gridTemplateColumns: `repeat(${groupRows}, 1fr)` }}
+                    >
+                        <GroupCard groupCount={groupCount} groupAmount={groupAmount} groupData={groupData}/>
+                    </div>
+                </div>
+            </div>
+        </>
+    );
 };
+
 export default GroupDisplay;
+
+
