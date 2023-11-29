@@ -18,20 +18,32 @@ const getGroups = (db) => (className) => {
     return acc;
   }, {});
 
-  // Retrieve group names for each groupId
-  const getGroupName = (groupId) => {
-    const stmt = db.prepare("SELECT group_name FROM groups WHERE id = ?");
+  // Retrieve group name and group leader for each groupId
+  const getGroupInfo = (groupId) => {
+    const stmt = db.prepare(
+      "SELECT group_name, group_leader FROM groups WHERE id = ?"
+    );
     const group = stmt.get(groupId);
-    return group ? group.group_name : "Unknown Group";
+    return group
+      ? { groupName: group.group_name, groupLeader: group.group_leader }
+      : { groupName: "Unknown Group", groupLeader: null };
   };
 
-  // Construct the final array with groupId, groupName, and full student details
+  // Construct the final array with groupId, groupName, group leader, and students
   const groupedStudentsArray = Object.entries(groupedStudentsObject).map(
     ([groupId, students]) => {
-      const groupName = getGroupName(groupId);
-      return { groupId, groupName, students };
+      const { groupName, groupLeader } = getGroupInfo(groupId);
+      const studentsWithLeader = students.map((student) => {
+        // Mark the group leader
+        if (student.id === groupLeader) {
+          return { ...student, role: "GroupLeader" };
+        }
+        return student;
+      });
+      return { groupId, groupName, students: studentsWithLeader };
     }
   );
+
   return groupedStudentsArray;
 };
 //Function to set the student preferences
