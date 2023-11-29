@@ -22,10 +22,11 @@ const Header = () => {
         return response.json();
       })
       .then((json) => console.log(json))
+      .then(() => {
+        localStorage.setItem("indexView", 0);
+        location.reload();
+      })
       .catch((error) => console.error("Error during fetch:", error));
-
-    localStorage.setItem("indexView", 0);
-    location.reload();
   };
 
   return (

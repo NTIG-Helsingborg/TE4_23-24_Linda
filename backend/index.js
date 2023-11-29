@@ -5,12 +5,12 @@ const multer = require("multer");
 const crypto = require("crypto");
 const path = require("path");
 app.use(express.json());
+app.use("/profile_imgs", express.static("profile_imgs"));
 const port = 3000;
 
 // IMPORTS
 const randomizeGroups = require("./randomize_alg")(db);
 const dbInformation = require("./dbInformation");
-//const databaseData = require("./fillData.js");
 
 // Set up Multer for handling file uploads
 const storage = multer.diskStorage({
@@ -60,7 +60,7 @@ db.prepare(
 
 // Handle image uploads
 app.post("/uploadImage", upload.single("image"), (req, res) => {
-  const imageFilepath = `./Profile_Imgs/${req.file.filename}`;
+  const imageFilepath = `/profile_imgs/${req.file.filename}`;
   const studentId = req.body.studentId;
 
   db.prepare("UPDATE students SET image_filepath = ? WHERE id = ?").run(
