@@ -8,8 +8,9 @@ const GroupCard = ({ groupStudents, groupName }) => {
         <div className="group">
           {groupStudents.map((e, Index) => (
             <div className={`student`} key={Index}>
+              {console.log(e.image_filepath)}
               <img
-                src={e.image_filepath}
+                src={`${e.image_filepath}`}
                 alt={""}
                 className="img"
                 onError={(event) => {
