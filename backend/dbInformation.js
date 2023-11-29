@@ -5,7 +5,7 @@ const getGroups = (db) => (className) => {
     .get(className).id;
   // SQL query to get all students in the specified class
   const students = db
-    .prepare("SELECT group_id,name FROM students WHERE class_id = ?")
+    .prepare("SELECT * FROM students WHERE class_id = ?")
     .all(classId);
 
   // Organize students into groups based on group_id
@@ -13,7 +13,8 @@ const getGroups = (db) => (className) => {
     if (!acc[student.group_id]) {
       acc[student.group_id] = [];
     }
-    acc[student.group_id].push(student.name);
+    // Push the entire student object instead of just the name
+    acc[student.group_id].push(student);
     return acc;
   }, {});
 
@@ -24,11 +25,11 @@ const getGroups = (db) => (className) => {
     return group ? group.group_name : "Unknown Group";
   };
 
-  // Construct the final array with groupId, groupName, and students
+  // Construct the final array with groupId, groupName, and full student details
   const groupedStudentsArray = Object.entries(groupedStudentsObject).map(
-    ([groupId, studentNames]) => {
+    ([groupId, students]) => {
       const groupName = getGroupName(groupId);
-      return { groupId, groupName, students: studentNames };
+      return { groupId, groupName, students };
     }
   );
   return groupedStudentsArray;
