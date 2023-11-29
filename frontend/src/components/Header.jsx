@@ -9,7 +9,7 @@ const Header = ({ setChangeSelect }) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        classId: 1,
+        className: "1TEK1",
         groupCount: 6,
         createGroupNames: true,
         addGroupLeader: true,
@@ -30,7 +30,7 @@ const Header = ({ setChangeSelect }) => {
       <div id="header">
         <img src={NTILoga} alt="NTI Logo" />
         <div id="TopHeader">
-          <h3 onClick={() => localStorage.setItem("indexView", 1)}>
+          <h3 onClick={() => localStorage.setItem("indexView", 0)}>
             Edit Class
           </h3>
           <h3 onClick={handleNewGroups}>New Groups</h3>

@@ -73,19 +73,19 @@ app.post("/uploadImage", upload.single("image"), (req, res) => {
 
 // RANDOMIZE FUNCTION
 app.post("/randomize", (req, res) => {
-  const classId = req.body.classId;
+  const className = req.body.className;
   const groupCount = req.body.groupCount || 6;
   const createGroupNames = req.body.createGroupNames || false;
   const addGroupLeader = req.body.addGroupLeader || false;
 
-  if (!classId && classId != 0) {
+  if (!className && className != "") {
     return res.status(400).json({
-      error: "classId is required in the request body",
+      error: "Class name is required in the request body",
       requestBody: req.body,
     });
   }
 
-  randomizeGroups(classId, groupCount, createGroupNames, addGroupLeader);
+  randomizeGroups(className, groupCount, createGroupNames, addGroupLeader);
   res.json({ message: "Groups randomized successfully!" });
 });
 
