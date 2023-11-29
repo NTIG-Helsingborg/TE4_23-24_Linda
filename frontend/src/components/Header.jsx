@@ -11,6 +11,7 @@ const Header = () => {
       body: JSON.stringify({
         classId: 1,
         groupCount: 6,
+        createGroupNames: true,
       }),
     })
       .then((response) => {

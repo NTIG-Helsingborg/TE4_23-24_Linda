@@ -1,4 +1,4 @@
-const randomizeGroups = (db) => (classId, groupCount) => {
+const randomizeGroups = (db) => (classId, groupCount, createGroupNames) => {
   const students = db
     .prepare("SELECT * FROM students WHERE class_id = ?")
     .all(classId);
@@ -110,7 +110,17 @@ const randomizeGroups = (db) => (classId, groupCount) => {
 
   groups.forEach((group, index) => {
     const groupIndex = index + 1;
-    const groupName = `Group ${groupIndex}`;
+    let groupName = `${groupIndex}`;
+
+    //TODO User should have option to generate random group name
+    if (createGroupNames) {
+      console.log("Creating group names");
+      const randomAdjective =
+        adjectives[Math.floor(Math.random() * adjectives.length)];
+      const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
+
+      groupName = randomAdjective + " " + randomNoun;
+    }
     const groupLeader = null;
     db.prepare(
       ` INSERT INTO groups (class_id, group_index, group_name, group_leader) VALUES (?, ?, ?, ?) `
@@ -128,5 +138,49 @@ const randomizeGroups = (db) => (classId, groupCount) => {
   );
   console.log("Groups after update: ", groupsWithNames);
 };
+const adjectives = [
+  "Mighty",
+  "Brave",
+  "Soaring",
+  "Fierce",
+  "Bold",
+  "Glorious",
+  "Swift",
+  "Innovative",
+  "Fearless",
+  "Dynamic",
+  "Valiant",
+  "Noble",
+  "Daring",
+  "Victorious",
+  "Resilient",
+  "Majestic",
+  "Radiant",
+  "Indomitable",
+  "Supreme",
+  "Astonishing",
+];
+const nouns = [
+  "Eagles",
+  "Lions",
+  "Dragons",
+  "Wolves",
+  "Tigers",
+  "Phoenix",
+  "Sharks",
+  "Bears",
+  "Falcons",
+  "Hawks",
+  "Panthers",
+  "Leopards",
+  "Ravens",
+  "Dolphins",
+  "Griffins",
+  "Pirates",
+  "Knights",
+  "Warriors",
+  "Titans",
+  "Gladiators",
+];
 
 module.exports = randomizeGroups;
