@@ -7,7 +7,11 @@ const GroupCard = ({ groupStudents, groupName }) => {
         <p id="title">{groupName}</p>
         <div className="group">
           {groupStudents.map((e, Index) => (
-            <div className={`student`} key={Index} id={e.role === "GroupLeader" ? "groupleader" : ""}>
+            <div
+              className={`student`}
+              key={Index}
+              id={e.role === "GroupLeader" ? "groupleader" : ""}
+            >
               <img
                 src={e.image_filepath === null ? e.image_filepath : react}
                 alt={""}
@@ -16,12 +20,7 @@ const GroupCard = ({ groupStudents, groupName }) => {
                   event.target.src = react;
                 }}
               />
-              <div
-                className="name"
-                id={e.role === "GroupLeader" ? "groupleader" : ""}
-              >
-                {e.name}
-              </div>
+              <div className="name">{e.name}</div>
             </div>
           ))}
         </div>
