@@ -1,7 +1,7 @@
 import NTILoga from "../assets/NTILoga.png";
 import ClassSelect from "./ClassSelect.jsx";
 
-const Header = ({ setChangeSelect ,changeSelect}) => {
+const Header = ({ setChangeSelect, changeSelect }) => {
   const handleNewGroups = () => {
     fetch("/randomize", {
       method: "POST",

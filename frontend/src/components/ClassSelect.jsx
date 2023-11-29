@@ -31,6 +31,7 @@ const ClassSelect = ({ setChangeSelect }) => {
       setToggleIt(false);
       setToggleNat((prevState) => !prevState);
     }
+    localStorage.setItem("indexView", 0);
   };
 
   const handleSelectChange = (value) => {
