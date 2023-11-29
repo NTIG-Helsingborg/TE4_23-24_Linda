@@ -8,6 +8,8 @@ export default defineConfig({
     proxy: {
       "/randomize": "http://localhost:3000",
       "/getGroups": "http://localhost:3000",
+      "/getStudentPreference": "http://localhost:3000",
+      "/setStudentPreference": "http://localhost:3000",
     },
   },
 });

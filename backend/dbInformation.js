@@ -5,7 +5,7 @@ const getGroups = (db) => (className) => {
     .get(className).id;
   // SQL query to get all students in the specified class
   const students = db
-    .prepare("SELECT group_id,name FROM students WHERE class_id = ?")
+    .prepare("SELECT * FROM students WHERE class_id = ?")
     .all(classId);
 
   // Organize students into groups based on group_id
@@ -13,7 +13,8 @@ const getGroups = (db) => (className) => {
     if (!acc[student.group_id]) {
       acc[student.group_id] = [];
     }
-    acc[student.group_id].push(student.name);
+    // Push the entire student object instead of just the name
+    acc[student.group_id].push(student);
     return acc;
   }, {});
 
@@ -24,24 +25,101 @@ const getGroups = (db) => (className) => {
     return group ? group.group_name : "Unknown Group";
   };
 
-  // Construct the final array with groupId, groupName, and students
+  // Construct the final array with groupId, groupName, and full student details
   const groupedStudentsArray = Object.entries(groupedStudentsObject).map(
-    ([groupId, studentNames]) => {
+    ([groupId, students]) => {
       const groupName = getGroupName(groupId);
-      return { groupId, groupName, students: studentNames };
+      return { groupId, groupName, students };
     }
   );
   return groupedStudentsArray;
 };
 //Function to set the student preferences
 const setStudentPreference = (db) => (studentID, preferenceArray) => {
-  const mustSitWithArr = preferenceArray.mustSitWith;
-  const cannotSitWithArr = preferenceArray.cannotSitWithArr;
+  const mustSitWithArr = JSON.parse(preferenceArray.mustSitWith);
+  const cannotSitWithArr = JSON.parse(preferenceArray.cannotSitWith);
 
-  const stmt = db.prepare(
+  db.prepare(
     "UPDATE students SET mustSitWith = ?, cannotSitWith = ? WHERE id = ?"
+  ).run(preferenceArray.mustSitWith, preferenceArray.cannotSitWith, studentID);
+
+  //Update the other students mustSitWith value
+  mustSitWithArr.forEach((partnerId) => {
+    // Retrieve current mustSitWith for the partner student
+    const getStmt = db.prepare("SELECT mustSitWith FROM students WHERE id = ?");
+    const result = getStmt.get(partnerId);
+    let partnerMustSitWith = result
+      ? JSON.parse(result.mustSitWith || "[]")
+      : [];
+
+    // Add the original student's ID if not already present
+    if (!partnerMustSitWith.includes(studentID)) {
+      partnerMustSitWith.push(studentID);
+
+      // Update the partner student's mustSitWith
+      const updatePartnerStmt = db.prepare(
+        "UPDATE students SET mustSitWith = ? WHERE id = ?"
+      );
+      updatePartnerStmt.run(JSON.stringify(partnerMustSitWith), partnerId);
+    }
+  });
+  cannotSitWithArr.forEach((partnerId) => {
+    // Retrieve current mustSitWith for the partner student
+    const getStmt = db.prepare(
+      "SELECT cannotSitWith FROM students WHERE id = ?"
+    );
+    const result = getStmt.get(partnerId);
+    let partnerCannotSitWith = result
+      ? JSON.parse(result.mustSitWith || "[]")
+      : [];
+
+    // Add the original student's ID if not already present
+    if (!partnerCannotSitWith.includes(studentID)) {
+      partnerCannotSitWith.push(studentID);
+
+      // Update the partner student's mustSitWith
+      const updatePartnerStmt = db.prepare(
+        "UPDATE students SET cannotSitWith = ? WHERE id = ?"
+      );
+      updatePartnerStmt.run(JSON.stringify(partnerCannotSitWith), partnerId);
+    }
+  });
+};
+const getStudentPreference = (db) => (studentID) => {
+  // SQL query to get the student's preferences
+  const stmt = db.prepare(
+    "SELECT mustSitWith, cannotSitWith FROM students WHERE id = ?"
   );
-  stmt.run(mustSitWithArr, cannotSitWithArr, studentId);
+  const result = stmt.get(studentID);
+
+  if (result) {
+    const mustSitWith = result.mustSitWith
+      ? JSON.parse(result.mustSitWith)
+      : [];
+    const cannotSitWith = result.cannotSitWith
+      ? JSON.parse(result.cannotSitWith)
+      : [];
+
+    let preferenceArray = {};
+
+    if (mustSitWith.length > 0) {
+      preferenceArray.mustSitWith = mustSitWith;
+    }
+
+    if (cannotSitWith.length > 0) {
+      preferenceArray.cannotSitWith = cannotSitWith;
+    }
+
+    if (Object.keys(preferenceArray).length === 0) {
+      // If both arrays are empty
+      preferenceArray = null;
+    }
+
+    return preferenceArray;
+  } else {
+    // Handle the case where no student is found
+    return null;
+  }
 };
 
-module.exports = { getGroups, setStudentPreference };
+module.exports = { getGroups, setStudentPreference, getStudentPreference };

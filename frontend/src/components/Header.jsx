@@ -23,8 +23,6 @@ const Header = () => {
       .catch((error) => console.error("Error during fetch:", error));
   };
 
-
-  
   return (
     <>
       <div id="header">

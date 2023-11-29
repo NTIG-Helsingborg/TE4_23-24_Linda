@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import GroupCard from "./GroupCard";
 import { useState, useEffect } from "react";
 

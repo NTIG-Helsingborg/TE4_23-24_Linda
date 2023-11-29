@@ -1,7 +1,6 @@
 import react from "../assets/NtiPush.jpg";
 
 const GroupCard = ({ groupStudents, groupName }) => {
-
   return (
     <>
       <div id="card">
@@ -10,7 +9,7 @@ const GroupCard = ({ groupStudents, groupName }) => {
           {groupStudents.map((e, Index) => (
             <div className={`student`} key={Index}>
               <img src={react} alt={""} className="img" />
-              <div className="name">{e}</div>
+              <div className="name">{e.name}</div>
             </div>
           ))}
         </div>
