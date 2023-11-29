@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-const ClassSelect = ({ setChangeSelect }) => {
+import { useState } from "react";
+
+const ClassSelect = () => {
   const [toggleDem, setToggleDem] = useState(false);
   const [toggleTek, setToggleTek] = useState(false);
   const [toggleIt, setToggleIt] = useState(false);
@@ -31,12 +32,13 @@ const ClassSelect = ({ setChangeSelect }) => {
       setToggleIt(false);
       setToggleNat((prevState) => !prevState);
     }
-    localStorage.setItem("indexView", 0);
   };
 
   const handleSelectChange = (value) => {
-    setChangeSelect(value);
+    // Press class select
+    localStorage.setItem("class", value.toString());
     localStorage.setItem("indexView", 0);
+    location.reload();
   };
 
   return (

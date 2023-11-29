@@ -1,7 +1,7 @@
 import NTILoga from "../assets/NTILoga.png";
 import ClassSelect from "./ClassSelect.jsx";
 
-const Header = ({ setChangeSelect, changeSelect }) => {
+const Header = () => {
   const handleNewGroups = () => {
     fetch("/randomize", {
       method: "POST",
@@ -23,6 +23,9 @@ const Header = ({ setChangeSelect, changeSelect }) => {
       })
       .then((json) => console.log(json))
       .catch((error) => console.error("Error during fetch:", error));
+
+    localStorage.setItem("indexView", 0);
+    location.reload();
   };
 
   return (
@@ -30,14 +33,19 @@ const Header = ({ setChangeSelect, changeSelect }) => {
       <div id="header">
         <img src={NTILoga} alt="NTI Logo" />
         <div id="TopHeader">
-          <h3 onClick={() => localStorage.setItem("indexView", 0)}>
+          <h3
+            onClick={() => {
+              localStorage.setItem("indexView", 1);
+              location.reload();
+            }}
+          >
             Edit Class
           </h3>
           <h3 onClick={handleNewGroups}>New Groups</h3>
           <h3>Archives</h3>
         </div>
         <div id="BottomHeader">
-          <ClassSelect setChangeSelect={setChangeSelect} />
+          <ClassSelect />
         </div>
       </div>
     </>
