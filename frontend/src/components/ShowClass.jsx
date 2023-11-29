@@ -3,6 +3,7 @@ const ShowClass = () => {
     <>
       <div id="background"></div>
       <div id="main"></div>
+      <p>TEST</p>
     </>
   );
 };
