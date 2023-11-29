@@ -6,7 +6,7 @@ const Index = () => {
   return (
     <>
       <div id="background"></div>
-      <Header />
+      <Header setChangeSelect={setChangeSelect} />
       <div id="main">
         {localStorage.getItem("indexView") == 0 && <GroupDisplay />}
         {localStorage.getItem("indexView") == 1 && <ShowClass />}

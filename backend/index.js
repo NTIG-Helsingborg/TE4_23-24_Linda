@@ -75,6 +75,7 @@ app.post("/uploadImage", upload.single("image"), (req, res) => {
 app.post("/randomize", (req, res) => {
   const classId = req.body.classId;
   const groupCount = req.body.groupCount || 6;
+  const createGroupNames = req.body.createGroupNames || false;
 
   if (!classId && classId != 0) {
     return res.status(400).json({
@@ -83,7 +84,7 @@ app.post("/randomize", (req, res) => {
     });
   }
 
-  randomizeGroups(classId, groupCount);
+  randomizeGroups(classId, groupCount, createGroupNames);
   res.json({ message: "Groups randomized successfully!" });
 });
 
