@@ -47,28 +47,6 @@ const ClassSelect = () => {
         <h1>Class Select</h1>
         <ul>
           <hr />
-          <li onClick={() => handleToggle("Dem")} className="bold">
-            Dem
-          </li>
-          {toggleDem && (
-            <>
-              <li onClick={() => handleSelectChange("1Dem1")}>1Dem</li>
-              <li onClick={() => handleSelectChange("2Dem1")}>2Dem</li>
-              <li onClick={() => handleSelectChange("3Dem1")}>3Dem</li>
-            </>
-          )}
-          <hr />
-          <li onClick={() => handleToggle("Nat-Tek")} className="bold">
-            Nat-Tek
-          </li>
-          {toggleNat && (
-            <>
-              <li onClick={() => handleSelectChange("1Nat1")}>1Nat</li>
-              <li onClick={() => handleSelectChange("2Nat1")}>2Nat</li>
-              <li onClick={() => handleSelectChange("3Nat1")}>3Nat</li>
-            </>
-          )}
-          <hr />
           <li onClick={() => handleToggle("Tek")} className="bold">
             Tek
           </li>
@@ -94,6 +72,28 @@ const ClassSelect = () => {
               <li onClick={() => handleSelectChange("2It2")}>2It2</li>
               <li onClick={() => handleSelectChange("3It1")}>3It1</li>
               <li onClick={() => handleSelectChange("3It2")}>3It2</li>
+            </>
+          )}
+          <hr />
+          <li onClick={() => handleToggle("Dem")} className="bold">
+            Dem
+          </li>
+          {toggleDem && (
+            <>
+              <li onClick={() => handleSelectChange("1Dem1")}>1Dem</li>
+              <li onClick={() => handleSelectChange("2Dem1")}>2Dem</li>
+              <li onClick={() => handleSelectChange("3Dem1")}>3Dem</li>
+            </>
+          )}
+          <hr />
+          <li onClick={() => handleToggle("Nat-Tek")} className="bold">
+            Nat-Tek
+          </li>
+          {toggleNat && (
+            <>
+              <li onClick={() => handleSelectChange("1Nat1")}>1Nat</li>
+              <li onClick={() => handleSelectChange("2Nat1")}>2Nat</li>
+              <li onClick={() => handleSelectChange("3Nat1")}>3Nat</li>
             </>
           )}
         </ul>
