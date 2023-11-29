@@ -2,8 +2,9 @@ const ShowClass = () => {
   return (
     <>
       <div id="background"></div>
-      <div id="main"></div>
-      <p>TEST</p>
+      <div id="main">
+        <p>{localStorage.getItem("class").toUpperCase()}</p>
+      </div>
     </>
   );
 };
