@@ -1,16 +1,15 @@
 import Header from "../components/Header.jsx";
-import GroupDisplay from "../components/GroupDisplay";
-import { useState } from "react";
+import GroupDisplay from "../components/GroupDisplay.jsx";
+import ShowClass from "../components/ShowClass.jsx";
 
 const Index = () => {
-  const [changeSelect, setChangeSelect] = useState("1TEK1");
-  /* START SIDA */
   return (
     <>
       <div id="background"></div>
       <Header setChangeSelect={setChangeSelect} />
       <div id="main">
-        <GroupDisplay changeSelect={changeSelect} />
+        {localStorage.getItem("indexView") == 0 && <GroupDisplay />}
+        {localStorage.getItem("indexView") == 1 && <ShowClass />}
       </div>
     </>
   );

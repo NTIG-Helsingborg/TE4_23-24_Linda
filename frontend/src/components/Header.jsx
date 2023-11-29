@@ -30,7 +30,9 @@ const Header = ({ setChangeSelect }) => {
       <div id="header">
         <img src={NTILoga} alt="NTI Logo" />
         <div id="TopHeader">
-          <h3>Edit Class</h3>
+          <h3 onClick={() => localStorage.setItem("indexView", 1)}>
+            Edit Class
+          </h3>
           <h3 onClick={handleNewGroups}>New Groups</h3>
           <h3>Archives</h3>
         </div>
