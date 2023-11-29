@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 const GroupDisplay = ({changeSelect}) => {
   const [groupData, setGroupData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-console.log(changeSelect);
   useEffect(() => {
     fetch("/getGroups", {
       method: "POST",
@@ -48,7 +47,6 @@ console.log(changeSelect);
     groupRows = 3;
     groupAmount = 3;
   }
-  console.log(groupData);
 
   return (
     <>

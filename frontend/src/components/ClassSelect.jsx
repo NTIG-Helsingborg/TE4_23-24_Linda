@@ -60,9 +60,9 @@ const ClassSelect = ({ setChangeSelect }) => {
           </li>
           {toggleNat && (
             <>
-              <li onClick={() => handleSelectChange("1Nat")}>1Nat</li>
-              <li onClick={() => handleSelectChange("2Nat")}>2Nat</li>
-              <li onClick={() => handleSelectChange("3Nat")}>3Nat</li>
+              <li onClick={() => handleSelectChange("1Nat1")}>1Nat</li>
+              <li onClick={() => handleSelectChange("2Nat1")}>2Nat</li>
+              <li onClick={() => handleSelectChange("3Nat1")}>3Nat</li>
             </>
           )}
           <hr />
