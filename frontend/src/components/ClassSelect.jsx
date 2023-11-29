@@ -35,6 +35,7 @@ const ClassSelect = ({ setChangeSelect }) => {
 
   const handleSelectChange = (value) => {
     setChangeSelect(value);
+    localStorage.setItem("indexView", 0);
   };
 
   return (
