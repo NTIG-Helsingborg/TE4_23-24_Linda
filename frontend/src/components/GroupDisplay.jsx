@@ -2,10 +2,11 @@
 import GroupCard from "./GroupCard";
 import { useState, useEffect } from "react";
 
-const GroupDisplay = ({changeSelect}) => {
+const GroupDisplay = () => {
   const [groupData, setGroupData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
+    if (!localStorage.getItem("class")) localStorage.setItem("class", "1TEK1");
     fetch("/getGroups", {
       method: "POST",
       headers: {
@@ -13,7 +14,7 @@ const GroupDisplay = ({changeSelect}) => {
       },
       body: JSON.stringify({
         // Update with the class ID you want to retrieve
-        className: changeSelect.toUpperCase(),
+        className: localStorage.getItem("class").toUpperCase(),
       }),
     })
       .then((response) => {
@@ -28,7 +29,7 @@ const GroupDisplay = ({changeSelect}) => {
         setIsLoading(false);
       })
       .catch((error) => console.error("Error during fetch:", error));
-  }, [changeSelect]);
+  }, [localStorage.getItem("class")]);
 
   if (isLoading) {
     return <div>Loading...</div>;
