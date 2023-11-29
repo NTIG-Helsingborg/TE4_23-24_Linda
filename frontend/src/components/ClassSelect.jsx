@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-const ClassSelect = () => {
+const ClassSelect = ({setChangeSelect}) => {
     const [toggleDem, setToggleDem] = useState(false);
     const [toggleTek, setToggleTek] = useState(false);
     const [toggleIt, setToggleIt] = useState(false);
@@ -34,7 +34,6 @@ const ClassSelect = () => {
         }
     };
     
-    const [changeSelect, setChangeSelect] = useState("1Dem1");
 
     const handleSelectChange = (value) => {
         setChangeSelect(value);
