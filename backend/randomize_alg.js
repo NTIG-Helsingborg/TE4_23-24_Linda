@@ -170,6 +170,31 @@ const adjectives = [
   "Indomitable",
   "Supreme",
   "Astonishing",
+
+  //Fantasy
+  "Enchanting",
+  "Mystical",
+  "Radiant",
+  "Whimsical",
+  "Ethereal",
+  "Nebulous",
+  "Celestial",
+  "Phantasmal",
+  "Aetherial",
+  "Draconic",
+  "Arcane",
+  "Elusive",
+
+  //Cyberpunk
+  "Neon-lit",
+  "Dystopian",
+  "Augmented",
+  "Holographic",
+  "Cybernetic",
+  "Megacorporate",
+  "Data-driven",
+  "Virtual",
+  "Synthetic",
 ];
 const nouns = [
   "Eagles",
@@ -177,7 +202,6 @@ const nouns = [
   "Dragons",
   "Wolves",
   "Tigers",
-  "Phoenix",
   "Sharks",
   "Bears",
   "Falcons",
@@ -192,6 +216,29 @@ const nouns = [
   "Warriors",
   "Titans",
   "Gladiators",
+
+  //Fantasy
+  "Witches",
+  "Sorcerers",
+  "Dragons",
+  "Wizards",
+  "Elfs",
+  "Mermaids",
+  "Goblins",
+  "Phoenixes",
+  "Druids",
+  "Bards",
+
+  //Cyberpunk
+  "Cyborgs",
+  "Hackers",
+  "Mercenaries",
+  "Synths",
+  "Techies",
+  "Runners",
+  "Agents",
+  "Nanobots",
+  "Fixers",
 ];
 
 module.exports = randomizeGroups;
