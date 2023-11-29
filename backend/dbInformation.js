@@ -92,16 +92,32 @@ const getStudentPreference = (db) => (studentID) => {
   const result = stmt.get(studentID);
 
   if (result) {
-    // Assuming mustSitWith and cannotSitWith are stored as JSON strings
-    const preferenceArray = {
-      mustSitWith: JSON.parse(result.mustSitWith || "[]"),
-      cannotSitWith: JSON.parse(result.cannotSitWith || "[]"),
-    };
+    const mustSitWith = result.mustSitWith
+      ? JSON.parse(result.mustSitWith)
+      : [];
+    const cannotSitWith = result.cannotSitWith
+      ? JSON.parse(result.cannotSitWith)
+      : [];
+
+    let preferenceArray = {};
+
+    if (mustSitWith.length > 0) {
+      preferenceArray.mustSitWith = mustSitWith;
+    }
+
+    if (cannotSitWith.length > 0) {
+      preferenceArray.cannotSitWith = cannotSitWith;
+    }
+
+    if (Object.keys(preferenceArray).length === 0) {
+      // If both arrays are empty
+      preferenceArray = null;
+    }
 
     return preferenceArray;
   } else {
     // Handle the case where no student is found
-    return { error: "Student not found", mustSitWith: [], cannotSitWith: [] };
+    return null;
   }
 };
 
