@@ -1,5 +1,9 @@
 const randomizeGroups =
-  (db) => (classId, groupCount, createGroupNames, addGroupLeader) => {
+  (db) => (className, groupCount, createGroupNames, addGroupLeader) => {
+    const classId = db
+      .prepare("SELECT id FROM classes WHERE name = ?")
+      .get(className).id;
+
     const students = db
       .prepare("SELECT * FROM students WHERE class_id = ?")
       .all(classId);
