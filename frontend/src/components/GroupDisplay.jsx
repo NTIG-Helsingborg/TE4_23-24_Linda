@@ -2,10 +2,10 @@
 import GroupCard from "./GroupCard";
 import { useState, useEffect } from "react";
 
-const GroupDisplay = () => {
+const GroupDisplay = ({changeSelect}) => {
   const [groupData, setGroupData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
+console.log(changeSelect);
   useEffect(() => {
     fetch("/getGroups", {
       method: "POST",
@@ -14,7 +14,7 @@ const GroupDisplay = () => {
       },
       body: JSON.stringify({
         // Update with the class ID you want to retrieve
-        className: "1TEK1",
+        className: changeSelect.toUpperCase(),
       }),
     })
       .then((response) => {
@@ -29,7 +29,7 @@ const GroupDisplay = () => {
         setIsLoading(false);
       })
       .catch((error) => console.error("Error during fetch:", error));
-  }, []);
+  }, [changeSelect]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -48,7 +48,7 @@ const GroupDisplay = () => {
     groupRows = 3;
     groupAmount = 3;
   }
-  console.log(groupData.length);
+  console.log(groupData);
 
   return (
     <>
@@ -57,9 +57,9 @@ const GroupDisplay = () => {
           id="groupDisplay"
           style={{ gridTemplateColumns: `repeat(${groupRows}, 1fr)` }}
         >
-          {groupData.map((group) => {
+          {groupData.map((group, index) => {
             return (
-              <div id={`group${groupAmount}`}>
+              <div id={`group${groupAmount}`} key={index}>
                 <GroupCard
                   key={group.groupId}
                   groupName={group.groupName}
