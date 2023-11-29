@@ -1,11 +1,20 @@
 const express = require("express");
 const app = express();
 const db = require("better-sqlite3")("database.db");
+const cors = require("cors");
 const multer = require("multer");
 const crypto = require("crypto");
 const path = require("path");
 app.use(express.json());
-app.use("/profile_imgs", express.static("profile_imgs"));
+app.use(cors());
+app.use(
+  "/Profile_Imgs",
+  cors(),
+  (req, res, next) => {
+    next();
+  },
+  express.static("Profile_Imgs")
+);
 const port = 3000;
 
 // IMPORTS

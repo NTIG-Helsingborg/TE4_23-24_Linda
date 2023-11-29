@@ -10,7 +10,7 @@ const GroupCard = ({ groupStudents, groupName }) => {
             <div className={`student`} key={Index}>
               {console.log(e.image_filepath)}
               <img
-                src={`${e.image_filepath}`}
+                src={`http://localhost:3000${e.image_filepath}`}
                 alt={""}
                 className="img"
                 onError={(event) => {
