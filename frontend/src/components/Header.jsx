@@ -25,6 +25,7 @@ const Header = () => {
       .catch((error) => console.error("Error during fetch:", error));
 
     localStorage.setItem("indexView", 0);
+    location.reload();
   };
 
   return (

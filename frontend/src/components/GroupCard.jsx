@@ -4,12 +4,12 @@ const GroupCard = ({ groupStudents, groupName }) => {
   return (
     <>
       <div id="card">
-        <p id="title">Group {groupName}</p>
+        <p id="title">{groupName}</p>
         <div className="group">
           {groupStudents.map((e, Index) => (
-            <div className={`student`} key={Index}>
+            <div className={`student`} key={Index} id={e.role === "GroupLeader" ? "groupleader" : ""}>
               <img
-                src={e.image_filepath}
+                src={e.image_filepath === null ? e.image_filepath : react}
                 alt={""}
                 className="img"
                 onError={(event) => {
@@ -18,7 +18,7 @@ const GroupCard = ({ groupStudents, groupName }) => {
               />
               <div
                 className="name"
-                style={{ color: e.role === "GroupLeader" ? "red" : "inherit" }}
+                id={e.role === "GroupLeader" ? "groupleader" : ""}
               >
                 {e.name}
               </div>
