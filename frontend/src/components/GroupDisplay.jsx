@@ -13,7 +13,7 @@ const GroupDisplay = () => {
       },
       body: JSON.stringify({
         // Update with the class ID you want to retrieve
-        className: "1TEK1"
+        className: "1TEK1",
       }),
     })
       .then((response) => {
@@ -56,9 +56,9 @@ const GroupDisplay = () => {
           id="groupDisplay"
           style={{ gridTemplateColumns: `repeat(${groupRows}, 1fr)` }}
         >
-          {groupData.map((group) => {
+          {groupData.map((group, index) => {
             return (
-              <div id={`group${groupAmount}`}>
+              <div id={`group${groupAmount}`} key={index}>
                 <GroupCard
                   key={group.groupId}
                   groupName={group.groupName}
