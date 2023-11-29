@@ -14,6 +14,10 @@
   // Color scheme
   --colorLight: white;
   --colorDark: black;
+  --colorHeader1:rgba(182, 70, 163, 1);
+  --colorHeader2: rgba(105, 56, 143, 1);
+  --colorBackgroundCard: #081645;
+  --colorTitleCard: #747bff;
 
   #root {
     //max-width: 1280px;
@@ -80,8 +84,8 @@ button {
 #header {
   background: radial-gradient(
     circle,
-    rgba(182, 70, 163, 1) 10%,
-    rgba(105, 56, 143, 1) 50%
+    var(--colorHeader1) 0%,
+    var(--colorHeader2) 50%
   );
   border-right: 4px solid white;
   align-items: center;
@@ -177,14 +181,14 @@ button {
   margin-inline: auto;
   width: 330px;
   min-height: 400px;
-  background-color: #081645;
+  background-color: var(--colorBackgroundCard);
 
   border-radius: 25px;
 
   #title {
     margin: 0;
     font-size: 1.5em;
-    background-color: #747bff;
+    background-color: var(--colorTitleCard);
   }
   .group {
     display: grid;
