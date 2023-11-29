@@ -4,11 +4,14 @@ const GroupCard = ({ groupStudents, groupName }) => {
   return (
     <>
       <div id="card">
-        <p id="title">Group {groupName}</p>
+        <p id="title">{groupName}</p>
         <div className="group">
           {groupStudents.map((e, Index) => (
-            <div className={`student`} key={Index}>
-              {console.log(e.image_filepath)}
+            <div
+              className={`student`}
+              key={Index}
+              id={e.role === "GroupLeader" ? "groupleader" : ""}
+            >
               <img
                 src={`http://localhost:3000${e.image_filepath}`}
                 alt={""}
@@ -17,12 +20,7 @@ const GroupCard = ({ groupStudents, groupName }) => {
                   event.target.src = react;
                 }}
               />
-              <div
-                className="name"
-                style={{ color: e.role === "GroupLeader" ? "red" : "inherit" }}
-              >
-                {e.name}
-              </div>
+              <div className="name">{e.name}</div>
             </div>
           ))}
         </div>

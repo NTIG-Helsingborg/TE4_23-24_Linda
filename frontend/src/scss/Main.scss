@@ -16,7 +16,7 @@
   --colorDark: black;
   --colorHeader1:rgba(182, 70, 163, 1);
   --colorHeader2: rgba(105, 56, 143, 1);
-  --colorBackgroundCard: #081645;
+  --colorBackgroundCard: #23377a;
   --colorTitleCard: #747bff;
 
   #root {
@@ -126,7 +126,7 @@ button {
   text-align: center;
   width: 100%;
   margin-left: 60px;
-  overflow-y: auto;
+
   max-height: 100vh;
 }
 
@@ -217,6 +217,13 @@ button {
   }
 }
 
+#groupleader{
+  border-radius: 50px;
+  border: 2px solid gold;
+  .name{
+    border: none;
+  }
+}
 #group3 {
   #card {
     width: 400px;
