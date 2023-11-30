@@ -1,5 +1,7 @@
 import NTILoga from "../assets/NTILoga.png";
 import ClassSelect from "./ClassSelect.jsx";
+import RandomizeGroups from "./RandomizeGroups.jsx";
+
 
 const Header = () => {
   const handleNewGroups = () => {
@@ -48,6 +50,7 @@ const Header = () => {
         <div id="BottomHeader">
           <ClassSelect />
         </div>
+        <RandomizeGroups />
       </div>
     </>
   );
