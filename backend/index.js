@@ -86,7 +86,8 @@ let lastGroupData = {}; // For storing the last randomized group data
 // RANDOMIZE FUNCTION
 app.post("/randomize", (req, res) => {
   const className = req.body.className;
-  const groupCount = req.body.groupCount || 6;
+  const groupCount = req.body.groupCount;
+  const studentCount = req.body.studentCount;
   const createGroupNames = req.body.createGroupNames || false;
   const addGroupLeader = req.body.addGroupLeader || false;
 
@@ -95,14 +96,14 @@ app.post("/randomize", (req, res) => {
       error: "Class name is required in the request body",
       requestBody: req.body,
     });
+  } else if (!groupCount || !studentCount) {
+    return res.status(400).json({
+      error: "Either groupCount or studentCount is missing in the request body",
+      requestBody: req.body,
+    });
   }
 
-  const groups = randomizeGroups(
-    className,
-    groupCount,
-    createGroupNames,
-    addGroupLeader
-  );
+  const groups = randomizeGroups(className, groupCount);
   const enhancedGroups = groups.map((group, index) => {
     let groupName = `${index + 1}`;
     let groupLeader = null;
@@ -124,7 +125,6 @@ app.post("/randomize", (req, res) => {
       let studentData = db
         .prepare("SELECT * FROM students WHERE id = ?")
         .get(studentId); // Fetch student details
-      console.log("STUDENT DATA: ", studentData);
       if (studentId === groupLeader) {
         studentData.role = "GroupLeader"; // Mark the group leader
       }
@@ -137,39 +137,12 @@ app.post("/randomize", (req, res) => {
       students: studentsWithLeader,
     };
   });
-  /*
-  const classId = db
-    .prepare("SELECT id FROM classes WHERE name = ?")
-    .get(className).id;
-  groups.forEach((group, index) => {
-    const groupIndex = index + 1;
-    let groupName = `${groupIndex}`;
-    let groupLeader = null;
-    /*
-    //TODO User should have option to generate random group name
-    if (createGroupNames) {
-      const randomAdjective =
-        adjectives[Math.floor(Math.random() * adjectives.length)];
-      const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
 
-      groupName = randomAdjective + " " + randomNoun;
-    }
-    if (addGroupLeader) {
-      //Get random student from group
-      const randomStudentID = group[Math.floor(Math.random() * group.length)];
-      groupLeader = randomStudentID;
-    }*/
-  /*
-    db.prepare(
-      ` INSERT INTO groups (class_id, group_index, group_name, group_leader) VALUES (?, ?, ?, ?) `
-    ).run(classId, groupIndex, groupName, groupLeader);
-  });*/
   if (!tempGroupData[className]) {
     tempGroupData[className] = enhancedGroups; // Store temporarily
     //dbInformation.getGroupsFromStudentIds(db)(groups); // Store temporarily
   }
   lastGroupData[className] = enhancedGroups; // Update lastGroupData on randomization
-  console.log("ENHANCED GROUPS: ", enhancedGroups.students);
 
   res.json({ message: "Groups randomized successfully!" });
 });
