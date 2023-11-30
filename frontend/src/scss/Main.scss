@@ -126,9 +126,29 @@ button {
 #main {
   text-align: center;
   width: 100%;
-  margin-left: 60px;
+  margin-left: 120px;
+  display: flex;
+  justify-content: center;
 
   max-height: 100vh;
+}
+
+#table-container {
+  width: 100%;
+  top: 10px;
+  margin-left: 20%;
+  margin-right: 20%;
+  background-color: rgba($color: black, $alpha: 0.3);
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
 }
 
 ///////////////////
@@ -174,8 +194,6 @@ button {
 ///////////////////
 /// ClassDisplay ///
 #classDisplay {
-
-
   #groupDisplay {
     display: grid;
     max-width: 1000px; // Add a width to the element
@@ -238,7 +256,6 @@ button {
 #group3 {
   #card {
     width: 300px;
-
 
     .student {
       width: 150px;
