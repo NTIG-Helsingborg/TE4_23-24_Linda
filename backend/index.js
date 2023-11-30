@@ -103,13 +103,12 @@ app.post("/randomize", (req, res) => {
 app.post("/getClassInfo", (req, res) => {
   const className = req.body.className;
 
-  if (!className && className !== "") {
+  if (!className) {
     return res.status(400).json({
       error: "Class name is required in the request body",
       requestBody: req.body,
     });
   }
-
   const classInfo = showClass.getClassInfo(db, className);
 
   res.json({ result: classInfo, className: className });
