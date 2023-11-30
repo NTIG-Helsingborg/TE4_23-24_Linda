@@ -70,6 +70,8 @@ app.post("/uploadImage", upload.single("image"), (req, res) => {
 
   res.json({ message: "Image uploaded successfully!" });
 });
+let tempGroupData = {}; // Temporary in-memory storage for groups
+let lastGroupData = {}; // For storing the last randomized group data
 
 // RANDOMIZE FUNCTION
 app.post("/randomize", (req, res) => {
@@ -85,10 +87,124 @@ app.post("/randomize", (req, res) => {
     });
   }
 
-  randomizeGroups(className, groupCount, createGroupNames, addGroupLeader);
+  const groups = randomizeGroups(
+    className,
+    groupCount,
+    createGroupNames,
+    addGroupLeader
+  );
+  const enhancedGroups = groups.map((group, index) => {
+    let groupName = `${index + 1}`;
+    let groupLeader = null;
+    if (createGroupNames) {
+      const randomAdjective =
+        adjectives[Math.floor(Math.random() * adjectives.length)];
+      const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
+
+      groupName = randomAdjective + " " + randomNoun;
+    }
+    if (addGroupLeader) {
+      //Get random student from group
+      const randomStudentID = group[Math.floor(Math.random() * group.length)];
+      groupLeader = randomStudentID;
+    }
+
+    // Enhance student data with group leader role
+    let studentsWithLeader = group.map((studentId) => {
+      let studentData = db
+        .prepare("SELECT * FROM students WHERE id = ?")
+        .get(studentId); // Fetch student details
+      console.log("STUDENT DATA: ", studentData);
+      if (studentId === groupLeader) {
+        studentData.role = "GroupLeader"; // Mark the group leader
+      }
+      return studentData;
+    });
+
+    return {
+      groupId: index + 1,
+      groupName,
+      students: studentsWithLeader,
+    };
+  });
+  /*
+  const classId = db
+    .prepare("SELECT id FROM classes WHERE name = ?")
+    .get(className).id;
+  groups.forEach((group, index) => {
+    const groupIndex = index + 1;
+    let groupName = `${groupIndex}`;
+    let groupLeader = null;
+    /*
+    //TODO User should have option to generate random group name
+    if (createGroupNames) {
+      const randomAdjective =
+        adjectives[Math.floor(Math.random() * adjectives.length)];
+      const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
+
+      groupName = randomAdjective + " " + randomNoun;
+    }
+    if (addGroupLeader) {
+      //Get random student from group
+      const randomStudentID = group[Math.floor(Math.random() * group.length)];
+      groupLeader = randomStudentID;
+    }*/
+  /*
+    db.prepare(
+      ` INSERT INTO groups (class_id, group_index, group_name, group_leader) VALUES (?, ?, ?, ?) `
+    ).run(classId, groupIndex, groupName, groupLeader);
+  });*/
+  if (!tempGroupData[className]) {
+    tempGroupData[className] = enhancedGroups; // Store temporarily
+    //dbInformation.getGroupsFromStudentIds(db)(groups); // Store temporarily
+  }
+  lastGroupData[className] = enhancedGroups; // Update lastGroupData on randomization
+  console.log("ENHANCED GROUPS: ", enhancedGroups.students);
+
   res.json({ message: "Groups randomized successfully!" });
 });
+app.post("/saveGroups", (req, res) => {
+  const className = req.body.className;
+  //const groups = tempGroupData[className] ? tempGroupData[className] : null;
+  const groupsExist = lastGroupData[className]
+    ? lastGroupData[className]
+    : null;
+  const groupCount = 6;
+  const classId = db
+    .prepare("SELECT id FROM classes WHERE name = ?")
+    .get(className).id;
+  if (groupsExist) {
+    tempGroupData[className] = groupsExist; // Update tempGroupData on save
+    const groups = dbInformation.getGroupsFromStudentIds(db)(
+      lastGroupData[className]
+    );
+    // Logic to save groups to the database
+    // UPDATE DB INFO
+    db.transaction((groups, classId) => {
+      groups.forEach((group) => {
+        const groupId = group.groupId; // Assuming this is the new group ID to be saved
+        group.students.forEach((student) => {
+          const studentId = student.id; // Extract the student ID
+          db.prepare(
+            "UPDATE students SET group_id = ? WHERE id = ? AND class_id = ?"
+          ).run(groupId, studentId, classId);
+        });
+      });
+    })(groups, classId);
 
+    const updateClassesQuery = db.prepare(
+      ` UPDATE classes SET groups = ? WHERE id = ?`
+    );
+    updateClassesQuery.run(groupCount, classId);
+
+    db.prepare(`DELETE FROM groups WHERE class_id = ?`).run(classId);
+
+    //delete tempGroupData[className]; // Clear temporary data after saving
+    res.json({ message: "Groups saved successfully!" });
+  } else {
+    res.status(404).json({ message: "No temporary group data found." });
+  }
+});
 //Retrieve groups by class
 app.post("/getGroups", (req, res) => {
   const className = req.body.className;
@@ -99,13 +215,37 @@ app.post("/getGroups", (req, res) => {
       requestBody: req.body,
     });
   }
-  const groupedStudentsArray = dbInformation.getGroups(db)(className);
+  if (lastGroupData[className] && lastGroupData[className].length > 0) {
+    const groupedStudentsArray = dbInformation.getGroupsFromStudentIds(db)(
+      lastGroupData[className]
+    );
+    res.json(
+      JSON.stringify({ result: groupedStudentsArray, className: className })
+    );
+  } else {
+    //Retrieve info from database
+    const groupedStudentsArray = dbInformation.getGroups(db)(className);
 
-  res.json(
-    JSON.stringify({ result: groupedStudentsArray, className: className })
-  );
+    res.json(
+      JSON.stringify({ result: groupedStudentsArray, className: className })
+    );
+  }
 });
+//Retrieve groups by class
+app.post("/discardChanges", (req, res) => {
+  const className = req.body.className;
 
+  if (!className && className != "") {
+    return res.status(400).json({
+      error: "className is required in the request body",
+      requestBody: req.body,
+    });
+  }
+  lastGroupData[className] = tempGroupData[className];
+  delete tempGroupData[className];
+
+  res.json(JSON.stringify({ result: "Changes discarded" }));
+});
 app.post("/setStudentPreference", (req, res) => {
   const studentID = req.body.studentID;
   const preferenceArray = req.body.preferenceArray;
@@ -150,3 +290,47 @@ dbInformation.setStudentPreference(db)(studentID, preferenceArray);*/
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+const adjectives = [
+  "Mighty",
+  "Brave",
+  "Soaring",
+  "Fierce",
+  "Bold",
+  "Glorious",
+  "Swift",
+  "Innovative",
+  "Fearless",
+  "Dynamic",
+  "Valiant",
+  "Noble",
+  "Daring",
+  "Victorious",
+  "Resilient",
+  "Majestic",
+  "Radiant",
+  "Indomitable",
+  "Supreme",
+  "Astonishing",
+];
+const nouns = [
+  "Eagles",
+  "Lions",
+  "Dragons",
+  "Wolves",
+  "Tigers",
+  "Phoenix",
+  "Sharks",
+  "Bears",
+  "Falcons",
+  "Hawks",
+  "Panthers",
+  "Leopards",
+  "Ravens",
+  "Dolphins",
+  "Griffins",
+  "Pirates",
+  "Knights",
+  "Warriors",
+  "Titans",
+  "Gladiators",
+];

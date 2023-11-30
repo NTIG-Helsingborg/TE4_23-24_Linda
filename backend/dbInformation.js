@@ -46,6 +46,38 @@ const getGroups = (db) => (className) => {
 
   return groupedStudentsArray;
 };
+const getGroupsFromStudentIds = (db) => (groupedStudentData) => {
+  // Function to fetch student details by ID
+  const getStudentById = (studentId) => {
+    return db.prepare("SELECT * FROM students WHERE id = ?").get(studentId);
+  };
+  return groupedStudentData.map((groupData) => {
+    const { groupId, groupName, students } = groupData;
+
+    const detailedStudents = students.map((studentObj) => {
+      if (!studentObj || !studentObj.id) {
+        console.error("Invalid student object:", studentObj);
+        return null;
+      }
+
+      const studentDetails = getStudentById(studentObj.id);
+
+      // Check and assign role if it exists
+      if (studentObj.role === "GroupLeader") {
+        studentDetails.role = "GroupLeader";
+      }
+
+      return studentDetails;
+    });
+
+    return {
+      groupId,
+      groupName,
+      students: detailedStudents.filter((student) => student !== null),
+    };
+  });
+};
+
 //Function to set the student preferences
 const setStudentPreference = (db) => (studentID, preferenceArray) => {
   const mustSitWithArr = JSON.parse(preferenceArray.mustSitWith);
@@ -134,4 +166,9 @@ const getStudentPreference = (db) => (studentID) => {
   }
 };
 
-module.exports = { getGroups, setStudentPreference, getStudentPreference };
+module.exports = {
+  getGroups,
+  setStudentPreference,
+  getStudentPreference,
+  getGroupsFromStudentIds,
+};

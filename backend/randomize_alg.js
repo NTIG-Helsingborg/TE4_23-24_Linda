@@ -96,7 +96,7 @@ const randomizeGroups =
       }
       return shuffled;
     }
-
+    /*
     // UPDATE DB INFO
     db.transaction((groups, classId) => {
       groups.forEach((group, groupId) => {
@@ -136,7 +136,7 @@ const randomizeGroups =
       db.prepare(
         ` INSERT INTO groups (class_id, group_index, group_name, group_leader) VALUES (?, ?, ?, ?) `
       ).run(classId, groupIndex, groupName, groupLeader);
-    });
+    });*/
 
     // Debug
     const groupsWithNames = groups.map((group) =>
@@ -148,50 +148,8 @@ const randomizeGroups =
       })
     );
     console.log("Groups after update: ", groupsWithNames);
+
+    return groups;
   };
-const adjectives = [
-  "Mighty",
-  "Brave",
-  "Soaring",
-  "Fierce",
-  "Bold",
-  "Glorious",
-  "Swift",
-  "Innovative",
-  "Fearless",
-  "Dynamic",
-  "Valiant",
-  "Noble",
-  "Daring",
-  "Victorious",
-  "Resilient",
-  "Majestic",
-  "Radiant",
-  "Indomitable",
-  "Supreme",
-  "Astonishing",
-];
-const nouns = [
-  "Eagles",
-  "Lions",
-  "Dragons",
-  "Wolves",
-  "Tigers",
-  "Phoenix",
-  "Sharks",
-  "Bears",
-  "Falcons",
-  "Hawks",
-  "Panthers",
-  "Leopards",
-  "Ravens",
-  "Dolphins",
-  "Griffins",
-  "Pirates",
-  "Knights",
-  "Warriors",
-  "Titans",
-  "Gladiators",
-];
 
 module.exports = randomizeGroups;

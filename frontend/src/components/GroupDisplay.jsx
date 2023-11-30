@@ -48,7 +48,7 @@ const GroupDisplay = () => {
     groupRows = 3;
     groupAmount = 3;
   }
-
+  console.log(groupData);
   return (
     <>
       <div id="classDisplay">
