@@ -99,6 +99,22 @@ app.post("/randomize", (req, res) => {
   res.json({ message: "Groups randomized successfully!" });
 });
 
+// GET CLASS LIST
+app.post("/getClassInfo", (req, res) => {
+  const className = req.body.className;
+
+  if (!className && className !== "") {
+    return res.status(400).json({
+      error: "Class name is required in the request body",
+      requestBody: req.body,
+    });
+  }
+
+  const classInfo = showClass.getClassInfo(db, className);
+
+  res.json({ result: classInfo, className: className });
+});
+
 //Retrieve groups by class
 app.post("/getGroups", (req, res) => {
   const className = req.body.className;
