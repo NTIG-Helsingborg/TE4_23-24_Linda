@@ -1,16 +1,26 @@
 const express = require("express");
 const app = express();
 const db = require("better-sqlite3")("database.db");
+const cors = require("cors");
 const multer = require("multer");
 const crypto = require("crypto");
 const path = require("path");
 app.use(express.json());
-app.use("/profile_imgs", express.static("profile_imgs"));
+app.use(cors());
+app.use(
+  "/Profile_Imgs",
+  cors(),
+  (req, res, next) => {
+    next();
+  },
+  express.static("Profile_Imgs")
+);
 const port = 3000;
 
 // IMPORTS
 const randomizeGroups = require("./randomize_alg")(db);
 const dbInformation = require("./dbInformation");
+const showClass = require("./showClass");
 
 // Set up Multer for handling file uploads
 const storage = multer.diskStorage({
@@ -205,6 +215,22 @@ app.post("/saveGroups", (req, res) => {
     res.status(404).json({ message: "No temporary group data found." });
   }
 });
+// GET CLASS LIST
+app.post("/getClassInfo", (req, res) => {
+  const className = req.body.className;
+
+  if (!className && className !== "") {
+    return res.status(400).json({
+      error: "Class name is required in the request body",
+      requestBody: req.body,
+    });
+  }
+
+  const classInfo = showClass.getClassInfo(db, className);
+
+  res.json({ result: classInfo, className: className });
+});
+
 //Retrieve groups by class
 app.post("/getGroups", (req, res) => {
   const className = req.body.className;
@@ -263,6 +289,8 @@ app.post("/setStudentPreference", (req, res) => {
   }
   dbInformation.setStudentPreference(db)(studentID, preferenceArray);
 });
+
+// SET STUDENT PREF
 app.post("/getStudentPreference", (req, res) => {
   const studentID = req.body.studentID;
 
@@ -276,6 +304,7 @@ app.post("/getStudentPreference", (req, res) => {
 
   res.json(JSON.stringify({ result: studentPreference }));
 });
+
 //USED FOR TESTING SINCE FRONTEND IS NOT FINISHED
 /*
 const studentID = 1;

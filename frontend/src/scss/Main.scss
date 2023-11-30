@@ -14,7 +14,7 @@
   // Color scheme
   --colorLight: white;
   --colorDark: black;
-  --colorHeader1:rgba(182, 70, 163, 1);
+  --colorHeader1: rgba(182, 70, 163, 1);
   --colorHeader2: rgba(105, 56, 143, 1);
   --colorBackgroundCard: #23377a;
   --colorTitleCard: #747bff;
@@ -76,7 +76,7 @@ button {
 /// Container ///
 #container {
   display: flex;
-  overflow: hidden;
+  overflow: auto;
 }
 
 ///////////////////
@@ -92,6 +92,8 @@ button {
   width: 230px;
   min-height: 962px;
   height: 100vh;
+  position: fixed;
+  bottom: 0;
 
   //position: absolute;
   top: 0;
@@ -122,11 +124,10 @@ button {
 ///////////////////
 /// Body ///
 #main {
-  margin-top: 2em;
   text-align: center;
   width: 100%;
   margin-left: 60px;
-  overflow-y: auto;
+
   max-height: 100vh;
 }
 
@@ -163,15 +164,25 @@ button {
     font-size: larger;
     text-decoration: underline;
   }
+
+  #selected {
+    background-color: #747bff;
+    border-radius: 10px;
+  }
 }
 
 ///////////////////
 /// ClassDisplay ///
 #classDisplay {
+
+
   #groupDisplay {
     display: grid;
+    max-width: 1000px; // Add a width to the element
+    margin-inline: auto;
     // grid template columns is set in GroupDisplay and should depend on how many groups there are.
-    grid-gap: 10px;
+    gap: 10px;
+    width: 100%; // Set the width to 100% to fill the parent container
   }
 }
 
@@ -180,7 +191,7 @@ button {
 #card {
   margin-inline: auto;
   width: 330px;
-  min-height: 400px;
+  min-height: 300px;
   background-color: var(--colorBackgroundCard);
 
   border-radius: 25px;
@@ -217,20 +228,21 @@ button {
   }
 }
 
-#groupleader{
-  border-radius: 50px;
+#groupleader {
+  border-radius: 25px;
   border: 2px solid gold;
-  .name{
+  .name {
     border: none;
   }
 }
 #group3 {
   #card {
-    width: 400px;
+    width: 300px;
+
 
     .student {
-      width: 200px;
-      height: 200px;
+      width: 150px;
+      height: 150px;
     }
     .group {
       gap: 0px;
@@ -241,7 +253,7 @@ button {
 
 #group7 {
   #card {
-    width: 330px;
+    width: 300px;
 
     .student {
       width: 150px;

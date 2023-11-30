@@ -13,7 +13,7 @@ const GroupCard = ({ groupStudents, groupName }) => {
               id={e.role === "GroupLeader" ? "groupleader" : ""}
             >
               <img
-                src={e.image_filepath === "null" ? e.image_filepath : react}
+                src={`http://localhost:3000${e.image_filepath}`}
                 alt={""}
                 className="img"
                 onError={(event) => {

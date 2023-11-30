@@ -1,6 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const ClassSelect = () => {
+  // Checks if the selected class is the same as the one in localstorage and if it is it will set the state to true
+  useEffect(() => {
+    const selectedClass = localStorage.getItem("class").substring(1);
+    if (selectedClass) {
+      if (selectedClass.startsWith("Dem")) {
+        setToggleDem(true);
+      } else if (selectedClass.startsWith("Tek")) {
+        setToggleTek(true);
+      } else if (selectedClass.startsWith("It")) {
+        setToggleIt(true);
+      } else if (selectedClass.startsWith("Nat")) {
+        setToggleNat(true);
+
+      }
+    }
+  }, [localStorage.getItem("class")]);
+
   const [toggleDem, setToggleDem] = useState(false);
   const [toggleTek, setToggleTek] = useState(false);
   const [toggleIt, setToggleIt] = useState(false);
@@ -43,6 +60,7 @@ const ClassSelect = () => {
 
   return (
     <>
+      {console.log(localStorage.getItem("class"))}
       <div id="classSelect">
         <h1>Class Select</h1>
         <ul>
@@ -52,12 +70,42 @@ const ClassSelect = () => {
           </li>
           {toggleTek && (
             <>
-              <li onClick={() => handleSelectChange("1Tek1")}>1Tek1</li>
-              <li onClick={() => handleSelectChange("1Tek2")}>1Tek2</li>
-              <li onClick={() => handleSelectChange("2Tek1")}>2Tek1</li>
-              <li onClick={() => handleSelectChange("2Tek2")}>2Tek2</li>
-              <li onClick={() => handleSelectChange("3Tek1")}>3Tek1</li>
-              <li onClick={() => handleSelectChange("3Tek2")}>3Tek2</li>
+              <li
+                onClick={() => handleSelectChange("1Tek1")}
+                id={localStorage.getItem("class") === "1Tek1" ? "selected" : ""}
+              >
+                1Tek1
+              </li>
+              <li
+                onClick={() => handleSelectChange("1Tek2")}
+                id={localStorage.getItem("class") === "1Tek2" ? "selected" : ""}
+              >
+                1Tek2
+              </li>
+              <li
+                onClick={() => handleSelectChange("2Tek1")}
+                id={localStorage.getItem("class") === "2Tek1" ? "selected" : ""}
+              >
+                2Tek1
+              </li>
+              <li
+                onClick={() => handleSelectChange("2Tek2")}
+                id={localStorage.getItem("class") === "2Tek2" ? "selected" : ""}
+              >
+                2Tek2
+              </li>
+              <li
+                onClick={() => handleSelectChange("3Tek1")}
+                id={localStorage.getItem("class") === "3Tek1" ? "selected" : ""}
+              >
+                3Tek1
+              </li>
+              <li
+                onClick={() => handleSelectChange("3Tek2")}
+                id={localStorage.getItem("class") === "3Tek2" ? "selected" : ""}
+              >
+                3Tek2
+              </li>
             </>
           )}
           <hr />
@@ -66,12 +114,42 @@ const ClassSelect = () => {
           </li>
           {toggleIt && (
             <>
-              <li onClick={() => handleSelectChange("1It1")}>1It1</li>
-              <li onClick={() => handleSelectChange("1It2")}>1It2</li>
-              <li onClick={() => handleSelectChange("2It1")}>2It1</li>
-              <li onClick={() => handleSelectChange("2It2")}>2It2</li>
-              <li onClick={() => handleSelectChange("3It1")}>3It1</li>
-              <li onClick={() => handleSelectChange("3It2")}>3It2</li>
+              <li
+                onClick={() => handleSelectChange("1It1")}
+                id={localStorage.getItem("class") === "1It1" ? "selected" : ""}
+              >
+                1It1
+              </li>
+              <li
+                onClick={() => handleSelectChange("1It2")}
+                id={localStorage.getItem("class") === "1It2" ? "selected" : ""}
+              >
+                1It2
+              </li>
+              <li
+                onClick={() => handleSelectChange("2It1")}
+                id={localStorage.getItem("class") === "2It1" ? "selected" : ""}
+              >
+                2It1
+              </li>
+              <li
+                onClick={() => handleSelectChange("2It2")}
+                id={localStorage.getItem("class") === "2It2" ? "selected" : ""}
+              >
+                2It2
+              </li>
+              <li
+                onClick={() => handleSelectChange("3It1")}
+                id={localStorage.getItem("class") === "3It1" ? "selected" : ""}
+              >
+                3It1
+              </li>
+              <li
+                onClick={() => handleSelectChange("3It2")}
+                id={localStorage.getItem("class") === "3It2" ? "selected" : ""}
+              >
+                3It2
+              </li>
             </>
           )}
           <hr />
@@ -80,9 +158,24 @@ const ClassSelect = () => {
           </li>
           {toggleDem && (
             <>
-              <li onClick={() => handleSelectChange("1Dem1")}>1Dem</li>
-              <li onClick={() => handleSelectChange("2Dem1")}>2Dem</li>
-              <li onClick={() => handleSelectChange("3Dem1")}>3Dem</li>
+              <li
+                onClick={() => handleSelectChange("1Dem1")}
+                id={localStorage.getItem("class") === "1Dem1" ? "selected" : ""}
+              >
+                1Dem
+              </li>
+              <li
+                onClick={() => handleSelectChange("2Dem1")}
+                id={localStorage.getItem("class") === "2Dem1" ? "selected" : ""}
+              >
+                2Dem
+              </li>
+              <li
+                onClick={() => handleSelectChange("3Dem1")}
+                id={localStorage.getItem("class") === "3Dem1" ? "selected" : ""}
+              >
+                3Dem
+              </li>
             </>
           )}
           <hr />
@@ -91,9 +184,24 @@ const ClassSelect = () => {
           </li>
           {toggleNat && (
             <>
-              <li onClick={() => handleSelectChange("1Nat1")}>1Nat</li>
-              <li onClick={() => handleSelectChange("2Nat1")}>2Nat</li>
-              <li onClick={() => handleSelectChange("3Nat1")}>3Nat</li>
+              <li
+                onClick={() => handleSelectChange("1Nat1")}
+                id={localStorage.getItem("class") === "1Nat1" ? "selected" : ""}
+              >
+                1Nat
+              </li>
+              <li
+                onClick={() => handleSelectChange("2Nat1")}
+                id={localStorage.getItem("class") === "2Nat1" ? "selected" : ""}
+              >
+                2Nat
+              </li>
+              <li
+                onClick={() => handleSelectChange("3Nat1")}
+                id={localStorage.getItem("class") === "3Nat1" ? "selected" : ""}
+              >
+                3Nat
+              </li>
             </>
           )}
         </ul>
