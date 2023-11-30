@@ -20,6 +20,7 @@ const port = 3000;
 // IMPORTS
 const randomizeGroups = require("./randomize_alg")(db);
 const dbInformation = require("./dbInformation");
+const showClass = require("./showClass");
 
 // Set up Multer for handling file uploads
 const storage = multer.diskStorage({
@@ -115,6 +116,7 @@ app.post("/getGroups", (req, res) => {
   );
 });
 
+// SET STUDENT PREF
 app.post("/setStudentPreference", (req, res) => {
   const studentID = req.body.studentID;
   const preferenceArray = req.body.preferenceArray;
@@ -132,6 +134,8 @@ app.post("/setStudentPreference", (req, res) => {
   }
   dbInformation.setStudentPreference(db)(studentID, preferenceArray);
 });
+
+// SET STUDENT PREF
 app.post("/getStudentPreference", (req, res) => {
   const studentID = req.body.studentID;
 
@@ -145,6 +149,7 @@ app.post("/getStudentPreference", (req, res) => {
 
   res.json(JSON.stringify({ result: studentPreference }));
 });
+
 //USED FOR TESTING SINCE FRONTEND IS NOT FINISHED
 /*
 const studentID = 1;
