@@ -14,7 +14,7 @@
   // Color scheme
   --colorLight: white;
   --colorDark: black;
-  --colorHeader1:rgba(182, 70, 163, 1);
+  --colorHeader1: rgba(182, 70, 163, 1);
   --colorHeader2: rgba(105, 56, 143, 1);
   --colorBackgroundCard: #23377a;
   --colorTitleCard: #747bff;
@@ -163,6 +163,11 @@ button {
     font-size: larger;
     text-decoration: underline;
   }
+
+  #selected {
+    background-color: #747bff;
+    border-radius: 10px;
+  }
 }
 
 ///////////////////
@@ -217,10 +222,10 @@ button {
   }
 }
 
-#groupleader{
+#groupleader {
   border-radius: 50px;
   border: 2px solid gold;
-  .name{
+  .name {
     border: none;
   }
 }
