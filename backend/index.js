@@ -175,7 +175,6 @@ app.post("/randomize", (req, res) => {
 });
 app.post("/saveGroups", (req, res) => {
   const className = req.body.className;
-  //const groups = tempGroupData[className] ? tempGroupData[className] : null;
   const groupsExist = lastGroupData[className]
     ? lastGroupData[className]
     : null;
@@ -183,13 +182,14 @@ app.post("/saveGroups", (req, res) => {
   const classId = db
     .prepare("SELECT id FROM classes WHERE name = ?")
     .get(className).id;
+
   if (groupsExist) {
     tempGroupData[className] = groupsExist; // Update tempGroupData on save
     const groups = dbInformation.getGroupsFromStudentIds(db)(
       lastGroupData[className]
     );
+
     // Logic to save groups to the database
-    // UPDATE DB INFO
     db.transaction((groups, classId) => {
       groups.forEach((group) => {
         const groupId = group.groupId; // Assuming this is the new group ID to be saved
@@ -208,6 +208,21 @@ app.post("/saveGroups", (req, res) => {
     updateClassesQuery.run(groupCount, classId);
 
     db.prepare(`DELETE FROM groups WHERE class_id = ?`).run(classId);
+
+    groups.forEach((group, index) => {
+      const groupIndex = index + 1;
+      let groupName = group.groupName;
+      let groupLeader = null;
+      group.students.forEach((student) => {
+        if (student.role === "GroupLeader") {
+          groupLeader = student.id;
+        }
+      });
+
+      db.prepare(
+        ` INSERT INTO groups (class_id, group_index, group_name, group_leader) VALUES (?, ?, ?, ?) `
+      ).run(classId, groupIndex, groupName, groupLeader);
+    });
 
     //delete tempGroupData[className]; // Clear temporary data after saving
     res.json({ message: "Groups saved successfully!" });
