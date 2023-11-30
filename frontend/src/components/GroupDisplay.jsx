@@ -35,7 +35,7 @@ const GroupDisplay = () => {
     return <div>Loading...</div>;
   }
   // Change this value to change the amount of groups there are in a class
-  const groupCount = 6;
+  const groupCount = groupData.length;
   var groupRows = 2;
   var groupAmount = 2;
   if (groupCount < 3) {
@@ -48,13 +48,18 @@ const GroupDisplay = () => {
     groupRows = 3;
     groupAmount = 3;
   }
-
   return (
     <>
       <div id="classDisplay">
+        <div id="classTitle">
+          <h1>{localStorage.getItem("class").toUpperCase()}</h1>
+        </div>
         <div
           id="groupDisplay"
-          style={{ gridTemplateColumns: `repeat(${groupRows}, 1fr)` }}
+          style={{
+            gridTemplateColumns: `repeat(${groupRows}, 1fr)`,
+            maxWidth: groupCount === 6 ? "1500px" : "1000px"
+          }}
         >
           {groupData.map((group, index) => {
             return (
