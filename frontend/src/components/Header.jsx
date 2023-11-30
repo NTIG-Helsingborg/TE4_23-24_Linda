@@ -30,6 +30,48 @@ const Header = () => {
       })
       .catch((error) => console.error("Error during fetch:", error));
   };
+  const handleSaveGroups = () => {
+    fetch("/saveGroups", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        className: "1TEK1",
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((json) => console.log(json))
+      .catch((error) => console.error("Error during fetch:", error));
+  };
+  const handleDiscardGroups = () => {
+    fetch("/discardChanges", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        className: "1TEK1",
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((json) => console.log(json))
+      .then(() => {
+        localStorage.setItem("indexView", 0);
+        location.reload();
+      })
+      .catch((error) => console.error("Error during fetch:", error));
+  };
 
   return (
     <>
@@ -45,6 +87,9 @@ const Header = () => {
             Edit Class
           </h3>
           <h3 onClick={handleNewGroups}>New Groups</h3>
+          <h3 onClick={handleSaveGroups}>Save Groups(TEST)</h3>
+          <h3 onClick={handleDiscardGroups}>Discard Groups(TEST)</h3>
+
           <h3>Archives</h3>
         </div>
         <div id="BottomHeader">

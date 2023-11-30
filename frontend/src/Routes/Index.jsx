@@ -3,6 +3,7 @@ import GroupDisplay from "../components/GroupDisplay.jsx";
 import ShowClass from "../components/ShowClass.jsx";
 
 const Index = () => {
+  if (!localStorage.getItem("indexView")) localStorage.setItem("indexView", 0);
   return (
     <>
       <div id="background"></div>

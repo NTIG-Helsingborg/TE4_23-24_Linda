@@ -58,7 +58,7 @@ const GroupDisplay = () => {
           id="groupDisplay"
           style={{
             gridTemplateColumns: `repeat(${groupRows}, 1fr)`,
-            maxWidth: groupCount === 6 ? "1500px" : "1000px"
+            maxWidth: groupCount === 6 ? "1500px" : "1000px",
           }}
         >
           {groupData.map((group, index) => {

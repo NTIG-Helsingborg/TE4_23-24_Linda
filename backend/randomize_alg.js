@@ -96,7 +96,7 @@ const randomizeGroups =
       }
       return shuffled;
     }
-
+    /*
     // UPDATE DB INFO
     db.transaction((groups, classId) => {
       groups.forEach((group, groupId) => {
@@ -136,7 +136,7 @@ const randomizeGroups =
       db.prepare(
         ` INSERT INTO groups (class_id, group_index, group_name, group_leader) VALUES (?, ?, ?, ?) `
       ).run(classId, groupIndex, groupName, groupLeader);
-    });
+    });*/
 
     // Debug
     const groupsWithNames = groups.map((group) =>
@@ -148,97 +148,8 @@ const randomizeGroups =
       })
     );
     console.log("Groups after update: ", groupsWithNames);
+
+    return groups;
   };
-const adjectives = [
-  "Mighty",
-  "Brave",
-  "Soaring",
-  "Fierce",
-  "Bold",
-  "Glorious",
-  "Swift",
-  "Innovative",
-  "Fearless",
-  "Dynamic",
-  "Valiant",
-  "Noble",
-  "Daring",
-  "Victorious",
-  "Resilient",
-  "Majestic",
-  "Radiant",
-  "Indomitable",
-  "Supreme",
-  "Astonishing",
-
-  //Fantasy
-  "Enchanting",
-  "Mystical",
-  "Radiant",
-  "Whimsical",
-  "Ethereal",
-  "Nebulous",
-  "Celestial",
-  "Phantasmal",
-  "Aetherial",
-  "Draconic",
-  "Arcane",
-  "Elusive",
-
-  //Cyberpunk
-  "Neon-lit",
-  "Dystopian",
-  "Augmented",
-  "Holographic",
-  "Cybernetic",
-  "Megacorporate",
-  "Data-driven",
-  "Virtual",
-  "Synthetic",
-];
-const nouns = [
-  "Eagles",
-  "Lions",
-  "Dragons",
-  "Wolves",
-  "Tigers",
-  "Sharks",
-  "Bears",
-  "Falcons",
-  "Hawks",
-  "Panthers",
-  "Leopards",
-  "Ravens",
-  "Dolphins",
-  "Griffins",
-  "Pirates",
-  "Knights",
-  "Warriors",
-  "Titans",
-  "Gladiators",
-
-  //Fantasy
-  "Witches",
-  "Sorcerers",
-  "Dragons",
-  "Wizards",
-  "Elfs",
-  "Mermaids",
-  "Goblins",
-  "Phoenixes",
-  "Druids",
-  "Bards",
-
-  //Cyberpunk
-  "Cyborgs",
-  "Hackers",
-  "Mercenaries",
-  "Synths",
-  "Techies",
-  "Runners",
-  "Agents",
-  "Nanobots",
-  "Fixers",
-];
 
 module.exports = randomizeGroups;
