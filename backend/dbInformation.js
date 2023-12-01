@@ -77,7 +77,7 @@ const getGroupsFromStudentIds = (db) => (groupedStudentData) => {
     };
   });
 
-  return { groups };
+  return { groups: groups };
 };
 
 //Function to set the student preferences

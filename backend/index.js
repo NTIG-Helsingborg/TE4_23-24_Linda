@@ -170,7 +170,7 @@ app.post("/saveGroups", (req, res) => {
     .prepare("SELECT id FROM classes WHERE name = ?")
     .get(className).id;
 
-  if (groupsExist && tempGroupData[className]) {
+  if (groupsExist) {
     tempGroupData[className] = groupsExist; // Update tempGroupData on save
     tempGroupData[className].isTemp = false; // Mark as not temporary
     const groups = dbInformation.getGroupsFromStudentIds(db)(
@@ -178,7 +178,7 @@ app.post("/saveGroups", (req, res) => {
     );
 
     // Logic to save groups to the database
-    db.transaction(async (groups, classId) => {
+    db.transaction((groups, classId) => {
       for (let group of groups.groups) {
         const groupId = group.groupId;
         for (let student of group.students) {
@@ -244,6 +244,8 @@ app.post("/getGroups", (req, res) => {
     });
   }
   if (lastGroupData[className] && lastGroupData[className].length > 0) {
+    console.log("Using lastgroupData");
+    console.log(lastGroupData[className]);
     const groupedStudentsArray = dbInformation.getGroupsFromStudentIds(db)(
       lastGroupData[className]
     );
@@ -257,6 +259,8 @@ app.post("/getGroups", (req, res) => {
   } else {
     //Retrieve info from database
     const groupedStudentsArray = dbInformation.getGroups(db)(className);
+    console.log("Using info from database");
+    console.log(groupedStudentsArray);
 
     res.json(
       JSON.stringify({
