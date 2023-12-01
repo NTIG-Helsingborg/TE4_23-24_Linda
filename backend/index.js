@@ -86,7 +86,8 @@ let lastGroupData = {}; // For storing the last randomized group data
 // RANDOMIZE FUNCTION
 app.post("/randomize", (req, res) => {
   const className = req.body.className;
-  const groupCount = req.body.groupCount || 6;
+  let groupCount = req.body.groupCount;
+  const studentCount = req.body.studentCount;
   const createGroupNames = req.body.createGroupNames || false;
   const addGroupLeader = req.body.addGroupLeader || false;
 
@@ -95,14 +96,26 @@ app.post("/randomize", (req, res) => {
       error: "Class name is required in the request body",
       requestBody: req.body,
     });
+  } else if (!(groupCount ? !studentCount : studentCount)) {
+    return res.status(400).json({
+      error:
+        "Either groupCount or studentCount should be provided, but not both",
+      requestBody: req.body,
+    });
+  }
+  //If studentCount is provided, get the number of students in the class from the database
+  //and divide by studentCount to get groupCount
+  if (studentCount && studentCount > 0) {
+    const classId = db
+      .prepare("SELECT id FROM classes WHERE name = ?")
+      .get(className).id;
+    const students = db
+      .prepare("SELECT * FROM students WHERE class_id = ?")
+      .all(classId);
+    groupCount = Math.ceil(students.length / studentCount);
   }
 
-  const groups = randomizeGroups(
-    className,
-    groupCount,
-    createGroupNames,
-    addGroupLeader
-  );
+  const groups = randomizeGroups(className, groupCount);
   const enhancedGroups = groups.map((group, index) => {
     let groupName = `${index + 1}`;
     let groupLeader = null;
@@ -124,7 +137,6 @@ app.post("/randomize", (req, res) => {
       let studentData = db
         .prepare("SELECT * FROM students WHERE id = ?")
         .get(studentId); // Fetch student details
-      console.log("STUDENT DATA: ", studentData);
       if (studentId === groupLeader) {
         studentData.role = "GroupLeader"; // Mark the group leader
       }
@@ -137,45 +149,17 @@ app.post("/randomize", (req, res) => {
       students: studentsWithLeader,
     };
   });
-  /*
-  const classId = db
-    .prepare("SELECT id FROM classes WHERE name = ?")
-    .get(className).id;
-  groups.forEach((group, index) => {
-    const groupIndex = index + 1;
-    let groupName = `${groupIndex}`;
-    let groupLeader = null;
-    /*
-    //TODO User should have option to generate random group name
-    if (createGroupNames) {
-      const randomAdjective =
-        adjectives[Math.floor(Math.random() * adjectives.length)];
-      const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
 
-      groupName = randomAdjective + " " + randomNoun;
-    }
-    if (addGroupLeader) {
-      //Get random student from group
-      const randomStudentID = group[Math.floor(Math.random() * group.length)];
-      groupLeader = randomStudentID;
-    }*/
-  /*
-    db.prepare(
-      ` INSERT INTO groups (class_id, group_index, group_name, group_leader) VALUES (?, ?, ?, ?) `
-    ).run(classId, groupIndex, groupName, groupLeader);
-  });*/
   if (!tempGroupData[className]) {
     tempGroupData[className] = enhancedGroups; // Store temporarily
     //dbInformation.getGroupsFromStudentIds(db)(groups); // Store temporarily
   }
   lastGroupData[className] = enhancedGroups; // Update lastGroupData on randomization
-  console.log("ENHANCED GROUPS: ", enhancedGroups.students);
 
   res.json({ message: "Groups randomized successfully!" });
 });
 app.post("/saveGroups", (req, res) => {
   const className = req.body.className;
-  //const groups = tempGroupData[className] ? tempGroupData[className] : null;
   const groupsExist = lastGroupData[className]
     ? lastGroupData[className]
     : null;
@@ -183,13 +167,14 @@ app.post("/saveGroups", (req, res) => {
   const classId = db
     .prepare("SELECT id FROM classes WHERE name = ?")
     .get(className).id;
+
   if (groupsExist) {
     tempGroupData[className] = groupsExist; // Update tempGroupData on save
     const groups = dbInformation.getGroupsFromStudentIds(db)(
       lastGroupData[className]
     );
+
     // Logic to save groups to the database
-    // UPDATE DB INFO
     db.transaction((groups, classId) => {
       groups.forEach((group) => {
         const groupId = group.groupId; // Assuming this is the new group ID to be saved
@@ -208,6 +193,21 @@ app.post("/saveGroups", (req, res) => {
     updateClassesQuery.run(groupCount, classId);
 
     db.prepare(`DELETE FROM groups WHERE class_id = ?`).run(classId);
+
+    groups.forEach((group, index) => {
+      const groupIndex = index + 1;
+      let groupName = group.groupName;
+      let groupLeader = null;
+      group.students.forEach((student) => {
+        if (student.role === "GroupLeader") {
+          groupLeader = student.id;
+        }
+      });
+
+      db.prepare(
+        ` INSERT INTO groups (class_id, group_index, group_name, group_leader) VALUES (?, ?, ?, ?) `
+      ).run(classId, groupIndex, groupName, groupLeader);
+    });
 
     //delete tempGroupData[className]; // Clear temporary data after saving
     res.json({ message: "Groups saved successfully!" });
