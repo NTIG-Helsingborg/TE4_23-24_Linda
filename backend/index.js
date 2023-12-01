@@ -152,6 +152,7 @@ app.post("/randomize", (req, res) => {
 
   if (!tempGroupData[className]) {
     tempGroupData[className] = enhancedGroups; // Store temporarily
+    tempGroupData[className].isTemp = true; // Mark as temporary
     //dbInformation.getGroupsFromStudentIds(db)(groups); // Store temporarily
   }
   lastGroupData[className] = enhancedGroups; // Update lastGroupData on randomization
@@ -170,13 +171,14 @@ app.post("/saveGroups", (req, res) => {
 
   if (groupsExist) {
     tempGroupData[className] = groupsExist; // Update tempGroupData on save
+    tempGroupData[className].isTemp = false; // Mark as not temporary
     const groups = dbInformation.getGroupsFromStudentIds(db)(
       lastGroupData[className]
     );
 
     // Logic to save groups to the database
     db.transaction((groups, classId) => {
-      groups.forEach((group) => {
+      groups.groups.forEach((group) => {
         const groupId = group.groupId; // Assuming this is the new group ID to be saved
         group.students.forEach((student) => {
           const studentId = student.id; // Extract the student ID
@@ -194,7 +196,7 @@ app.post("/saveGroups", (req, res) => {
 
     db.prepare(`DELETE FROM groups WHERE class_id = ?`).run(classId);
 
-    groups.forEach((group, index) => {
+    groups.groups.forEach((group, index) => {
       const groupIndex = index + 1;
       let groupName = group.groupName;
       let groupLeader = null;
@@ -209,7 +211,7 @@ app.post("/saveGroups", (req, res) => {
       ).run(classId, groupIndex, groupName, groupLeader);
     });
 
-    //delete tempGroupData[className]; // Clear temporary data after saving
+    delete lastGroupData[className]; // Clear temporary data after saving
     res.json({ message: "Groups saved successfully!" });
   } else {
     res.status(404).json({ message: "No temporary group data found." });
@@ -245,14 +247,22 @@ app.post("/getGroups", (req, res) => {
       lastGroupData[className]
     );
     res.json(
-      JSON.stringify({ result: groupedStudentsArray, className: className })
+      JSON.stringify({
+        result: groupedStudentsArray,
+        className: className,
+        isTemp: true,
+      })
     );
   } else {
     //Retrieve info from database
     const groupedStudentsArray = dbInformation.getGroups(db)(className);
 
     res.json(
-      JSON.stringify({ result: groupedStudentsArray, className: className })
+      JSON.stringify({
+        result: groupedStudentsArray,
+        className: className,
+        isTemp: false,
+      })
     );
   }
 });
@@ -268,6 +278,7 @@ app.post("/discardChanges", (req, res) => {
   }
   lastGroupData[className] = tempGroupData[className];
   delete tempGroupData[className];
+  delete lastGroupData[className];
 
   res.json(JSON.stringify({ result: "Changes discarded" }));
 });

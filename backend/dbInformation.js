@@ -44,14 +44,14 @@ const getGroups = (db) => (className) => {
     }
   );
 
-  return groupedStudentsArray;
+  return { groups: groupedStudentsArray };
 };
 const getGroupsFromStudentIds = (db) => (groupedStudentData) => {
   // Function to fetch student details by ID
   const getStudentById = (studentId) => {
     return db.prepare("SELECT * FROM students WHERE id = ?").get(studentId);
   };
-  return groupedStudentData.map((groupData) => {
+  const groups = groupedStudentData.map((groupData) => {
     const { groupId, groupName, students } = groupData;
 
     const detailedStudents = students.map((studentObj) => {
@@ -76,6 +76,8 @@ const getGroupsFromStudentIds = (db) => (groupedStudentData) => {
       students: detailedStudents.filter((student) => student !== null),
     };
   });
+
+  return { groups };
 };
 
 //Function to set the student preferences
