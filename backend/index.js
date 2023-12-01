@@ -169,7 +169,7 @@ app.post("/saveGroups", (req, res) => {
     .prepare("SELECT id FROM classes WHERE name = ?")
     .get(className).id;
 
-  if (groupsExist) {
+  if (groupsExist && tempGroupData[className]) {
     tempGroupData[className] = groupsExist; // Update tempGroupData on save
     tempGroupData[className].isTemp = false; // Mark as not temporary
     const groups = dbInformation.getGroupsFromStudentIds(db)(
@@ -213,8 +213,6 @@ app.post("/saveGroups", (req, res) => {
 
     delete lastGroupData[className]; // Clear temporary data after saving
     res.json({ message: "Groups saved successfully!" });
-  } else {
-    res.status(404).json({ message: "No temporary group data found." });
   }
 });
 // GET CLASS LIST
