@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 const GroupDisplay = (triggerReload) => {
   const [groupData, setGroupData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   useEffect(() => {
     if (!localStorage.getItem("class")) localStorage.setItem("class", "1TEK1");
     fetch("/getGroups", {
@@ -26,7 +26,7 @@ const GroupDisplay = (triggerReload) => {
       })
       .then((json) => {
         const dbClass = JSON.parse(json);
-        setGroupData(dbClass.result);
+        setGroupData(dbClass);
         setIsLoading(false);
       })
       .catch((error) => console.error("Error during fetch:", error));
@@ -49,6 +49,7 @@ const GroupDisplay = (triggerReload) => {
     groupRows = 3;
     groupAmount = 3;
   }
+  console.log(groupData);
   return (
     <>
       <div id="classDisplay">
@@ -62,7 +63,7 @@ const GroupDisplay = (triggerReload) => {
             maxWidth: groupCount === 6 ? "1500px" : "1000px",
           }}
         >
-          {groupData.map((group, index) => {
+          {groupData.result.groups.map((group, index) => {
             return (
               <div id={`group${groupAmount}`} key={index}>
                 <GroupCard
@@ -73,6 +74,9 @@ const GroupDisplay = (triggerReload) => {
               </div>
             );
           })}
+          {groupData.isTemp && (
+            <p key={groupData.isTemp}>This is a temporary list of groups</p>
+          )}
         </div>
       </div>
     </>
