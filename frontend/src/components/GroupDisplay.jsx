@@ -2,7 +2,7 @@
 import GroupCard from "./GroupCard";
 import { useState, useEffect } from "react";
 
-const GroupDisplay = () => {
+const GroupDisplay = (triggerReload) => {
   const [groupData, setGroupData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -30,7 +30,7 @@ const GroupDisplay = () => {
         setIsLoading(false);
       })
       .catch((error) => console.error("Error during fetch:", error));
-  }, [localStorage.getItem("class")]);
+  }, [triggerReload]);
 
   if (isLoading) {
     return <div>Loading...</div>;

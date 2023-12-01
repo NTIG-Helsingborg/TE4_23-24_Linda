@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const RandomizeGroups = () => {
+const RandomizeGroups = ({setTriggerReload}) => {
   const handleNewGroups = () => {
     fetch("/randomize", {
       method: "POST",
@@ -9,9 +9,9 @@ const RandomizeGroups = () => {
       },
       body: JSON.stringify({
         className: localStorage.getItem("class").toUpperCase(),
-        groupCount: 6,
-        createGroupNames: true,
-        addGroupLeader: true,
+        groupCount: groupCount,
+        createGroupNames: toggleGroupNames,
+        addGroupLeader: toggleGroupLeader,
       }),
     })
       .then((response) => {
@@ -23,7 +23,8 @@ const RandomizeGroups = () => {
       .then((json) => console.log(json))
       .then(() => {
         localStorage.setItem("indexView", 0);
-        console.log("urmom")
+        console.log("Random");
+        setTriggerReload(prevState => !prevState); 
       })
       .catch((error) => console.error("Error during fetch:", error));
   };
@@ -44,6 +45,11 @@ const RandomizeGroups = () => {
         return response.json();
       })
       .then((json) => console.log(json))
+      .then(() => {
+        localStorage.setItem("indexView", 0);
+        console.log("Saved");
+        setTriggerReload(prevState => !prevState);
+      })
       .catch((error) => console.error("Error during fetch:", error));
   };
   const handleDiscardGroups = () => {
@@ -65,14 +71,15 @@ const RandomizeGroups = () => {
       .then((json) => console.log(json))
       .then(() => {
         localStorage.setItem("indexView", 0);
-        location.reload();
+        console.log("Discard");
+        setTriggerReload(prevState => !prevState);
       })
       .catch((error) => console.error("Error during fetch:", error));
   };
 
-  const [toggleGroupLeader, setToggleGroupLeader] = useState(false);
-  const [toggleGroupNames, setToggleGroupNames] = useState(false);
-  const [groupCount, setGroupCount] = useState(2);
+  const [toggleGroupLeader, setToggleGroupLeader] = useState(true);
+  const [toggleGroupNames, setToggleGroupNames] = useState(true);
+  const [groupCount, setGroupCount] = useState(6);
 
   const handleToggleGroupLeader = () => {
     setToggleGroupLeader(!toggleGroupLeader);

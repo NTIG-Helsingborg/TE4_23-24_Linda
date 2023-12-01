@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const ClassSelect = () => {
+const ClassSelect = (setupdGroup) => {
   // Checks if the selected class is the same as the one in localstorage and if it is it will set the state to true
   useEffect(() => {
     const selectedClass = localStorage.getItem("class").substring(1);
