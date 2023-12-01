@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 const GroupDisplay = () => {
   const [groupData, setGroupData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  
   useEffect(() => {
     if (!localStorage.getItem("class")) localStorage.setItem("class", "1TEK1");
     fetch("/getGroups", {

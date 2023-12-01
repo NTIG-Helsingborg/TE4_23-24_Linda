@@ -1,76 +1,18 @@
 import NTILoga from "../assets/NTILoga.png";
 import ClassSelect from "./ClassSelect.jsx";
 import RandomizeGroups from "./RandomizeGroups.jsx";
-
+import { useState } from "react";
 
 const Header = () => {
-  const handleNewGroups = () => {
-    fetch("/randomize", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        className: "1TEK1",
-        groupCount: 6,
-        createGroupNames: true,
-        addGroupLeader: true,
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((json) => console.log(json))
-      .then(() => {
-        localStorage.setItem("indexView", 0);
-        location.reload();
-      })
-      .catch((error) => console.error("Error during fetch:", error));
+  const [showRandomizeGroups, setShowRandomizeGroups] = useState(false);
+
+  const handleEditClassClick = () => {
+    localStorage.setItem("indexView", 1);
+    location.reload();
   };
-  const handleSaveGroups = () => {
-    fetch("/saveGroups", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        className: "1TEK1",
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((json) => console.log(json))
-      .catch((error) => console.error("Error during fetch:", error));
-  };
-  const handleDiscardGroups = () => {
-    fetch("/discardChanges", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        className: "1TEK1",
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((json) => console.log(json))
-      .then(() => {
-        localStorage.setItem("indexView", 0);
-        location.reload();
-      })
-      .catch((error) => console.error("Error during fetch:", error));
+
+  const handleNewGroupsClick = () => {
+    setShowRandomizeGroups(!showRandomizeGroups); // Toggle the state
   };
 
   return (
@@ -78,24 +20,14 @@ const Header = () => {
       <div id="header">
         <img src={NTILoga} alt="NTI Logo" />
         <div id="TopHeader">
-          <h3
-            onClick={() => {
-              localStorage.setItem("indexView", 1);
-              location.reload();
-            }}
-          >
-            Edit Class
-          </h3>
-          <h3 onClick={handleNewGroups}>New Groups</h3>
-          <h3 onClick={handleSaveGroups}>Save Groups(TEST)</h3>
-          <h3 onClick={handleDiscardGroups}>Discard Groups(TEST)</h3>
-
+          <h3 onClick={handleEditClassClick}>Edit Class</h3>
+          <h3 onClick={handleNewGroupsClick}>New Groups</h3>
           <h3>Archives</h3>
         </div>
         <div id="BottomHeader">
           <ClassSelect />
         </div>
-        <RandomizeGroups />
+        {showRandomizeGroups && <RandomizeGroups />}
       </div>
     </>
   );

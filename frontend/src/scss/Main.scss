@@ -126,7 +126,8 @@ button {
 #main {
   text-align: center;
   width: 100%;
-  margin-left: 120px;
+  margin-left: 234px;
+  margin-right: 320px;
   display: flex;
   justify-content: center;
 
@@ -199,7 +200,7 @@ td {
     max-width: 1000px; // Add a width to the element
     margin-inline: auto;
     // grid template columns is set in GroupDisplay and should depend on how many groups there are.
-    gap: 10px;
+    gap: 50px;
     width: 100%; // Set the width to 100% to fill the parent container
   }
 }
@@ -284,6 +285,7 @@ td {
 #randomizeGroups {
   position: fixed;
   bottom: 0;
+  right: 0;
 
   display: flex;
   flex-direction: column;
@@ -299,13 +301,17 @@ td {
   font-weight: bold;
 
   height: 100%;
-  width: 210px;
+  width: 300px;
 
   #randomButton {
     margin-top: 200px;
     padding-inline: 25px;
     background-color: #646cff;
     border-radius: 15px;
+
+    &:hover {
+      cursor: pointer;
+    }
   }
   #randomizeToggles {
     display: grid;
@@ -343,7 +349,6 @@ td {
     margin-top: 50px;
 
     text-align: center;
-
   }
 
   .button {
@@ -351,12 +356,14 @@ td {
     border-radius: 25px;
     width: 100%;
     font-size: 2em;
+    &:hover {
+      cursor: pointer;
+    }
   }
   #discard {
     background-color: red;
   }
   #save {
     background-color: green;
-
   }
 }
