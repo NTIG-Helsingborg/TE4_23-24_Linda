@@ -3,7 +3,7 @@ import ClassSelect from "./ClassSelect.jsx";
 import RandomizeGroups from "./RandomizeGroups.jsx";
 import { useState, useEffect } from "react";
 
-const Header = ({ setTriggerReload }) => {
+const Header = ({ setTriggerReload}) => {
   const [showRandomizeGroups, setShowRandomizeGroups] = useState(false);
 
   const handleEditClassClick = () => {

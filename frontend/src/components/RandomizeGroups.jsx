@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
-const RandomizeGroups = ({setTriggerReload}) => {
+const RandomizeGroups = ({ setTriggerReload }) => {
+  const [isSaved, setIsSaved] = useState(true);
   const handleNewGroups = () => {
     fetch("/randomize", {
       method: "POST",
@@ -24,7 +25,8 @@ const RandomizeGroups = ({setTriggerReload}) => {
       .then(() => {
         localStorage.setItem("indexView", 0);
         console.log("Random");
-        setTriggerReload(prevState => !prevState); 
+        setIsSaved(false);
+        setTriggerReload((prevState) => !prevState);
       })
       .catch((error) => console.error("Error during fetch:", error));
   };
@@ -48,7 +50,8 @@ const RandomizeGroups = ({setTriggerReload}) => {
       .then(() => {
         localStorage.setItem("indexView", 0);
         console.log("Saved");
-        setTriggerReload(prevState => !prevState);
+        setIsSaved(true);
+        setTriggerReload((prevState) => !prevState);
       })
       .catch((error) => console.error("Error during fetch:", error));
   };
@@ -72,7 +75,8 @@ const RandomizeGroups = ({setTriggerReload}) => {
       .then(() => {
         localStorage.setItem("indexView", 0);
         console.log("Discard");
-        setTriggerReload(prevState => !prevState);
+        setIsSaved(true);
+        setTriggerReload((prevState) => !prevState);
       })
       .catch((error) => console.error("Error during fetch:", error));
   };
@@ -92,13 +96,12 @@ const RandomizeGroups = ({setTriggerReload}) => {
   const handleGroupCountChange = (e) => {
     setGroupCount(parseInt(e.target.value));
   };
-
-
   return (
     <>
       <div id="randomizeGroups">
-        <div id="randomButton">
-          <p onClick={handleNewGroups}>RandomizeGroups</p>
+        {!isSaved && (<h1 style={{marginTop:'50px', marginBottom:'20px'}}>NOT SAVED!</h1>)}
+        <div onClick={handleNewGroups} id="randomButton" style={{ marginTop: isSaved ? '118px' : '0px' }}>
+          <p>RandomizeGroups</p>
         </div>
         <div id="randomizeToggles">
           <p>GroupLeader</p>

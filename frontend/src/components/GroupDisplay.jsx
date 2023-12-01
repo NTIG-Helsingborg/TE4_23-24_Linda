@@ -54,7 +54,7 @@ const GroupDisplay = (triggerReload) => {
     <>
       <div id="classDisplay">
         <div id="classTitle">
-          <h1>{localStorage.getItem("class").toUpperCase()}</h1>
+          <h1>{localStorage.getItem("class").toUpperCase()} </h1>
         </div>
         <div
           id="groupDisplay"
@@ -74,9 +74,6 @@ const GroupDisplay = (triggerReload) => {
               </div>
             );
           })}
-          {groupData.isTemp && (
-            <p key={groupData.isTemp}>This is a temporary list of groups</p>
-          )}
         </div>
       </div>
     </>

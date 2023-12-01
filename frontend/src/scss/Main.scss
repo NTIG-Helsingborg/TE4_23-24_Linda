@@ -87,7 +87,6 @@ button {
     var(--colorHeader1) 0%,
     var(--colorHeader2) 50%
   );
-  border-right: 4px solid white;
   align-items: center;
   width: 230px;
   min-height: 962px;
@@ -195,6 +194,9 @@ td {
 ///////////////////
 /// ClassDisplay ///
 #classDisplay {
+  #classTitle{
+    
+  }
   #groupDisplay {
     display: grid;
     max-width: 1000px; // Add a width to the element
@@ -304,10 +306,35 @@ td {
   width: 300px;
 
   #randomButton {
-    margin-top: 200px;
+    background: rgb(242, 24, 24);
+    background: linear-gradient(
+      45deg,
+      rgba(242, 24, 24, 1) 0%,
+      rgba(255, 169, 0, 1) 10%,
+      rgba(232, 255, 0, 1) 20%,
+      rgba(54, 210, 78, 1) 30%,
+      rgba(44, 211, 168, 1) 40%,
+      rgba(38, 212, 217, 1) 50%,
+      rgba(34, 117, 213, 1) 60%,
+      rgba(30, 32, 208, 1) 70%,
+      rgba(210, 37, 214, 1) 80%,
+      rgba(215, 41, 164, 1) 90%,
+      rgba(255, 0, 0, 1) 100%
+    );
+    color: black;
+    text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+    display: flex;
+    margin-top: 150px;
     padding-inline: 25px;
-    background-color: #646cff;
     border-radius: 15px;
+    margin-inline: auto;
+    align-items: center;
+    text-align: center;
+    width: 200px;
+    min-height: 100px;
+    p {
+      width: 100%;
+    }
 
     &:hover {
       cursor: pointer;
@@ -361,9 +388,11 @@ td {
     }
   }
   #discard {
-    background-color: red;
+    color: #000;
+    background-color: #ff0000;
   }
   #save {
-    background-color: green;
+    color: black;
+    background-color: #00ff00;
   }
 }

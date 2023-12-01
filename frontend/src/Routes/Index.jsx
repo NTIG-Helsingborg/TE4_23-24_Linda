@@ -12,7 +12,7 @@ const Index = () => {
       <div id="background"></div>
       <Header setTriggerReload={setTriggerReload} />
       <div id="main">
-        {localStorage.getItem("indexView") == 0 && <GroupDisplay  triggerReload={triggerReload}/>}
+        {localStorage.getItem("indexView") == 0 && <GroupDisplay triggerReload={triggerReload} />}
         {localStorage.getItem("indexView") == 1 && <ShowClass />}
       </div>
     </>
