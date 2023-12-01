@@ -86,7 +86,7 @@ let lastGroupData = {}; // For storing the last randomized group data
 // RANDOMIZE FUNCTION
 app.post("/randomize", (req, res) => {
   const className = req.body.className;
-  const groupCount = req.body.groupCount;
+  let groupCount = req.body.groupCount;
   const studentCount = req.body.studentCount;
   const createGroupNames = req.body.createGroupNames || false;
   const addGroupLeader = req.body.addGroupLeader || false;
@@ -96,11 +96,23 @@ app.post("/randomize", (req, res) => {
       error: "Class name is required in the request body",
       requestBody: req.body,
     });
-  } else if (!groupCount || !studentCount) {
+  } else if (!(groupCount ? !studentCount : studentCount)) {
     return res.status(400).json({
-      error: "Either groupCount or studentCount is missing in the request body",
+      error:
+        "Either groupCount or studentCount should be provided, but not both",
       requestBody: req.body,
     });
+  }
+  //If studentCount is provided, get the number of students in the class from the database
+  //and divide by studentCount to get groupCount
+  if (studentCount && studentCount > 0) {
+    const classId = db
+      .prepare("SELECT id FROM classes WHERE name = ?")
+      .get(className).id;
+    const students = db
+      .prepare("SELECT * FROM students WHERE class_id = ?")
+      .all(classId);
+    groupCount = Math.ceil(students.length / studentCount);
   }
 
   const groups = randomizeGroups(className, groupCount);
