@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable react/prop-types */
+import { useState } from "react";
 
 const RandomizeGroups = ({ setTriggerReload }) => {
   const [isSaved, setIsSaved] = useState(true);
@@ -16,12 +17,10 @@ const RandomizeGroups = ({ setTriggerReload }) => {
       }),
     })
       .then((response) => {
-        if (!response.ok) {
+        if (!response.ok)
           throw new Error(`HTTP error! Status: ${response.status}`);
-        }
         return response.json();
       })
-      .then((json) => console.log(json))
       .then(() => {
         localStorage.setItem("indexView", 0);
         console.log("Random");
@@ -99,8 +98,16 @@ const RandomizeGroups = ({ setTriggerReload }) => {
   return (
     <>
       <div id="randomizeGroups">
-        {!isSaved && (<h1 style={{marginTop:'50px', marginBottom:'20px'}}>NOT SAVED!</h1>)}
-        <div onClick={handleNewGroups} id="randomButton" style={{ marginTop: isSaved ? '118px' : '0px' }}>
+        {!isSaved && (
+          <h1 style={{ marginTop: "50px", marginBottom: "20px" }}>
+            NOT SAVED!
+          </h1>
+        )}
+        <div
+          onClick={handleNewGroups}
+          id="randomButton"
+          style={{ marginTop: isSaved ? "118px" : "0px" }}
+        >
           <p>RandomizeGroups</p>
         </div>
         <div id="randomizeToggles">

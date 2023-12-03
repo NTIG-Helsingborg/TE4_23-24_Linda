@@ -68,6 +68,18 @@ db.prepare(
   )`
 ).run();
 
+// Archive tables
+db.prepare(
+  `CREATE TABLE IF NOT EXISTS archived_students (
+  id INTEGER PRIMARY KEY,
+  class_id INTEGER,
+  group_id INTEGER,
+  change_date DATETIME,
+  FOREIGN KEY (class_id) REFERENCES classes(id),
+  FOREIGN KEY (group_id) REFERENCES groups(id)
+)`
+).run();
+
 // Handle image uploads
 app.post("/uploadImage", upload.single("image"), (req, res) => {
   const imageFilepath = `/profile_imgs/${req.file.filename}`;
@@ -344,16 +356,6 @@ app.post("/getStudentPreference", (req, res) => {
   res.json(JSON.stringify({ result: studentPreference }));
 });
 
-//USED FOR TESTING SINCE FRONTEND IS NOT FINISHED
-/*
-const studentID = 1;
-const preferenceArray = {
-  mustSitWith: JSON.stringify([2, 3]), // Example student IDs that the student must sit with
-  cannotSitWith: JSON.stringify([4, 5]), // Example student IDs that the student cannot sit with
-};
-console.log("Setting student preference");
-dbInformation.setStudentPreference(db)(studentID, preferenceArray);*/
-
 // ACTIVATE SERVER
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
@@ -449,3 +451,13 @@ const nouns = [
   "Nanobots",
   "Fixers",
 ];
+
+//USED FOR TESTING SINCE FRONTEND IS NOT FINISHED
+/*
+const studentID = 1;
+const preferenceArray = {
+  mustSitWith: JSON.stringify([2, 3]), // Example student IDs that the student must sit with
+  cannotSitWith: JSON.stringify([4, 5]), // Example student IDs that the student cannot sit with
+};
+console.log("Setting student preference");
+dbInformation.setStudentPreference(db)(studentID, preferenceArray);*/
