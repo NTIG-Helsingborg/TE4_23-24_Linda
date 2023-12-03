@@ -3,7 +3,7 @@ import ClassSelect from "./ClassSelect.jsx";
 import RandomizeGroups from "./RandomizeGroups.jsx";
 import { useState, useEffect } from "react";
 
-const Header = ({ setTriggerReload}) => {
+const Header = ({ setTriggerReload }) => {
   const [showRandomizeGroups, setShowRandomizeGroups] = useState(false);
 
   const handleEditClassClick = () => {
@@ -34,7 +34,6 @@ const Header = ({ setTriggerReload}) => {
       })
       .then((json) => console.log(json))
       .then(() => {
-        localStorage.setItem("indexView", 0);
         console.log("Discard");
         setTriggerReload((prevState) => !prevState);
       })

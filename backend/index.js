@@ -83,6 +83,23 @@ app.post("/uploadImage", upload.single("image"), (req, res) => {
 let tempGroupData = {}; // Temporary in-memory storage for groups
 let lastGroupData = {}; // For storing the last randomized group data
 let isSaved = false; // For checking if the last randomized group data is saved
+
+// REMOVE STUDENT
+app.post("/removeStudentFromClass", (req, res) => {
+  const studentId = req.body.studentId;
+  const className = req.body.className;
+  if (!studentId || !className)
+    return res.status(400).json({
+      error: "Student ID and class name are required in the request body",
+      requestBody: req.body,
+    });
+  db.prepare("DELETE FROM students WHERE id = ? AND class_id = ?").run(
+    studentId,
+    db.prepare("SELECT id FROM classes WHERE name = ?").get(className).id
+  );
+  res.json({ message: "Student removed from the class successfully!" });
+});
+
 // RANDOMIZE FUNCTION
 app.post("/randomize", (req, res) => {
   const className = req.body.className;
@@ -103,6 +120,7 @@ app.post("/randomize", (req, res) => {
       requestBody: req.body,
     });
   }
+
   //If studentCount is provided, get the number of students in the class from the database
   //and divide by studentCount to get groupCount
   if (studentCount && studentCount > 0) {
@@ -159,6 +177,8 @@ app.post("/randomize", (req, res) => {
   isSaved = false; // Mark as not saved
   res.json({ message: "Groups randomized successfully!" });
 });
+
+// SAVE CLASS
 app.post("/saveGroups", (req, res) => {
   if (isSaved) res.json({ message: "Groups already saved!" });
   const className = req.body.className;
@@ -218,6 +238,7 @@ app.post("/saveGroups", (req, res) => {
     res.json({ message: "Groups saved successfully!" });
   }
 });
+
 // GET CLASS LIST
 app.post("/getClassInfo", (req, res) => {
   const className = req.body.className;
@@ -271,6 +292,7 @@ app.post("/getGroups", (req, res) => {
     );
   }
 });
+
 //Retrieve groups by class
 app.post("/discardChanges", (req, res) => {
   const className = req.body.className;
@@ -287,6 +309,8 @@ app.post("/discardChanges", (req, res) => {
 
   res.json(JSON.stringify({ result: "Changes discarded" }));
 });
+
+// SET STUDENT PREF
 app.post("/setStudentPreference", (req, res) => {
   const studentID = req.body.studentID;
   const preferenceArray = req.body.preferenceArray;
@@ -305,7 +329,7 @@ app.post("/setStudentPreference", (req, res) => {
   dbInformation.setStudentPreference(db)(studentID, preferenceArray);
 });
 
-// SET STUDENT PREF
+// GET STUDENT PREF
 app.post("/getStudentPreference", (req, res) => {
   const studentID = req.body.studentID;
 

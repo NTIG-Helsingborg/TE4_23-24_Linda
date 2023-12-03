@@ -60,6 +60,14 @@ button {
   }
 }
 
+#backButton {
+  width: 100px;
+  height: 50px;
+  position: absolute;
+  top: 20px;
+  left: 250px;
+}
+
 #background {
   background-image: url("../assets/ntiPush.Jpg");
   background-size: cover;
@@ -194,8 +202,7 @@ td {
 ///////////////////
 /// ClassDisplay ///
 #classDisplay {
-  #classTitle{
-    
+  #classTitle {
   }
   #groupDisplay {
     display: grid;
@@ -322,7 +329,8 @@ td {
       rgba(255, 0, 0, 1) 100%
     );
     color: black;
-    text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+    text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white,
+      1px 1px 0 white;
     display: flex;
     margin-top: 150px;
     padding-inline: 25px;
