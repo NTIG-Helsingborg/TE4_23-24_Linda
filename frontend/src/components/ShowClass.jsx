@@ -21,7 +21,10 @@ const ShowClass = () => {
         }
         return response.json();
       })
-      .then((data) => setClassData(data.result))
+      .then((data) => {
+        const sortedData = data.result.sort((a, b) => a.name.localeCompare(b.name));
+        setClassData(sortedData);
+      })
       .catch((error) => console.error("Error fetching class data:", error));
   }, []);
 

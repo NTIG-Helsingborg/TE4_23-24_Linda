@@ -101,6 +101,7 @@ const RandomizeGroups = ({ setTriggerReload }) => {
 
   const [toggleGroupLeader, setToggleGroupLeader] = useState(true);
   const [toggleGroupNames, setToggleGroupNames] = useState(true);
+  const [toggleSortType, setToggleSortType] = useState(false);
   const [groupCount, setGroupCount] = useState(6);
 
   const handleToggleGroupLeader = () => {
@@ -109,6 +110,10 @@ const RandomizeGroups = ({ setTriggerReload }) => {
 
   const handleToggleGroupNames = () => {
     setToggleGroupNames(!toggleGroupNames);
+  };
+
+  const handleToggleSortType = () => {
+    setToggleSortType(!toggleSortType);
   };
 
   const handleGroupCountChange = (e) => {
@@ -146,8 +151,8 @@ const RandomizeGroups = ({ setTriggerReload }) => {
         </div>
         <div id="randomizeText">
           <div id="grided">
-            <p>Group Count</p>
-            <p>Student Count</p>
+            <p className="count" id={toggleSortType ? "selected" : ""}  onClick={handleToggleSortType}>Group Count</p>
+            <p className="count" id={toggleSortType ? "" : "selected"}  onClick={handleToggleSortType}>Student Count</p>
           </div>
           <select value={groupCount} onChange={handleGroupCountChange} id="1">
             {Array.from({ length: 6 }, (_, i) => (

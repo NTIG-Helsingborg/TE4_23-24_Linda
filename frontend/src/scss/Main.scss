@@ -203,6 +203,7 @@ td {
 /// ClassDisplay ///
 #classDisplay {
   #classTitle {
+    width: "";
   }
   #groupDisplay {
     display: grid;
@@ -365,6 +366,19 @@ td {
     display: flex;
     flex-direction: column;
 
+    .count{
+      border: 1px solid #1a1a1a;
+      border-radius: 15px;
+      &:hover {
+        cursor: pointer;
+        background-color: #1a1a1a;
+        border-radius: 15px;
+      }
+    }
+    #selected{
+      background-color: #747bff;
+    }
+
     #grided {
       display: grid;
       text-align: center;
@@ -384,23 +398,23 @@ td {
     margin-top: 50px;
 
     text-align: center;
-  }
 
-  .button {
-    padding: 5px;
-    border-radius: 25px;
-    width: 100%;
-    font-size: 2em;
-    &:hover {
-      cursor: pointer;
+    .button {
+      padding: 5px;
+      border-radius: 25px;
+      width: 100%;
+      font-size: 2em;
+      &:hover {
+        cursor: pointer;
+      }
     }
-  }
-  #discard {
-    color: #000;
-    background-color: #ff0000;
-  }
-  #save {
-    color: black;
-    background-color: #00ff00;
+    #discard {
+      color: #000;
+      background-color: #ff0000;
+    }
+    #save {
+      color: black;
+      background-color: #00ff00;
+    }
   }
 }
