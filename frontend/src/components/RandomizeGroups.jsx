@@ -125,7 +125,7 @@ const RandomizeGroups = ({ setTriggerReload }) => {
   const handleToggle = () => {
     setIsToggled(!isToggled);
   };
-console.log("urmom");
+  console.log("urmom");
   return (
     <>
       <div id="randomizeGroups">

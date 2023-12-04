@@ -22,7 +22,9 @@ const ShowClass = () => {
         return response.json();
       })
       .then((data) => {
-        const sortedData = data.result.sort((a, b) => a.name.localeCompare(b.name));
+        const sortedData = data.result.sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
         setClassData(sortedData);
       })
       .catch((error) => console.error("Error fetching class data:", error));
@@ -48,6 +50,50 @@ const ShowClass = () => {
         setClassData(classData.filter((student) => student.id !== studentId));
       })
       .catch((error) => console.error("Error removing student:", error));
+  };
+
+  const handleAddStudent = (studentId) => {
+    fetch("/addStudentToClass", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        studentId,
+        className: localStorage.getItem("class").toUpperCase(),
+      }),
+    })
+      .then((response) => {
+        if (!response.ok)
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        return response.json();
+      })
+      .then(() => {
+        // Fetch updated class data after adding the student
+        fetch("http://localhost:3000/getClassInfo", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            className: localStorage.getItem("class").toUpperCase(),
+          }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            const sortedData = data.result.sort((a, b) =>
+              a.name.localeCompare(b.name)
+            );
+            setClassData(sortedData);
+          })
+          .catch((error) => console.error("Error fetching class data:", error));
+      })
+      .catch((error) => console.error("Error adding student:", error));
   };
 
   return (
@@ -94,6 +140,8 @@ const ShowClass = () => {
             </tbody>
           </table>
         </div>
+
+        <button onClick={() => handleAddStudent(200)}>Add Student</button>
       </div>
     </>
   );
