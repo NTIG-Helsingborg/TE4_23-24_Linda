@@ -61,7 +61,15 @@ const RandomizeGroups = ({ setTriggerReload }) => {
           body: JSON.stringify({
             className: localStorage.getItem("class").toUpperCase(),
           }),
-        });
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((json) => console.log(json))
+          .catch((error) => console.error("Error during fetch:", error));
       })
       .catch((error) => console.error("Error during fetch:", error));
   };
