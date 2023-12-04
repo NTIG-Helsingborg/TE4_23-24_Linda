@@ -19,6 +19,22 @@
   --colorBackgroundCard: #23377a;
   --colorTitleCard: #747bff;
 
+  // Rainbow
+/*   background: linear-gradient(
+    45deg,
+     rgba(242, 24, 24, 1) 0%,
+     rgba(255, 169, 0, 1) 10%,
+     rgba(232, 255, 0, 1) 20%,
+     rgba(54, 210, 78, 1) 30%,
+     rgba(44, 211, 168, 1) 40%,
+     rgba(38, 212, 217, 1) 50%,
+     rgba(34, 117, 213, 1) 60%,
+     rgba(30, 32, 208, 1) 70%,
+     rgba(210, 37, 214, 1) 80%,
+     rgba(215, 41, 164, 1) 90%,
+     rgba(255, 0, 0, 1) 100%
+   ); */
+
   #root {
     //max-width: 1280px;
     width: calc(100% - 5px);
@@ -223,7 +239,7 @@ td {
   width: 330px;
   min-height: 300px;
   background-color: var(--colorBackgroundCard);
-  box-shadow: rgba(7, 55, 117, 0.658) 0px 20px 30px -20px;
+  box-shadow: rgba(7, 55, 117, 0.658) 0px 20px 30px 0px;
   border-radius: 25px;
   margin-bottom: 50px;
 
@@ -317,24 +333,9 @@ td {
   width: 300px;
 
   #randomButton {
-    background: rgb(242, 24, 24);
-    background: linear-gradient(
-      45deg,
-      rgba(242, 24, 24, 1) 0%,
-      rgba(255, 169, 0, 1) 10%,
-      rgba(232, 255, 0, 1) 20%,
-      rgba(54, 210, 78, 1) 30%,
-      rgba(44, 211, 168, 1) 40%,
-      rgba(38, 212, 217, 1) 50%,
-      rgba(34, 117, 213, 1) 60%,
-      rgba(30, 32, 208, 1) 70%,
-      rgba(210, 37, 214, 1) 80%,
-      rgba(215, 41, 164, 1) 90%,
-      rgba(255, 0, 0, 1) 100%
-    );
-    color: black;
-    text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white,
-      1px 1px 0 white;
+    background: var(--colorTitleCard);
+    color: white;
+
     display: flex;
     margin-top: 150px;
     padding-inline: 25px;
@@ -350,6 +351,10 @@ td {
 
     &:hover {
       cursor: pointer;
+      background: var(--colorBackgroundCard);
+    }
+    &:active {
+     scale: 0.95;
     }
   }
   #randomizeToggles {
@@ -413,6 +418,9 @@ td {
       &:hover {
         cursor: pointer;
       }
+      &:active {
+        scale: 0.95;
+       }
     }
     #discard {
       color: #000;
@@ -426,7 +434,6 @@ td {
 
   #helpButton{
     color: white;
-    background-color: var(--colorTitleCard);
     border-radius: 15px;
     &:hover {
       color: black;
@@ -434,7 +441,8 @@ td {
     }
   }
 }
-
+///////////////////
+/// Help ///
 #helpback{
   background-color: #1a1a1a;
   opacity: 0.5;
