@@ -215,26 +215,13 @@ app.post("/saveGroups", (req, res) => {
   const classId = db
     .prepare("SELECT id FROM classes WHERE name = ?")
     .get(className).id;
-
+  console.log("Class ID in saveGroups: ", classId);
   if (groupsExist) {
     tempGroupData[className] = groupsExist; // Update tempGroupData on save
     tempGroupData[className].isTemp = false; // Mark as not temporary
     const groups = dbInformation.getGroupsFromStudentIds(db)(
       lastGroupData[className]
     );
-
-    // Logic to save groups to the database
-    db.transaction((groups, classId) => {
-      for (let group of groups.groups) {
-        const groupId = group.groupId;
-        for (let student of group.students) {
-          const studentId = student.id;
-          db.prepare(
-            "UPDATE students SET group_id = ? WHERE id = ? AND class_id = ?"
-          ).run(groupId, studentId, classId);
-        }
-      }
-    })(groups, classId);
 
     const updateClassesQuery = db.prepare(
       ` UPDATE classes SET groups = ? WHERE id = ?`
@@ -257,6 +244,23 @@ app.post("/saveGroups", (req, res) => {
       db.prepare(
         ` INSERT INTO groups (class_id, group_index, group_name, group_leader) VALUES (?, ?, ?, ?) `
       ).run(classId, groupIndex, groupName, groupLeader);
+
+      // Logic to save groups to the database
+      db.transaction((groups, classId) => {
+        for (let group of groups.groups) {
+          const groupId = db
+            .prepare("SELECT id FROM groups WHERE group_name = ?")
+            .get(group.groupName)?.id;
+
+          for (let student of group.students) {
+            const studentId = student.id;
+            db.prepare(
+              "UPDATE students SET group_id = ? WHERE id = ? AND class_id = ?"
+            ).run(groupId, studentId, classId);
+          }
+        }
+      })(groups, classId);
+
       index++;
     }
     delete lastGroupData[className]; // Clear temporary data after saving
@@ -292,7 +296,6 @@ app.post("/getGroups", (req, res) => {
   }
   if (lastGroupData[className] && lastGroupData[className].length > 0) {
     console.log("Using lastgroupData");
-    console.log(lastGroupData[className]);
     const groupedStudentsArray = dbInformation.getGroupsFromStudentIds(db)(
       lastGroupData[className]
     );
@@ -307,7 +310,6 @@ app.post("/getGroups", (req, res) => {
     //Retrieve info from database
     const groupedStudentsArray = dbInformation.getGroups(db)(className);
     console.log("Using info from database");
-    console.log(groupedStudentsArray);
 
     res.json(
       JSON.stringify({

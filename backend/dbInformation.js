@@ -17,11 +17,10 @@ const getGroups = (db) => (className) => {
     acc[student.group_id].push(student);
     return acc;
   }, {});
-
   // Retrieve group name and group leader for each groupId
   const getGroupInfo = (groupId) => {
     const stmt = db.prepare(
-      "SELECT group_name, group_leader FROM groups WHERE id = ?"
+      "SELECT group_name, group_leader FROM groups WHERE id = ? "
     );
     const group = stmt.get(groupId);
     return group
@@ -31,16 +30,21 @@ const getGroups = (db) => (className) => {
 
   // Construct the final array with groupId, groupName, group leader, and students
   const groupedStudentsArray = Object.entries(groupedStudentsObject).map(
-    ([groupId, students]) => {
-      const { groupName, groupLeader } = getGroupInfo(groupId);
+    ([index, students]) => {
+      let { groupName, groupLeader } = "null";
       const studentsWithLeader = students.map((student) => {
+        ({ groupName, groupLeader } = getGroupInfo(student.group_id));
         // Mark the group leader
         if (student.id === groupLeader) {
           return { ...student, role: "GroupLeader" };
         }
-        return student;
+        return { ...student, groupId: student.group_id };
       });
-      return { groupId, groupName, students: studentsWithLeader };
+      return {
+        groupId: studentsWithLeader[0]?.group_id,
+        groupName,
+        students: studentsWithLeader,
+      };
     }
   );
 
@@ -52,7 +56,7 @@ const getGroupsFromStudentIds = (db) => (groupedStudentData) => {
     return db.prepare("SELECT * FROM students WHERE id = ?").get(studentId);
   };
   const groups = groupedStudentData.map((groupData) => {
-    const { groupId, groupName, students } = groupData;
+    const { group_id, groupName, students } = groupData;
 
     const detailedStudents = students.map((studentObj) => {
       if (!studentObj || !studentObj.id) {
@@ -71,7 +75,6 @@ const getGroupsFromStudentIds = (db) => (groupedStudentData) => {
     });
 
     return {
-      groupId,
       groupName,
       students: detailedStudents.filter((student) => student !== null),
     };

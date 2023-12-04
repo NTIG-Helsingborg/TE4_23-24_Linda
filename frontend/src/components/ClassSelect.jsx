@@ -13,7 +13,6 @@ const ClassSelect = (setupdGroup) => {
         setToggleIt(true);
       } else if (selectedClass.startsWith("Nat")) {
         setToggleNat(true);
-
       }
     }
   }, [localStorage.getItem("class")]);
@@ -28,6 +27,29 @@ const ClassSelect = (setupdGroup) => {
   //Then it will set the state of the selected class to true and the rest to false manualy
   //It then checks if the prev state is the same as the current state and if it is it will toggle the state
   const handleToggle = (classType) => {
+    // This is run when the component is first rendered
+    // Discard changes when the page is loaded
+    fetch("/discardChanges", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        className: localStorage.getItem("class").toUpperCase(),
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((json) => console.log(json))
+      .then(() => {
+        console.log("Discard");
+        setTriggerReload((prevState) => !prevState);
+      })
+      .catch((error) => console.error("Error during fetch:", error));
     if (classType === "Dem") {
       setToggleDem((prevState) => !prevState);
       setToggleTek(false);
