@@ -23,17 +23,6 @@ const archiveFunction = require("./archiveFunction")(db);
 const dbInformation = require("./dbInformation");
 const showClass = require("./showClass");
 
-// Set up Multer for handling file uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./profile_imgs/"); // Set the destination folder
-  },
-  filename: function (req, file, cb) {
-    cb(null, `${crypto.randomUUID()}.${file.originalname.split(".")[1]}`);
-  },
-});
-const upload = multer({ storage: storage });
-
 // Initialize
 db.prepare(
   ` CREATE TABLE IF NOT EXISTS students (
@@ -84,6 +73,17 @@ db.prepare(`SELECT name FROM classes`)
     ).run();
   });
 
+// Set up Multer for handling file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./profile_imgs/"); // Set the destination folder
+  },
+  filename: function (req, file, cb) {
+    cb(null, `${crypto.randomUUID()}.${file.originalname.split(".")[1]}`);
+  },
+});
+const upload = multer({ storage: storage });
+
 // IMAGE UPLOADS
 app.post("/uploadImage", upload.single("image"), (req, res) => {
   const imageFilepath = `/profile_imgs/${req.file.filename}`;
@@ -97,7 +97,41 @@ app.post("/uploadImage", upload.single("image"), (req, res) => {
   res.json({ message: "Image uploaded successfully!" });
 });
 
-// ARCHIVE LIST
+// GET ALL STUDENTS
+app.get("/getAllStudents", (req, res) => {
+  const query = `
+    SELECT students.*, classes.name AS className
+    FROM students
+    LEFT JOIN classes ON students.class_id = classes.id
+    ORDER BY class_id ASC NULLS FIRST;`;
+
+  const allStudents = db.prepare(query).all();
+  res.json({ result: allStudents });
+});
+
+// GET CLASS STUDENTS
+app.post("/getClassStudents", (req, res) => {
+  const className = req.body.className;
+
+  if (!className && className != "") {
+    return res.status(400).json({
+      error: "Class name is required in the request body",
+      requestBody: req.body,
+    });
+  }
+
+  const query = `
+    SELECT students.*, classes.name AS className
+    FROM students
+    LEFT JOIN classes ON students.class_id = classes.id
+    WHERE classes.name = ?
+    ORDER BY class_id ASC NULLS FIRST;`;
+
+  const classStudents = db.prepare(query).all(className);
+  res.json({ result: classStudents });
+});
+
+// ARCHIVE ADD
 app.post("/archiveAdd", (req, res) => {
   const className = req.body.className;
   console.log("UEET");
@@ -106,25 +140,69 @@ app.post("/archiveAdd", (req, res) => {
   res.json({ message: "Archived successfully!" });
 });
 
-let tempGroupData = {}; // Temporary in-memory storage for groups
-let lastGroupData = {}; // For storing the last randomized group data
-let isSaved = false; // For checking if the last randomized group data is saved
+// ADD STUDENT TO CLASS
+app.post("/addStudentToClass", (req, res) => {
+  const className = req.body.className;
+  const studentName = req.body.studentName;
+
+  if (!className || !studentName) {
+    return res.status(400).json({
+      error: "Class name and student name are required in the request body",
+      requestBody: req.body,
+    });
+  }
+  const existingStudent = db
+    .prepare("SELECT id FROM students WHERE name = ?")
+    .get(studentName);
+
+  if (existingStudent) {
+    const classId = db
+      .prepare("SELECT id FROM classes WHERE name = ?")
+      .get(className).id;
+
+    db.prepare("UPDATE students SET class_id = ? WHERE id = ?").run(
+      classId,
+      existingStudent.id
+    );
+    const updatedStudent = db
+      .prepare("SELECT * FROM students WHERE id = ?")
+      .get(existingStudent.id);
+
+    res.json({
+      message: "Student information updated successfully!",
+      updatedStudent: updatedStudent,
+    });
+  } else {
+    res.status(404).json({
+      error: "Student not found in the students table",
+      requestBody: req.body,
+    });
+  }
+});
 
 // REMOVE STUDENT
 app.post("/removeStudentFromClass", (req, res) => {
   const studentId = req.body.studentId;
   const className = req.body.className;
-  if (!studentId || !className)
+  if (!studentId || !className) {
     return res.status(400).json({
       error: "Student ID and class name are required in the request body",
       requestBody: req.body,
     });
-  db.prepare("DELETE FROM students WHERE id = ? AND class_id = ?").run(
-    studentId,
-    db.prepare("SELECT id FROM classes WHERE name = ?").get(className).id
-  );
+  }
+  const classId = db
+    .prepare("SELECT id FROM classes WHERE name = ?")
+    .get(className).id;
+
+  db.prepare(
+    "UPDATE students SET class_id = NULL, group_id = NULL, mustSitWith = NULL, cannotSitWith = NULL WHERE id = ? AND class_id = ?"
+  ).run(studentId, classId);
   res.json({ message: "Student removed from the class successfully!" });
 });
+
+let tempGroupData = {}; // Temporary in-memory storage for groups
+let lastGroupData = {}; // For storing the last randomized group data
+let isSaved = false; // For checking if the last randomized group data is saved
 
 // RANDOMIZE FUNCTION
 app.post("/randomize", (req, res) => {
@@ -368,8 +446,7 @@ app.post("/getStudentPreference", (req, res) => {
     });
   }
   const studentPreference = dbInformation.getStudentPreference(db)(studentID);
-
-  res.json(JSON.stringify({ result: studentPreference }));
+  res.json({ result: studentPreference });
 });
 
 // ACTIVATE SERVER

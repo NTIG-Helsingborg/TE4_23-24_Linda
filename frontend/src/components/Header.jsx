@@ -12,6 +12,7 @@ const Header = ({ setTriggerReload }) => {
   };
 
   const handleNewGroupsClick = () => {
+    localStorage.setItem("indexView", 0);
     setShowRandomizeGroups(!showRandomizeGroups); // Toggle the state
   };
   useEffect(() => {
