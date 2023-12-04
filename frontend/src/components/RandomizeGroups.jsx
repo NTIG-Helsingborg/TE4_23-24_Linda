@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
+import RandomHelp from "./RandomHelp.jsx";
 
 const RandomizeGroups = ({ setTriggerReload }) => {
   const [isSaved, setIsSaved] = useState(true);
@@ -101,7 +102,7 @@ const RandomizeGroups = ({ setTriggerReload }) => {
 
   const [toggleGroupLeader, setToggleGroupLeader] = useState(true);
   const [toggleGroupNames, setToggleGroupNames] = useState(true);
-  const [toggleSortType, setToggleSortType] = useState(false);
+  const [toggleSortType, setToggleSortType] = useState(true);
   const [groupCount, setGroupCount] = useState(6);
 
   const handleToggleGroupLeader = () => {
@@ -119,6 +120,12 @@ const RandomizeGroups = ({ setTriggerReload }) => {
   const handleGroupCountChange = (e) => {
     setGroupCount(parseInt(e.target.value));
   };
+
+  const [isToggled, setIsToggled] = useState(false);
+  const handleToggle = () => {
+    setIsToggled(!isToggled);
+  };
+
   return (
     <>
       <div id="randomizeGroups">
@@ -132,17 +139,17 @@ const RandomizeGroups = ({ setTriggerReload }) => {
           id="randomButton"
           style={{ marginTop: isSaved ? "118px" : "0px" }}
         >
-          <p>RandomizeGroups</p>
+          <p>Randomize Groups</p>
         </div>
         <div id="randomizeToggles">
-          <p>GroupLeader</p>
+          <p>Assign Leaders</p>
           <input
             type="checkbox"
             checked={toggleGroupLeader}
             onChange={handleToggleGroupLeader}
           />
 
-          <p>GroupNames</p>
+          <p>Group Names</p>
           <input
             type="checkbox"
             checked={toggleGroupNames}
@@ -151,8 +158,20 @@ const RandomizeGroups = ({ setTriggerReload }) => {
         </div>
         <div id="randomizeText">
           <div id="grided">
-            <p className="count" id={toggleSortType ? "selected" : ""}  onClick={handleToggleSortType}>Group Count</p>
-            <p className="count" id={toggleSortType ? "" : "selected"}  onClick={handleToggleSortType}>Student Count</p>
+            <p
+              className="count"
+              id={toggleSortType ? "selected" : ""}
+              onClick={handleToggleSortType}
+            >
+              Group Count
+            </p>
+            <p
+              className="count"
+              id={toggleSortType ? "" : "selected"}
+              onClick={handleToggleSortType}
+            >
+              Student Count
+            </p>
           </div>
           <select value={groupCount} onChange={handleGroupCountChange} id="1">
             {Array.from({ length: 6 }, (_, i) => (
@@ -170,7 +189,13 @@ const RandomizeGroups = ({ setTriggerReload }) => {
             Discard
           </p>
         </div>
+        <div id="helpButton">
+          <h2 onClick={handleToggle}>HELP</h2>
+        </div>
       </div>
+      {isToggled && (
+        <RandomHelp setIsToggled={setIsToggled} isToggled={isToggled} />
+      )}
     </>
   );
 };
