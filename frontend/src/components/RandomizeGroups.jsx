@@ -29,6 +29,7 @@ const RandomizeGroups = ({ setTriggerReload }) => {
       })
       .catch((error) => console.error("Error during fetch:", error));
   };
+
   const handleSaveGroups = () => {
     fetch("/saveGroups", {
       method: "POST",
@@ -45,12 +46,21 @@ const RandomizeGroups = ({ setTriggerReload }) => {
         }
         return response.json();
       })
-      .then((json) => console.log(json))
       .then(() => {
         localStorage.setItem("indexView", 0);
         console.log("Saved");
         setIsSaved(true);
         setTriggerReload((prevState) => !prevState);
+
+        fetch("/archiveAdd", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            className: localStorage.getItem("class").toUpperCase(),
+          }),
+        });
       })
       .catch((error) => console.error("Error during fetch:", error));
   };

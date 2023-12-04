@@ -19,6 +19,7 @@ const port = 3000;
 
 // IMPORTS
 const randomizeGroups = require("./randomize_alg")(db);
+const archiveFunction = require("./archiveFunction")(db);
 const dbInformation = require("./dbInformation");
 const showClass = require("./showClass");
 
@@ -69,18 +70,21 @@ db.prepare(
 ).run();
 
 // Archive tables
-db.prepare(
-  `CREATE TABLE IF NOT EXISTS archived_students (
-  id INTEGER PRIMARY KEY,
-  class_id INTEGER,
-  group_id INTEGER,
-  change_date DATETIME,
-  FOREIGN KEY (class_id) REFERENCES classes(id),
-  FOREIGN KEY (group_id) REFERENCES groups(id)
-)`
-).run();
+db.prepare(`SELECT name FROM classes`)
+  .all()
+  .forEach((e) => {
+    db.prepare(
+      ` CREATE TABLE IF NOT EXISTS ARCHIVE_CLASSDATA_${e.name} (
+        id INTEGER PRIMARY KEY,
+        date_created DATETIME,
+        class_name TEXT,
+        student_data JSON,
+        group_leader TEXT
+    )`
+    ).run();
+  });
 
-// Handle image uploads
+// IMAGE UPLOADS
 app.post("/uploadImage", upload.single("image"), (req, res) => {
   const imageFilepath = `/profile_imgs/${req.file.filename}`;
   const studentId = req.body.studentId;
@@ -92,6 +96,16 @@ app.post("/uploadImage", upload.single("image"), (req, res) => {
 
   res.json({ message: "Image uploaded successfully!" });
 });
+
+// ARCHIVE LIST
+app.post("/archiveAdd", (req, res) => {
+  const className = req.body.className;
+  console.log("UEET");
+  archiveFunction(className);
+
+  res.json({ message: "Archived successfully!" });
+});
+
 let tempGroupData = {}; // Temporary in-memory storage for groups
 let lastGroupData = {}; // For storing the last randomized group data
 let isSaved = false; // For checking if the last randomized group data is saved
