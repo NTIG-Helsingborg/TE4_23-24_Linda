@@ -139,7 +139,7 @@ console.log("urmom");
           id="randomButton"
           style={{ marginTop: isSaved ? "118px" : "0px" }}
         >
-          <p>Randomize Groups</p>
+          <p>Randomize</p>
         </div>
         <div id="randomizeToggles">
           <p>Assign Leaders</p>
