@@ -51,7 +51,8 @@ const RandomizeGroups = ({ setTriggerReload }) => {
         console.log("Saved");
         setIsSaved(true);
         setTriggerReload((prevState) => !prevState);
-
+      })
+      .then(() => {
         fetch("/archiveAdd", {
           method: "POST",
           headers: {
