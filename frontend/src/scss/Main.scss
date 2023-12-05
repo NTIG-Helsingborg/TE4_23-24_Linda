@@ -206,7 +206,7 @@ td {
   position: absolute;
   right: 0;
   top: 0;
-  width: 40%;
+  width: 725px;
   height: 100%;
   overflow-y: auto;
   padding: 0px 20px 0px 20px;
@@ -259,6 +259,16 @@ td {
   #selected {
     background-color: #747bff;
     border-radius: 10px;
+  }
+}
+
+.addStudents {
+  width: 300px;
+  textarea {
+    width: 230px;
+    height: 480px;
+    resize: none;
+    padding: 10px
   }
 }
 

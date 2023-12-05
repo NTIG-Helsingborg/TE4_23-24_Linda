@@ -183,54 +183,57 @@ const ShowClass = () => {
       >
         Back
       </button>
-      <div>
-        <div id="classTitle">
-          <h1>{localStorage.getItem("class").toUpperCase()}</h1>
+      <div style={{ display: "flex" }}>
+        <div>
+          <div id="classTitle">
+            <h1>{localStorage.getItem("class").toUpperCase()}</h1>
+          </div>
+          <div id="table-container">
+            {chunks.map((chunk, index) => (
+              <table key={index}>
+                <thead></thead>
+                <tbody>
+                  {chunk.map((student) => (
+                    <tr key={student.id} id="studentTable">
+                      <td>
+                        <img
+                          src={`http://localhost:3000${student.image_filepath}`}
+                          /* alt={`Profile of ${student.name}`} */
+                          onError={(event) => {
+                            event.target.src = TempImg;
+                          }}
+                        />
+                      </td>
+                      <td>
+                        <button
+                          onClick={() => {
+                            if (student.name !== "empty") {
+                              changePref(student.id);
+                            }
+                          }}
+                          style={{
+                            border: "none",
+                            background: "none",
+                            padding: "5px",
+                            color: "white",
+                          }}
+                        >
+                          <p>{student.name}</p>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ))}
+          </div>
         </div>
-        <div id="table-container">
-          {chunks.map((chunk, index) => (
-            <table key={index}>
-              <thead></thead>
-              <tbody>
-                {chunk.map((student) => (
-                  <tr key={student.id} id="studentTable">
-                    <td>
-                      <img
-                        src={`http://localhost:3000${student.image_filepath}`}
-                        /* alt={`Profile of ${student.name}`} */
-                        onError={(event) => {
-                          event.target.src = TempImg;
-                        }}
-                      />
-                    </td>
-                    <td>
-                      <button
-                        onClick={() => {
-                          if (student.name !== "empty") {
-                            changePref(student.id);
-                          }
-                        }}
-                        style={{
-                          border: "none",
-                          background: "none",
-                          padding: "5px",
-                          color: "white",
-                        }}
-                      >
-                        <p>{student.name}</p>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ))}
+        <div>
+          <div  className="addStudents" id="add-student-form">
+            <h3> Add Students</h3>
+            <AddStudentTable />
+          </div>
         </div>
-        <div id="add-student-form">
-          <h3> Add Students</h3>
-          <AddStudentTable />
-        </div>
-
         {showPref && (
           <StudentPreferencesPopup
             currentStudent={currentStudent}
