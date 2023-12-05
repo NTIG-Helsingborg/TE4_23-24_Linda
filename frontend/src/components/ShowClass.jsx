@@ -184,7 +184,6 @@ const ShowClass = () => {
       }
     }
   }
-  console.log(classData);
   return (
     <>
       <div id="background"></div>
@@ -209,30 +208,34 @@ const ShowClass = () => {
                 {chunk.map((student) => (
                   <tr key={student.id} id="studentTable">
                     <td>
-                      <img
-                        src={`http://localhost:3000${student.image_filepath}`}
-                        /* alt={`Profile of ${student.name}`} */
-                        onError={(event) => {
-                          event.target.src = TempImg;
-                        }}
-                      />
+                      <div className="tdbox">
+                        <img
+                          src={`http://localhost:3000${student.image_filepath}`}
+                          /* alt={`Profile of ${student.name}`} */
+                          onError={(event) => {
+                            event.target.src = TempImg;
+                          }}
+                        />
+                      </div>
                     </td>
                     <td>
-                      <button
-                        onClick={() => {
-                          if (student.name !== "empty") {
-                            changePref(student.id);
-                          }
-                        }}
-                        style={{
-                          border: "none",
-                          background: "none",
-                          padding: "5px",
-                          color: "white",
-                        }}
-                      >
-                        <p>{student.name}</p>
-                      </button>
+                      <div className="tdbox">
+                        <button
+                          onClick={() => {
+                            if (student.name !== "empty") {
+                              changePref(student.id);
+                            }
+                          }}
+                          style={{
+                            border: "none",
+                            background: "none",
+                            padding: "5px",
+                            color: "white",
+                          }}
+                        >
+                          <p>{student.name}</p>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
