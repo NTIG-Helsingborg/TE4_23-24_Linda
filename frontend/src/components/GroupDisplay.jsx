@@ -53,7 +53,7 @@ const GroupDisplay = (triggerReload) => {
   return (
     <>
       <div id="classDisplay">
-        <div id="classTitle">
+        <div>
           <h1>{localStorage.getItem("class").toUpperCase()} </h1>
         </div>
         <div

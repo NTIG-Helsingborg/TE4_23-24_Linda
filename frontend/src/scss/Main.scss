@@ -158,22 +158,48 @@ button {
   max-height: 100vh;
 }
 
+///////////////////
+/// Edit Class ///
+
+#classTitle{
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 0px;
+  background-color: var(--colorTitleCard);
+
+}
+
 #table-container {
-  width: 1000px;
+  display: flex;
+  min-height: 300px;
+  max-height: 1000px;
+  min-width: 500px;
+  max-width: 1000px;
   top: 10px;
-  margin-left: 20%;
-  margin-right: 20%;
+  margin-inline: auto;
   background-color: rgba($color: black, $alpha: 0.3);
 }
 table {
   border-collapse: collapse;
-  width: 100%;
 }
 th,
 td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
+  max-height: 80px;
+}
+
+#studentTable {
+  text-align: center;
+  max-height: 50px;
+  color: white;
+
+  img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+  }
 }
 
 #changePrefContainer {

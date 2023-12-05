@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import TempImg from "../assets/NTIPush.jpg";
 import StudentPreferencesPopup from "./StudentPreferencesPopup";
 
 const AddStudentTable = () => {
@@ -152,61 +153,78 @@ const ShowClass = () => {
     setShowPref(true);
     setCurrentStudent(studentID);
   };
+  const chunkSize = 9;
+  const chunks = [];
+  for (let i = 0; i < classData.length; i += chunkSize) {
+    chunks.push(classData.slice(i, i + chunkSize));
 
+    if (chunks[chunks.length - 1].length < chunkSize) {
+      const remainingSlots = chunkSize - chunks[chunks.length - 1].length;
+      console.log(remainingSlots);
+      for (let j = 0; j < remainingSlots; j++) {
+        chunks[chunks.length - 1].push({
+          id: j,
+          name: "empty",
+          image_filepath: "empty",
+        });
+      }
+    }
+  }
+  console.log(classData);
   return (
     <>
       <div id="background"></div>
-      <div id="main">
-        <button
-          id="backButton"
-          onClick={() => {
-            localStorage.setItem("indexView", 0);
-            location.reload();
-          }}
-        >
-          Back
-        </button>
-
+      <button
+        id="backButton"
+        onClick={() => {
+          localStorage.setItem("indexView", 0);
+          location.reload();
+        }}
+      >
+        Back
+      </button>
+      <div>
+        <div id="classTitle">
+          <h1>{localStorage.getItem("class").toUpperCase()}</h1>
+        </div>
         <div id="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Remove</th>
-                <th style={{ width: "25%" }}>Image</th>
-                <th>Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              {classData.map((student) => (
-                <tr key={student.id}>
-                  <td>
-                    <button onClick={() => handleRemoveStudent(student.id)}>
-                      -
-                    </button>
-                  </td>
-                  <td style={{ textAlign: "center", height: "80px" }}>
-                    <img
-                      src={`http://localhost:3000${student.image_filepath}`}
-                      alt={`Profile of ${student.name}`}
-                      style={{ width: "80px", height: "80px" }}
-                    />
-                  </td>
-                  <td>
-                    <button
-                      onClick={() => changePref(student.id)}
-                      style={{
-                        border: "none",
-                        background: "none",
-                        padding: "5px",
-                      }}
-                    >
-                      {student.name}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {chunks.map((chunk, index) => (
+            <table key={index}>
+              <thead></thead>
+              <tbody>
+                {chunk.map((student) => (
+                  <tr key={student.id} id="studentTable">
+                    <td>
+                      <img
+                        src={`http://localhost:3000${student.image_filepath}`}
+                        /* alt={`Profile of ${student.name}`} */
+                        onError={(event) => {
+                          event.target.src = TempImg;
+                        }}
+                      />
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => {
+                          if (student.name !== "empty") {
+                            changePref(student.id);
+                          }
+                        }}
+                        style={{
+                          border: "none",
+                          background: "none",
+                          padding: "5px",
+                          color: "white",
+                        }}
+                      >
+                        <p>{student.name}</p>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ))}
         </div>
         <div id="add-student-form">
           <h3> Add Students</h3>
