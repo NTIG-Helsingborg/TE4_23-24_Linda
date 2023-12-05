@@ -12,6 +12,7 @@ export default defineConfig({
       "/setStudentPreference": "http://localhost:3000",
       "/saveGroups": "http://localhost:3000",
       "/discardChanges": "http://localhost:3000",
+      "/addStudentToClass": "http://localhost:3000",
     },
   },
 });
