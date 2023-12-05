@@ -240,6 +240,7 @@ const ShowClass = () => {
             </table>
           ))}
         </div>
+
         <div id="add-student-form">
           <h1> Add Students</h1>
           <AddStudentTable />
