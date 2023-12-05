@@ -176,7 +176,7 @@ button {
   max-width: 1000px;
   top: 10px;
   margin-inline: auto;
-  background-color: rgba($color: black, $alpha: 0.3);
+  background-color: rgba($color: rgb(121, 82, 115), $alpha: 0.8);
 }
 table {
   border-collapse: collapse;
@@ -186,7 +186,15 @@ td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
-  max-height: 80px;
+}
+
+.tdbox{
+  display: flex;
+  height: 79px;
+  min-width: 79px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
 }
 
 #studentTable {

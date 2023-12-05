@@ -115,8 +115,17 @@ const ShowClass = ({ triggerReload, setIndexView }) => {
   const [showPref, setShowPref] = useState(false);
   const [currentStudent, setCurrentStudent] = useState(null); // The student whose preferences are being edited
   const changePref = (studentID) => {
-    setShowPref(true);
-    setCurrentStudent(studentID);
+    if (showPref != false) {
+      if (studentID === currentStudent) {
+        setShowPref(false);
+      } else {
+        setShowPref(true);
+      }
+    }
+    else{
+      setShowPref(true);
+    }
+      setCurrentStudent(studentID);
   };
   const chunkSize = 9;
   const chunks = [];
@@ -135,7 +144,6 @@ const ShowClass = ({ triggerReload, setIndexView }) => {
       }
     }
   }
-  console.log(classData);
   return (
     <>
       <div id="background"></div>
@@ -160,30 +168,34 @@ const ShowClass = ({ triggerReload, setIndexView }) => {
                 {chunk.map((student) => (
                   <tr key={student.id} id="studentTable">
                     <td>
-                      <img
-                        src={`http://localhost:3000${student.image_filepath}`}
-                        /* alt={`Profile of ${student.name}`} */
-                        onError={(event) => {
-                          event.target.src = TempImg;
-                        }}
-                      />
+                      <div className="tdbox">
+                        <img
+                          src={`http://localhost:3000${student.image_filepath}`}
+                          /* alt={`Profile of ${student.name}`} */
+                          onError={(event) => {
+                            event.target.src = TempImg;
+                          }}
+                        />
+                      </div>
                     </td>
                     <td>
-                      <button
-                        onClick={() => {
-                          if (student.name !== "empty") {
-                            changePref(student.id);
-                          }
-                        }}
-                        style={{
-                          border: "none",
-                          background: "none",
-                          padding: "5px",
-                          color: "white",
-                        }}
-                      >
-                        <p>{student.name}</p>
-                      </button>
+                      <div className="tdbox">
+                        <button
+                          onClick={() => {
+                            if (student.name !== "empty") {
+                              changePref(student.id);
+                            }
+                          }}
+                          style={{
+                            border: "none",
+                            background: "none",
+                            padding: "5px",
+                            color: "white",
+                          }}
+                        >
+                          <p>{student.name}</p>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
