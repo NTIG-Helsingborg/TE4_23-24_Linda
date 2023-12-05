@@ -142,6 +142,35 @@ app.post("/archiveAdd", (req, res) => {
 
 // ADD STUDENT TO CLASS
 app.post("/addStudentToClass", (req, res) => {
+  const { className, studentsNames } = req.body;
+
+  // Retrieve the class_id from the classes table using the className
+  const classRow = db
+    .prepare("SELECT id FROM classes WHERE name = ?")
+    .get(className);
+  const classId = classRow ? classRow.id : null;
+
+  if (classId === null) {
+    res.json({ message: "Class not found!" });
+    return;
+  }
+
+  // Split the studentsNames string into an array of names
+  const names = studentsNames.split("\n");
+
+  // Prepare the SQL statement outside the loop for efficiency
+  const stmt = db.prepare(
+    "INSERT INTO students (name, class_id) VALUES (?, ?)"
+  );
+
+  // Loop over the names array and add each student to the database
+  names.forEach((studentName) => {
+    stmt.run(studentName, classId);
+  });
+
+  res.json({ message: "Students added successfully!" });
+
+  /*
   const className = req.body.className;
   const studentName = req.body.studentName;
 
@@ -177,7 +206,7 @@ app.post("/addStudentToClass", (req, res) => {
       error: "Student not found in the students table",
       requestBody: req.body,
     });
-  }
+  }*/
 });
 
 // REMOVE STUDENT
@@ -296,7 +325,6 @@ app.post("/saveGroups", (req, res) => {
   console.log("Class ID in saveGroups: ", classId);
   if (groupsExist) {
     tempGroupData[className] = groupsExist; // Update tempGroupData on save
-    tempGroupData[className].isTemp = false; // Mark as not temporary
     const groups = dbInformation.getGroupsFromStudentIds(db)(
       lastGroupData[className]
     );

@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
 import StudentPreferencesPopup from "./StudentPreferencesPopup";
 
-const AddStudentTable = ({ onAddStudent }) => {
-  const [students, setStudents] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+const AddStudentTable = () => {
+  const [studentsNames, setStudentsNames] = useState("");
 
-  useEffect(() => {
-    fetch("http://localhost:3000/getAllStudents", {
-      method: "GET",
+  const handleSubmit = () => {
+    fetch("/addStudentToClass", {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        className: localStorage.getItem("class").toUpperCase(),
+        studentsNames,
+      }),
     })
       .then((response) => {
         if (!response.ok) {
@@ -18,55 +21,20 @@ const AddStudentTable = ({ onAddStudent }) => {
         }
         return response.json();
       })
-      .then((data) => {
-        const sortedStudents = data.result.sort(
-          (a, b) => (a.class_id || 0) - (b.class_id || 0)
-        );
-        setStudents(sortedStudents);
+      .then((json) => console.log(json))
+      .then(() => {
+        location.reload();
       })
-      .catch((error) => console.error("Error fetching students:", error));
-  }, []);
-
-  const handleAddStudent = (studentId, studentName) => {
-    onAddStudent(studentId, studentName);
+      .catch((error) => console.error("Error during fetch:", error));
   };
 
   return (
-    <div style={{ maxHeight: "300px", overflowY: "auto" }}>
-      <input
-        type="text"
-        placeholder="Search by name"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+    <div>
+      <textarea
+        value={studentsNames}
+        onChange={(e) => setStudentsNames(e.target.value)}
       />
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Class Name</th>
-            <th>Add</th>
-          </tr>
-        </thead>
-        <tbody>
-          {students
-            .filter((student) =>
-              student.name.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-            .map((student) => (
-              <tr key={student.id}>
-                <td>{student.name}</td>
-                <td>{student.className || "Not assigned"}</td>
-                <td>
-                  <button
-                    onClick={() => handleAddStudent(student.id, student.name)}
-                  >
-                    Add
-                  </button>
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+      <button onClick={handleSubmit}>Add Students</button>
     </div>
   );
 };
@@ -240,13 +208,9 @@ const ShowClass = () => {
             </tbody>
           </table>
         </div>
-
         <div id="add-student-form">
-          <h3> Add Student by name</h3>
-          <AddStudentTable
-            onAddStudent={handleAddStudent}
-            reloadTable={reloadAddStudentTable}
-          />
+          <h3> Add Students</h3>
+          <AddStudentTable />
         </div>
 
         {showPref && (
