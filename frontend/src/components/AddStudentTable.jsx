@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 
-const AddStudentTable = () => {
+const AddStudentTable = ({ setTriggerReload }) => {
   const [studentsNames, setStudentsNames] = useState("");
   const textareaRef = useRef(null);
 

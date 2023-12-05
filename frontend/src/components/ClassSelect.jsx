@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
+//import { shouldProcessLinkClick } from "react-router-dom/dist/dom";
 
-const ClassSelect = (setupdGroup) => {
+const ClassSelect = ({ setupdGroup, shouldReload, setIndexView }) => {
+  const [selectedClass, setSelectedClass] = useState(
+    localStorage.getItem("class")?.substring(1)
+  );
+
   // Checks if the selected class is the same as the one in localstorage and if it is it will set the state to true
   useEffect(() => {
-    const selectedClass = localStorage.getItem("class").substring(1);
+    //const selectedClass = localStorage.getItem("class").substring(1);
     if (selectedClass) {
       if (selectedClass.startsWith("Dem")) {
         setToggleDem(true);
@@ -15,7 +20,7 @@ const ClassSelect = (setupdGroup) => {
         setToggleNat(true);
       }
     }
-  }, [localStorage.getItem("class")]);
+  }, [selectedClass, shouldReload]);
 
   const [toggleDem, setToggleDem] = useState(false);
   const [toggleTek, setToggleTek] = useState(false);
@@ -47,7 +52,7 @@ const ClassSelect = (setupdGroup) => {
       .then((json) => console.log(json))
       .then(() => {
         console.log("Discard");
-        setTriggerReload((prevState) => !prevState);
+        //setTriggerReload((prevState) => !prevState);
       })
       .catch((error) => console.error("Error during fetch:", error));
     if (classType === "Dem") {
@@ -71,13 +76,17 @@ const ClassSelect = (setupdGroup) => {
       setToggleIt(false);
       setToggleNat((prevState) => !prevState);
     }
+    shouldReload(true);
   };
 
   const handleSelectChange = (value) => {
     // Press class select
     localStorage.setItem("class", value.toString());
-    localStorage.setItem("indexView", 0);
-    location.reload();
+    setSelectedClass(value.toString()); // Update the state variable
+
+    setIndexView(0);
+    //localStorage.setItem("indexView", 0);
+    //location.reload();
   };
 
   return (
