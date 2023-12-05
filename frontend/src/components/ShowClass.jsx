@@ -1,44 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import TempImg from "../assets/NTIPush.jpg";
 import StudentPreferencesPopup from "./StudentPreferencesPopup";
-
-const AddStudentTable = () => {
-  const [studentsNames, setStudentsNames] = useState("");
-
-  const handleSubmit = () => {
-    fetch("/addStudentToClass", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        className: localStorage.getItem("class").toUpperCase(),
-        studentsNames,
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((json) => console.log(json))
-      .then(() => {
-        location.reload();
-      })
-      .catch((error) => console.error("Error during fetch:", error));
-  };
-
-  return (
-    <div>
-      <textarea
-        value={studentsNames}
-        onChange={(e) => setStudentsNames(e.target.value)}
-      />
-      <button onClick={handleSubmit}>Add Students</button>
-    </div>
-  );
-};
 
 const ShowClass = () => {
   const [classData, setClassData] = useState([]);
@@ -170,7 +132,6 @@ const ShowClass = () => {
       }
     }
   }
-  console.log(classData);
   return (
     <>
       <div id="background"></div>
@@ -183,6 +144,7 @@ const ShowClass = () => {
       >
         Back
       </button>
+
       <div>
         <div id="classTitle">
           <h1>{localStorage.getItem("class").toUpperCase()}</h1>
@@ -195,40 +157,40 @@ const ShowClass = () => {
                 {chunk.map((student) => (
                   <tr key={student.id} id="studentTable">
                     <td>
-                      <img
-                        src={`http://localhost:3000${student.image_filepath}`}
-                        /* alt={`Profile of ${student.name}`} */
-                        onError={(event) => {
-                          event.target.src = TempImg;
-                        }}
-                      />
+                      <div className="tdbox">
+                        <img
+                          src={`http://localhost:3000${student.image_filepath}`}
+                          /* alt={`Profile of ${student.name}`} */
+                          onError={(event) => {
+                            event.target.src = TempImg;
+                          }}
+                        />
+                      </div>
                     </td>
                     <td>
-                      <button
-                        onClick={() => {
-                          if (student.name !== "empty") {
-                            changePref(student.id);
-                          }
-                        }}
-                        style={{
-                          border: "none",
-                          background: "none",
-                          padding: "5px",
-                          color: "white",
-                        }}
-                      >
-                        <p>{student.name}</p>
-                      </button>
+                      <div className="tdbox">
+                        <button
+                          onClick={() => {
+                            if (student.name !== "empty") {
+                              changePref(student.id);
+                            }
+                          }}
+                          style={{
+                            border: "none",
+                            background: "none",
+                            padding: "5px",
+                            color: "white",
+                          }}
+                        >
+                          <p>{student.name}</p>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           ))}
-        </div>
-        <div id="add-student-form">
-          <h3> Add Students</h3>
-          <AddStudentTable />
         </div>
 
         {showPref && (

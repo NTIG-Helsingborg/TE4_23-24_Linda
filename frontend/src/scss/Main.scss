@@ -176,7 +176,7 @@ button {
   max-width: 1000px;
   top: 10px;
   margin-inline: auto;
-  background-color: rgba($color: black, $alpha: 0.3);
+  background-color: rgba($color: rgb(121, 82, 115), $alpha: 0.8);
 }
 table {
   border-collapse: collapse;
@@ -186,7 +186,12 @@ td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
-  max-height: 80px;
+}
+
+.tdbox{
+  display: flex;
+  height: 80px;
+  text-align: center;
 }
 
 #studentTable {
@@ -206,7 +211,7 @@ td {
   position: absolute;
   right: 0;
   top: 0;
-  width: 40%;
+  width: 725px;
   height: 100%;
   overflow-y: auto;
   padding: 0px 20px 0px 20px;
@@ -259,6 +264,16 @@ td {
   #selected {
     background-color: #747bff;
     border-radius: 10px;
+  }
+}
+
+.addStudents {
+  width: 300px;
+  textarea {
+    width: 230px;
+    height: 480px;
+    resize: none;
+    padding: 10px
   }
 }
 
@@ -527,4 +542,25 @@ td {
     margin-top: 50px;
     margin-bottom: 10px;
   }
+}
+#add-student-form{
+  margin-left: 50px;
+  margin-top: 20px;
+  width: 250px;
+  #add-students-child {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  
+    button{
+      margin-top: 20px;
+      width: 100%;
+      background: radial-gradient(
+      circle,
+      var(--colorHeader1) 0%,
+      var(--colorHeader2) 50%
+      );
+    }
+   
+  }  
 }
