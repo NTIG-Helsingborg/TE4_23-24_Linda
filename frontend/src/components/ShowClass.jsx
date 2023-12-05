@@ -112,8 +112,17 @@ const ShowClass = () => {
   const [showPref, setShowPref] = useState(false);
   const [currentStudent, setCurrentStudent] = useState(null); // The student whose preferences are being edited
   const changePref = (studentID) => {
-    setShowPref(true);
-    setCurrentStudent(studentID);
+    if (showPref != false) {
+      if (studentID === currentStudent) {
+        setShowPref(false);
+      } else {
+        setShowPref(true);
+      }
+    }
+    else{
+      setShowPref(true);
+    }
+      setCurrentStudent(studentID);
   };
   const chunkSize = 9;
   const chunks = [];

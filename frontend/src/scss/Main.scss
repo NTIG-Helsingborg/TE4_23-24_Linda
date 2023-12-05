@@ -190,8 +190,11 @@ td {
 
 .tdbox{
   display: flex;
-  height: 80px;
+  height: 79px;
+  min-width: 79px;
   text-align: center;
+  align-items: center;
+  justify-content: center;
 }
 
 #studentTable {
