@@ -83,57 +83,66 @@ const getGroupsFromStudentIds = (db) => (groupedStudentData) => {
   return { groups: groups };
 };
 
-//Function to set the student preferences
+// Function to set student preferences
 const setStudentPreference = (db) => (studentID, preferenceArray) => {
-  const mustSitWithArr = JSON.parse(preferenceArray.mustSitWith);
-  const cannotSitWithArr = JSON.parse(preferenceArray.cannotSitWith);
+  const mustSitWith = Array.isArray(preferenceArray.mustSitWith)
+    ? preferenceArray.mustSitWith
+    : [];
+  const cannotSitWith = Array.isArray(preferenceArray.cannotSitWith)
+    ? preferenceArray.cannotSitWith
+    : [];
 
-  db.prepare(
+  // Update the current student's preferences
+  const updateStudentStmt = db.prepare(
     "UPDATE students SET mustSitWith = ?, cannotSitWith = ? WHERE id = ?"
-  ).run(preferenceArray.mustSitWith, preferenceArray.cannotSitWith, studentID);
+  );
+  updateStudentStmt.run(
+    JSON.stringify(mustSitWith),
+    JSON.stringify(cannotSitWith),
+    studentID
+  );
 
-  //Update the other students mustSitWith value
-  mustSitWithArr.forEach((partnerId) => {
-    // Retrieve current mustSitWith for the partner student
-    const getStmt = db.prepare("SELECT mustSitWith FROM students WHERE id = ?");
-    const result = getStmt.get(partnerId);
-    let partnerMustSitWith = result
-      ? JSON.parse(result.mustSitWith || "[]")
-      : [];
-
-    // Add the original student's ID if not already present
-    if (!partnerMustSitWith.includes(studentID)) {
-      partnerMustSitWith.push(studentID);
-
-      // Update the partner student's mustSitWith
-      const updatePartnerStmt = db.prepare(
-        "UPDATE students SET mustSitWith = ? WHERE id = ?"
-      );
-      updatePartnerStmt.run(JSON.stringify(partnerMustSitWith), partnerId);
-    }
+  // Update other students based on mustSitWith preferences
+  mustSitWith.forEach((partnerId) => {
+    updatePartnerPreferences(db, partnerId, studentID, "mustSitWith");
   });
-  cannotSitWithArr.forEach((partnerId) => {
-    // Retrieve current mustSitWith for the partner student
-    const getStmt = db.prepare(
-      "SELECT cannotSitWith FROM students WHERE id = ?"
-    );
-    const result = getStmt.get(partnerId);
-    let partnerCannotSitWith = result
-      ? JSON.parse(result.mustSitWith || "[]")
-      : [];
 
-    // Add the original student's ID if not already present
-    if (!partnerCannotSitWith.includes(studentID)) {
-      partnerCannotSitWith.push(studentID);
-
-      // Update the partner student's mustSitWith
-      const updatePartnerStmt = db.prepare(
-        "UPDATE students SET cannotSitWith = ? WHERE id = ?"
-      );
-      updatePartnerStmt.run(JSON.stringify(partnerCannotSitWith), partnerId);
-    }
+  // Update other students based on cannotSitWith preferences
+  cannotSitWith.forEach((partnerId) => {
+    updatePartnerPreferences(db, partnerId, studentID, "cannotSitWith");
   });
 };
+
+// Helper function to update partner preferences
+const updatePartnerPreferences = (db, partnerId, studentID, preferenceType) => {
+  const getStmt = db.prepare(
+    `SELECT ${preferenceType} FROM students WHERE id = ?`
+  );
+  const result = getStmt.get(partnerId);
+  const partnerPreferences = result
+    ? JSON.parse(result[preferenceType] || "[]")
+    : [];
+
+  // Add or remove the original student's ID based on preference existence
+  if (
+    preferenceType === "mustSitWith" &&
+    !partnerPreferences.includes(studentID)
+  ) {
+    partnerPreferences.push(studentID);
+  } else if (
+    preferenceType === "cannotSitWith" &&
+    partnerPreferences.includes(studentID)
+  ) {
+    partnerPreferences.splice(partnerPreferences.indexOf(studentID), 1);
+  }
+
+  // Update the partner student's preferences
+  const updatePartnerStmt = db.prepare(
+    `UPDATE students SET ${preferenceType} = ? WHERE id = ?`
+  );
+  updatePartnerStmt.run(JSON.stringify(partnerPreferences), partnerId);
+};
+
 const getStudentPreference = (db) => (studentID) => {
   // SQL query to get the student's preferences
   const stmt = db.prepare(
