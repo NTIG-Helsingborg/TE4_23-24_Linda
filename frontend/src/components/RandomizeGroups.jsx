@@ -4,9 +4,6 @@ import RandomHelp from "./RandomHelp.jsx";
 
 const RandomizeGroups = ({ setTriggerReload }) => {
   const [isSaved, setIsSaved] = useState(true);
-  const [isToggled, setIsToggled] = useState(false);
-  const [toggleSortType, setToggleSortType] = useState(true);
-
   const handleNewGroups = () => {
     fetch("/randomize", {
       method: "POST",
@@ -15,11 +12,7 @@ const RandomizeGroups = ({ setTriggerReload }) => {
       },
       body: JSON.stringify({
         className: localStorage.getItem("class").toUpperCase(),
-        ...(toggleSortType
-          ? { groupCount: groupCount }
-          : { studentCount: groupCount }),
-
-        //studentCount: groupCount,
+        groupCount: groupCount,
         createGroupNames: toggleGroupNames,
         addGroupLeader: toggleGroupLeader,
       }),
@@ -60,7 +53,7 @@ const RandomizeGroups = ({ setTriggerReload }) => {
         setIsSaved(true);
         setTriggerReload((prevState) => !prevState);
       })
-      /* .then(() => {
+      .then(() => {
         fetch("/archiveAdd", {
           method: "POST",
           headers: {
@@ -78,7 +71,7 @@ const RandomizeGroups = ({ setTriggerReload }) => {
           })
           .then((json) => console.log(json))
           .catch((error) => console.error("Error during fetch:", error));
-      }) */
+      })
       .catch((error) => console.error("Error during fetch:", error));
   };
   const handleDiscardGroups = () => {
@@ -109,6 +102,7 @@ const RandomizeGroups = ({ setTriggerReload }) => {
 
   const [toggleGroupLeader, setToggleGroupLeader] = useState(true);
   const [toggleGroupNames, setToggleGroupNames] = useState(true);
+  const [toggleSortType, setToggleSortType] = useState(true);
   const [groupCount, setGroupCount] = useState(6);
 
   const handleToggleGroupLeader = () => {
@@ -127,10 +121,11 @@ const RandomizeGroups = ({ setTriggerReload }) => {
     setGroupCount(parseInt(e.target.value));
   };
 
+  const [isToggled, setIsToggled] = useState(false);
   const handleToggle = () => {
     setIsToggled(!isToggled);
   };
-  console.log("urmom");
+
   return (
     <>
       <div id="randomizeGroups">
@@ -144,7 +139,7 @@ const RandomizeGroups = ({ setTriggerReload }) => {
           id="randomButton"
           style={{ marginTop: isSaved ? "118px" : "0px" }}
         >
-          <p>Randomize</p>
+          <p>Randomize Groups</p>
         </div>
         <div id="randomizeToggles">
           <p>Assign Leaders</p>
