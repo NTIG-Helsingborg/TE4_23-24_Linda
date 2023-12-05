@@ -156,7 +156,7 @@ app.post("/addStudentToClass", (req, res) => {
   }
 
   // Split the studentsNames string into an array of names
-  const names = studentsNames.split("\n");
+  const names = studentsNames.split("\n").filter((name) => name.trim() !== "");
 
   // Prepare the SQL statement outside the loop for efficiency
   const stmt = db.prepare(

@@ -518,3 +518,21 @@ td {
     margin-bottom: 10px;
   }
 }
+#add-student-form{
+  #add-students-child {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  
+    button{
+      margin-top: 20px;
+      width: 25%;
+      background: radial-gradient(
+      circle,
+      var(--colorHeader1) 0%,
+      var(--colorHeader2) 50%
+      );
+    }
+   
+  }  
+}

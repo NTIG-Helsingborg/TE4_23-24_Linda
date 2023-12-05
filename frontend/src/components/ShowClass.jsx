@@ -1,9 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import TempImg from "../assets/NTIPush.jpg";
 import StudentPreferencesPopup from "./StudentPreferencesPopup";
 
 const AddStudentTable = () => {
   const [studentsNames, setStudentsNames] = useState("");
+  const textareaRef = useRef(null);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [studentsNames]);
 
   const handleSubmit = () => {
     fetch("/addStudentToClass", {
@@ -30,12 +38,18 @@ const AddStudentTable = () => {
   };
 
   return (
-    <div>
+    <div id="add-students-child">
       <textarea
+        ref={textareaRef}
         value={studentsNames}
         onChange={(e) => setStudentsNames(e.target.value)}
+        style={{
+          width: "fit-content",
+          resize: "vertical",
+          overflow: "auto",
+        }}
       />
-      <button onClick={handleSubmit}>Add Students</button>
+      <button onClick={handleSubmit}>ADD</button>
     </div>
   );
 };
@@ -227,7 +241,7 @@ const ShowClass = () => {
           ))}
         </div>
         <div id="add-student-form">
-          <h3> Add Students</h3>
+          <h1> Add Students</h1>
           <AddStudentTable />
         </div>
 
