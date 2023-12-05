@@ -3,7 +3,7 @@ const randomizeGroups = (db) => (className, groupCount) => {
     .prepare("SELECT id FROM classes WHERE name = ?")
     .get(className).id;
 
-  const students = db
+  let students = db
     .prepare("SELECT * FROM students WHERE class_id = ?")
     .all(classId);
 
@@ -67,11 +67,13 @@ const randomizeGroups = (db) => (className, groupCount) => {
   mustSitWithPrefs.forEach((student) => handleMustSitWith(student, groups));
   cannotSitWithPrefs.forEach((student) => handleCannotSitWith(student, groups));
 
-  // Students WITHOUT PREFERENCES
-  const studentsWithoutPrefs = students.filter(
+  // Remove students with preferences from the students array
+  students = students.filter(
     (student) => !student.mustSitWith && !student.cannotSitWith
   );
-  const shuffledStudents = shuffleArray(studentsWithoutPrefs);
+
+  // Students WITHOUT PREFERENCES
+  const shuffledStudents = shuffleArray(students);
 
   shuffledStudents.forEach((student) => {
     // Find the group with the fewest students

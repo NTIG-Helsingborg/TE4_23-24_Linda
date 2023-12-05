@@ -241,13 +241,13 @@ const ShowClass = () => {
           </table>
         </div>
 
-        <div id="add-student-form">
+        {/* <div id="add-student-form">
           <h3> Add Student by name</h3>
           <AddStudentTable
             onAddStudent={handleAddStudent}
             reloadTable={reloadAddStudentTable}
           />
-        </div>
+        </div> */}
 
         {showPref && (
           <StudentPreferencesPopup
