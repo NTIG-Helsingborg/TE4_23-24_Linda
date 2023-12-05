@@ -246,6 +246,7 @@ const ShowClass = () => {
                           border: "none",
                           background: "none",
                           padding: "5px",
+                          color: "white",
                         }}
                       >
                         <p>{student.name}</p>
