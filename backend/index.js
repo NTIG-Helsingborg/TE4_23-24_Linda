@@ -134,7 +134,6 @@ app.post("/getClassStudents", (req, res) => {
 // ARCHIVE ADD
 app.post("/archiveAdd", (req, res) => {
   const className = req.body.className;
-  console.log("UEET");
   archiveFunction(className);
 
   res.json({ message: "Archived successfully!" });
@@ -169,44 +168,6 @@ app.post("/addStudentToClass", (req, res) => {
   });
 
   res.json({ message: "Students added successfully!" });
-
-  /*
-  const className = req.body.className;
-  const studentName = req.body.studentName;
-
-  if (!className || !studentName) {
-    return res.status(400).json({
-      error: "Class name and student name are required in the request body",
-      requestBody: req.body,
-    });
-  }
-  const existingStudent = db
-    .prepare("SELECT id FROM students WHERE name = ?")
-    .get(studentName);
-
-  if (existingStudent) {
-    const classId = db
-      .prepare("SELECT id FROM classes WHERE name = ?")
-      .get(className).id;
-
-    db.prepare("UPDATE students SET class_id = ? WHERE id = ?").run(
-      classId,
-      existingStudent.id
-    );
-    const updatedStudent = db
-      .prepare("SELECT * FROM students WHERE id = ?")
-      .get(existingStudent.id);
-
-    res.json({
-      message: "Student information updated successfully!",
-      updatedStudent: updatedStudent,
-    });
-  } else {
-    res.status(404).json({
-      error: "Student not found in the students table",
-      requestBody: req.body,
-    });
-  }*/
 });
 
 // REMOVE STUDENT
@@ -572,13 +533,3 @@ const nouns = [
   "Nanobots",
   "Fixers",
 ];
-
-//USED FOR TESTING SINCE FRONTEND IS NOT FINISHED
-/*
-const studentID = 1;
-const preferenceArray = {
-  mustSitWith: JSON.stringify([2, 3]), // Example student IDs that the student must sit with
-  cannotSitWith: JSON.stringify([4, 5]), // Example student IDs that the student cannot sit with
-};
-console.log("Setting student preference");
-dbInformation.setStudentPreference(db)(studentID, preferenceArray);*/
