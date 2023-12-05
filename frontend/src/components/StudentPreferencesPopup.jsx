@@ -102,38 +102,38 @@ const StudentPreferencesPopup = ({ currentStudent, setShowPref }) => {
       <h2>Student Preferences for Student ID: {currentStudent}</h2>
       <div>
         <h3>Students from the Same Class:</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Student ID</th>
-              <th>Student Name</th>
-              <th>Must Sit With</th>
-              <th>Cannot Sit With</th>
-            </tr>
-          </thead>
-          <tbody>
-            {students.map((student) => (
-              <tr key={student.id}>
-                <td>{student.id}</td>
-                <td>{student.name}</td>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={mustSitWith.includes(student.id)}
-                    onChange={() => handleToggleMustSitWith(student.id)}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={cannotSitWith.includes(student.id)}
-                    onChange={() => handleToggleCannotSitWith(student.id)}
-                  />
-                </td>
+        <div id="changePrefContent">
+          <table>
+            <thead>
+              <tr>
+                <th>Must Sit With</th>
+                <th>Student Name</th>
+                <th>Cannot Sit With</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {students.map((student) => (
+                <tr key={student.id}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={mustSitWith.includes(student.id)}
+                      onChange={() => handleToggleMustSitWith(student.id)}
+                    />
+                  </td>
+                  <td>{student.name}</td>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={cannotSitWith.includes(student.id)}
+                      onChange={() => handleToggleCannotSitWith(student.id)}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         <button onClick={handleSavePreferences}>Save Preferences</button>
       </div>
     </div>
