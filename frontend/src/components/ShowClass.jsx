@@ -2,58 +2,6 @@ import { useEffect, useState, useRef } from "react";
 import TempImg from "../assets/NTIPush.jpg";
 import StudentPreferencesPopup from "./StudentPreferencesPopup";
 
-const AddStudentTable = () => {
-  const [studentsNames, setStudentsNames] = useState("");
-  const textareaRef = useRef(null);
-
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-  }, [studentsNames]);
-
-  const handleSubmit = () => {
-    fetch("/addStudentToClass", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        className: localStorage.getItem("class").toUpperCase(),
-        studentsNames,
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((json) => console.log(json))
-      .then(() => {
-        location.reload();
-      })
-      .catch((error) => console.error("Error during fetch:", error));
-  };
-
-  return (
-    <div id="add-students-child">
-      <textarea
-        ref={textareaRef}
-        value={studentsNames}
-        onChange={(e) => setStudentsNames(e.target.value)}
-        style={{
-          width: "fit-content",
-          resize: "vertical",
-          overflow: "auto",
-        }}
-      />
-      <button onClick={handleSubmit}>ADD</button>
-    </div>
-  );
-};
-
 const ShowClass = () => {
   const [classData, setClassData] = useState([]);
   const [newStudentId, setNewStudentId] = useState(null);
@@ -197,6 +145,7 @@ const ShowClass = () => {
       >
         Back
       </button>
+
       <div>
         <div id="classTitle">
           <h1>{localStorage.getItem("class").toUpperCase()}</h1>
@@ -239,11 +188,6 @@ const ShowClass = () => {
               </tbody>
             </table>
           ))}
-        </div>
-
-        <div id="add-student-form">
-          <h1> Add Students</h1>
-          <AddStudentTable />
         </div>
 
         {showPref && (

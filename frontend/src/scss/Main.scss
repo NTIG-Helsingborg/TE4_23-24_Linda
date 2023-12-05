@@ -539,6 +539,9 @@ td {
   }
 }
 #add-student-form{
+  margin-left: 50px;
+  margin-top: 20px;
+  width: 250px;
   #add-students-child {
     display: flex;
     flex-direction: column;
@@ -546,7 +549,7 @@ td {
   
     button{
       margin-top: 20px;
-      width: 25%;
+      width: 100%;
       background: radial-gradient(
       circle,
       var(--colorHeader1) 0%,
