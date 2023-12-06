@@ -210,7 +210,11 @@ td {
 }
 
 #changePrefContainer {
-  background-color: purple;
+  background: radial-gradient(
+    circle,
+    var(--colorHeader1) 0%,
+    var(--colorHeader2) 50%
+  );
   position: absolute;
   right: 0;
   top: 0;
@@ -226,6 +230,28 @@ td {
 
     td {
       justify-content: center;
+    }
+  }
+
+  #back{
+    float: left;
+    margin-top: 15px;
+  }
+  #img{
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    img{
+      border-radius: 50%;
+      border: gold 2px solid;
+    }
+  }
+
+  #save{
+    margin-top: 5px;
+
+    &:active{
+      scale: 0.95;
     }
   }
 }
