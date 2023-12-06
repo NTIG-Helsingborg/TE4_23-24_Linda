@@ -5,6 +5,7 @@ const File_Test = ({ StudentID, image_filepath, setTriggerReload }) => {
   const [file, setFile] = useState();
   const [studentId, setStudentId] = useState(""); // Add state for studentId
   const [loading, setIsLoading] = useState(false);
+  const [cacheBuster, setCacheBuster] = useState(Date.now());
 
   const handleFileChange = async (e) => {
     setIsLoading(true); // Set isLoading to true when a file is selected
@@ -25,6 +26,7 @@ const File_Test = ({ StudentID, image_filepath, setTriggerReload }) => {
         console.log("Image uploaded successfully!");
 
         setTriggerReload(true); // Trigger a reload
+        setCacheBuster(Date.now()); // Update the cacheBuster state
       } else console.error("Failed to upload image");
     } catch (error) {
       console.error("Error uploading image", error);
@@ -37,7 +39,6 @@ const File_Test = ({ StudentID, image_filepath, setTriggerReload }) => {
 
   return (
     <>
-      <div id="background"></div>
       <div id="main">
         <label htmlFor="fileInput">
           <input
@@ -48,7 +49,7 @@ const File_Test = ({ StudentID, image_filepath, setTriggerReload }) => {
           />
 
           <img
-            src={`http://localhost:3000${image_filepath}`}
+            src={`http://localhost:3000${image_filepath}?${cacheBuster}`}
             /* alt={`Profile of ${student.name}`} */
             onError={(event) => {
               event.target.src = TempImg;

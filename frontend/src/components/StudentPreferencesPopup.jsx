@@ -29,7 +29,10 @@ const StudentPreferencesPopup = ({
           return response.json();
         })
         .then((studentsData) => {
-          setStudents(studentsData.result);
+          const sortedStudents = studentsData.result.sort((a, b) =>
+            a.name.localeCompare(b.name)
+          );
+          setStudents(sortedStudents);
 
           // Fetch mustSitWith and cannotSitWith data for the current student
           return fetch("http://localhost:3000/getStudentPreference", {
@@ -59,8 +62,7 @@ const StudentPreferencesPopup = ({
         });
     };
     fetchData();
-  }, [currentStudent, setTriggerReload]);
-  console.log(students);
+  }, [currentStudent]);
 
   const handleToggleMustSitWith = (studentId) => {
     setMustSitWith((prevList) =>
@@ -68,6 +70,8 @@ const StudentPreferencesPopup = ({
         ? prevList.filter((id) => id !== studentId)
         : [...prevList, studentId]
     );
+    // If the student is in the cannotSitWith list, remove them
+    setCannotSitWith((prevList) => prevList.filter((id) => id !== studentId));
   };
 
   const handleToggleCannotSitWith = (studentId) => {
@@ -76,6 +80,8 @@ const StudentPreferencesPopup = ({
         ? prevList.filter((id) => id !== studentId)
         : [...prevList, studentId]
     );
+    // If the student is in the mustSitWith list, remove them
+    setMustSitWith((prevList) => prevList.filter((id) => id !== studentId));
   };
 
   const handleSavePreferences = async () => {
@@ -102,6 +108,10 @@ const StudentPreferencesPopup = ({
       console.error("Error saving preferences:", error);
     }
   };
+  //Remove the current student from the list of students
+  let filteredStudents = students.filter(
+    (student) => student.id !== currentStudent
+  );
   let studentName = students.find(
     (student) => student.id === currentStudent
   )?.name;
@@ -135,13 +145,14 @@ const StudentPreferencesPopup = ({
               </tr>
             </thead>
             <tbody>
-              {students.map((student) => (
+              {filteredStudents.map((student) => (
                 <tr key={student.id}>
                   <td>
                     <input
                       type="checkbox"
                       checked={mustSitWith.includes(student.id)}
                       onChange={() => handleToggleMustSitWith(student.id)}
+                      style={{width: "20px", height: "20px",}}
                     />
                   </td>
                   <td>{student.name}</td>
@@ -150,6 +161,7 @@ const StudentPreferencesPopup = ({
                       type="checkbox"
                       checked={cannotSitWith.includes(student.id)}
                       onChange={() => handleToggleCannotSitWith(student.id)}
+                      style={{width: "20px", height: "20px",}}
                     />
                   </td>
                 </tr>
