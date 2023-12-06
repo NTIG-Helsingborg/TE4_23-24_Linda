@@ -232,6 +232,28 @@ td {
       justify-content: center;
     }
   }
+
+  #back{
+    float: left;
+    margin-top: 15px;
+  }
+  #img{
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    img{
+      border-radius: 50%;
+      border: gold 2px solid;
+    }
+  }
+
+  #save{
+    margin-top: 5px;
+
+    &:active{
+      scale: 0.95;
+    }
+  }
 }
 
 ///////////////////

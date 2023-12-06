@@ -105,8 +105,13 @@ const StudentPreferencesPopup = ({ currentStudent, setShowPref }) => {
 
   return (
     <div id="changePrefContainer">
-      <button onClick={() => setShowPref(false)}> BACK</button>
-      <File_Test StudentID={currentStudent} image_filepath={studentImage} />
+      <button id="back" onClick={() => setShowPref(false)}>
+        {" "}
+        BACK
+      </button>
+      <div id="img">
+        <File_Test StudentID={currentStudent} image_filepath={studentImage} />
+      </div>
       <h2>Student Preferences for {studentName}</h2>
       <div>
         <h3>Students from the Same Class:</h3>
@@ -142,7 +147,7 @@ const StudentPreferencesPopup = ({ currentStudent, setShowPref }) => {
             </tbody>
           </table>
         </div>
-        <button onClick={handleSavePreferences}>Save Preferences</button>
+        <button id="save"onClick={handleSavePreferences}>Save Preferences</button>
       </div>
     </div>
   );
