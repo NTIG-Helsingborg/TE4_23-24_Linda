@@ -51,7 +51,6 @@ const Header = ({ setTriggerReload, setIndexView }) => {
         <div id="TopHeader">
           <h3 onClick={handleEditClassClick}>Edit Class</h3>
           <h3 onClick={handleNewGroupsClick}>New Groups</h3>
-          <h3>Archives</h3>
         </div>
         <div id="BottomHeader">
           <ClassSelect

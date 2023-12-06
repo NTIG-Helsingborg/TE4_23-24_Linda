@@ -210,7 +210,11 @@ td {
 }
 
 #changePrefContainer {
-  background-color: purple;
+  background: radial-gradient(
+    circle,
+    var(--colorHeader1) 0%,
+    var(--colorHeader2) 50%
+  );
   position: absolute;
   right: 0;
   top: 0;
