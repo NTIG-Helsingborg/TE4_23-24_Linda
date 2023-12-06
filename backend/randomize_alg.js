@@ -24,7 +24,10 @@ const randomizeGroups = (db) => (className, groupCount) => {
       );
     }
     if (assignedGroup) {
-      assignedGroup.push(student.id);
+      // Check if the student ID is not already in the group
+      if (!assignedGroup.includes(student.id)) {
+        assignedGroup.push(student.id);
+      }
     } else {
       groups.push([student.id]);
     }
@@ -43,9 +46,11 @@ const randomizeGroups = (db) => (className, groupCount) => {
             !student.cannotSitWith || !student.cannotSitWith.includes(member)
         )
     );
-
     if (assignedGroup) {
-      assignedGroup.push(student.id);
+      // Check if the student ID is not already in the group
+      if (!assignedGroup.includes(student.id)) {
+        assignedGroup.push(student.id);
+      }
     } else {
       groups.push([student.id]);
     }
@@ -64,8 +69,13 @@ const randomizeGroups = (db) => (className, groupCount) => {
     (student) => student.cannotSitWith
   );
 
-  mustSitWithPrefs.forEach((student) => handleMustSitWith(student, groups));
   cannotSitWithPrefs.forEach((student) => handleCannotSitWith(student, groups));
+  console.log("PART 1");
+  console.log("Groups after update: ", groups);
+
+  mustSitWithPrefs.forEach((student) => handleMustSitWith(student, groups));
+  console.log("PART 2");
+  console.log("Groups after update: ", groups);
 
   // Remove students with preferences from the students array
   students = students.filter(
@@ -95,47 +105,6 @@ const randomizeGroups = (db) => (className, groupCount) => {
     }
     return shuffled;
   }
-  /*
-    // UPDATE DB INFO
-    db.transaction((groups, classId) => {
-      groups.forEach((group, groupId) => {
-        group.forEach((studentId) => {
-          db.prepare(
-            "UPDATE students SET group_id = ? WHERE id = ? AND class_id = ?"
-          ).run(groupId + 1, studentId, classId);
-        });
-      });
-    })(groups, classId);
-
-    const updateClassesQuery = db.prepare(
-      ` UPDATE classes SET groups = ? WHERE id = ?`
-    );
-    updateClassesQuery.run(groupCount, classId);
-
-    db.prepare(`DELETE FROM groups WHERE class_id = ?`).run(classId);
-
-    groups.forEach((group, index) => {
-      const groupIndex = index + 1;
-      let groupName = `${groupIndex}`;
-      let groupLeader = null;
-
-      //TODO User should have option to generate random group name
-      if (createGroupNames) {
-        const randomAdjective =
-          adjectives[Math.floor(Math.random() * adjectives.length)];
-        const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
-
-        groupName = randomAdjective + " " + randomNoun;
-      }
-      if (addGroupLeader) {
-        //Get random student from group
-        const randomStudentID = group[Math.floor(Math.random() * group.length)];
-        groupLeader = randomStudentID;
-      }
-      db.prepare(
-        ` INSERT INTO groups (class_id, group_index, group_name, group_leader) VALUES (?, ?, ?, ?) `
-      ).run(classId, groupIndex, groupName, groupLeader);
-    });*/
 
   // Debug
   const groupsWithNames = groups.map((group) =>

@@ -55,7 +55,7 @@ const RandomizeGroups = ({ setTriggerReload }) => {
         setIsSaved(true);
         setTriggerReload((prevState) => !prevState);
       })
-      .then(() => {
+      /* .then(() => {
         fetch("/archiveAdd", {
           method: "POST",
           headers: {
@@ -73,7 +73,7 @@ const RandomizeGroups = ({ setTriggerReload }) => {
           })
           .then((json) => console.log(json))
           .catch((error) => console.error("Error during fetch:", error));
-      })
+      }) */
       .catch((error) => console.error("Error during fetch:", error));
   };
   const handleDiscardGroups = () => {
