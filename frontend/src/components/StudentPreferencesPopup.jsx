@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+import File_Test from "../Routes/File_Test";
 const StudentPreferencesPopup = ({ currentStudent, setShowPref }) => {
   const [students, setStudents] = useState([]);
   const [mustSitWith, setMustSitWith] = useState([]);
@@ -99,10 +99,14 @@ const StudentPreferencesPopup = ({ currentStudent, setShowPref }) => {
   let studentName = students.find(
     (student) => student.id === currentStudent
   )?.name;
+  let studentImage = students.find(
+    (student) => student.id === currentStudent
+  )?.image_filepath;
 
   return (
     <div id="changePrefContainer">
       <button onClick={() => setShowPref(false)}> BACK</button>
+      <File_Test StudentID={currentStudent} image_filepath={studentImage} />
       <h2>Student Preferences for {studentName}</h2>
       <div>
         <h3>Students from the Same Class:</h3>
