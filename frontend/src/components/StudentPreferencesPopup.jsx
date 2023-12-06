@@ -29,7 +29,10 @@ const StudentPreferencesPopup = ({
           return response.json();
         })
         .then((studentsData) => {
-          setStudents(studentsData.result);
+          const sortedStudents = studentsData.result.sort((a, b) =>
+            a.name.localeCompare(b.name)
+          );
+          setStudents(sortedStudents);
 
           // Fetch mustSitWith and cannotSitWith data for the current student
           return fetch("http://localhost:3000/getStudentPreference", {
