@@ -12,7 +12,9 @@ const RandomizeGroups = ({ setTriggerReload }) => {
       },
       body: JSON.stringify({
         className: localStorage.getItem("class").toUpperCase(),
-        groupCount: groupCount,
+        ...(toggleSortType
+          ? { groupCount: groupCount }
+          : { studentCount: groupCount }),
         createGroupNames: toggleGroupNames,
         addGroupLeader: toggleGroupLeader,
       }),

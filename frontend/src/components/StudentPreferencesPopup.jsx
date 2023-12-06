@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
-
-const StudentPreferencesPopup = ({ currentStudent, setShowPref }) => {
+import File_Test from "../Routes/File_Test";
+const StudentPreferencesPopup = ({
+  currentStudent,
+  setShowPref,
+  setTriggerReload,
+}) => {
   const [students, setStudents] = useState([]);
   const [mustSitWith, setMustSitWith] = useState([]);
   const [cannotSitWith, setCannotSitWith] = useState([]);
@@ -55,7 +59,8 @@ const StudentPreferencesPopup = ({ currentStudent, setShowPref }) => {
         });
     };
     fetchData();
-  }, [currentStudent]);
+  }, [currentStudent, setTriggerReload]);
+  console.log(students);
 
   const handleToggleMustSitWith = (studentId) => {
     setMustSitWith((prevList) =>
@@ -97,11 +102,27 @@ const StudentPreferencesPopup = ({ currentStudent, setShowPref }) => {
       console.error("Error saving preferences:", error);
     }
   };
+  let studentName = students.find(
+    (student) => student.id === currentStudent
+  )?.name;
+  let studentImage = students.find(
+    (student) => student.id === currentStudent
+  )?.image_filepath;
 
   return (
     <div id="changePrefContainer">
-      <button onClick={() => setShowPref(false)}> BACK</button>
-      <h2>Student Preferences for Student ID: {currentStudent}</h2>
+      <button id="back" onClick={() => setShowPref(false)}>
+        {" "}
+        BACK
+      </button>
+      <div id="img">
+        <File_Test
+          StudentID={currentStudent}
+          image_filepath={studentImage}
+          setTriggerReload={setTriggerReload}
+        />
+      </div>
+      <h2>Student Preferences for {studentName}</h2>
       <div>
         <h3>Students from the Same Class:</h3>
         <div id="changePrefContent">
@@ -136,7 +157,9 @@ const StudentPreferencesPopup = ({ currentStudent, setShowPref }) => {
             </tbody>
           </table>
         </div>
-        <button onClick={handleSavePreferences}>Save Preferences</button>
+        <button id="save" onClick={handleSavePreferences}>
+          Save Preferences
+        </button>
       </div>
     </div>
   );
