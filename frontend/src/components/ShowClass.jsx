@@ -137,7 +137,7 @@ const ShowClass = ({ triggerReload, setIndexView, setTriggerReload }) => {
       for (let j = 0; j < remainingSlots; j++) {
         chunks[chunks.length - 1].push({
           id: j,
-          name: "empty",
+          name: "",
           image_filepath: "empty",
         });
       }
@@ -168,13 +168,15 @@ const ShowClass = ({ triggerReload, setIndexView, setTriggerReload }) => {
                   <tr key={student.id} id="studentTable">
                     <td>
                       <div className="tdbox">
-                        <img
-                          src={`http://localhost:3000${student.image_filepath}`}
-                          /* alt={`Profile of ${student.name}`} */
-                          onError={(event) => {
-                            event.target.src = TempImg;
-                          }}
-                        />
+                        {student.image_filepath !== "empty" && (
+                          <img
+                            src={`http://localhost:3000${student.image_filepath}`}
+                            /* alt={`Profile of ${student.name}`} */
+                            onError={(event) => {
+                              event.target.src = TempImg;
+                            }}
+                          />
+                        )}
                       </div>
                     </td>
                     <td>

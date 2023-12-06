@@ -79,6 +79,10 @@ const StudentPreferencesPopup = ({
 
   const handleSavePreferences = async () => {
     try {
+      // Convert mustSitWith and cannotSitWith arrays to pure arrays []
+      const pureMustSitWith = mustSitWith.filter((id) => id !== "");
+      const pureCannotSitWith = cannotSitWith.filter((id) => id !== "");
+
       // Save the mustSitWith and cannotSitWith preferences to the server
       await fetch("http://localhost:3000/setStudentPreference", {
         method: "POST",
@@ -88,13 +92,11 @@ const StudentPreferencesPopup = ({
         body: JSON.stringify({
           studentID: currentStudent,
           preferenceArray: {
-            mustSitWith: JSON.stringify(mustSitWith),
-            cannotSitWith: JSON.stringify(cannotSitWith),
+            mustSitWith: pureMustSitWith,
+            cannotSitWith: pureCannotSitWith,
           },
         }),
       });
-
-      alert("Preferences saved successfully!");
     } catch (error) {
       console.error("Error saving preferences:", error);
     }
