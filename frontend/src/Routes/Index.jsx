@@ -8,14 +8,7 @@ const Index = () => {
   const [triggerReload, setTriggerReload] = useState(false);
 
   const [indexView, setIndexView] = useState(0);
-  const [shouldReload, setShouldReload] = useState(false);
-  /*
-  useEffect(() => {
-    if (shouldReload) {
-      window.location.reload();
-      setShouldReload(false);
-    }
-  }, [shouldReload]);*/
+
   useEffect(() => {
     if (triggerReload) {
       setTriggerReload(false);
@@ -46,6 +39,7 @@ const Index = () => {
           <ShowClass
             setIndexView={handleViewChange}
             setTriggerReload={setTriggerReload}
+            triggerReload={triggerReload}
           />
         )}
         {indexView == 1 && (

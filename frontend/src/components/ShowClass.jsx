@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import TempImg from "../assets/NTIPush.jpg";
 import StudentPreferencesPopup from "./StudentPreferencesPopup";
 
-const ShowClass = ({ triggerReload, setIndexView }) => {
+const ShowClass = ({ triggerReload, setIndexView, setTriggerReload }) => {
   const [classData, setClassData] = useState([]);
   const [newStudentId, setNewStudentId] = useState(null);
   const [reloadAddStudentTable, setReloadAddStudentTable] = useState(false);
@@ -209,7 +209,7 @@ const ShowClass = ({ triggerReload, setIndexView }) => {
           <StudentPreferencesPopup
             currentStudent={currentStudent}
             setShowPref={setShowPref}
-            setTriggerReload={triggerReload}
+            setTriggerReload={setTriggerReload}
           />
         )}
       </div>
