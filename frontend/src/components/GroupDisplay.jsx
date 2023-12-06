@@ -2,11 +2,14 @@
 import GroupCard from "./GroupCard";
 import { useState, useEffect } from "react";
 
-const GroupDisplay = (triggerReload) => {
+const GroupDisplay = ({ triggerReload, setIndexView, setTriggerReload }) => {
   const [groupData, setGroupData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (triggerReload) {
+      setIndexView(0);
+    }
     if (!localStorage.getItem("class")) localStorage.setItem("class", "1TEK1");
     fetch("/getGroups", {
       method: "POST",
@@ -28,9 +31,12 @@ const GroupDisplay = (triggerReload) => {
         const dbClass = JSON.parse(json);
         setGroupData(dbClass);
         setIsLoading(false);
+        setTriggerReload(false); // Reset triggerReload after fetching the data
+
+        //triggerReload(false); // Reset triggerReload after fetching the data
       })
       .catch((error) => console.error("Error during fetch:", error));
-  }, [triggerReload]);
+  }, [triggerReload, localStorage.getItem("class")]);
 
   if (isLoading) {
     return <div>Loading...</div>;

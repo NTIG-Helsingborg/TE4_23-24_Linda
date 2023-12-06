@@ -2,13 +2,16 @@ import { useEffect, useState, useRef } from "react";
 import TempImg from "../assets/NTIPush.jpg";
 import StudentPreferencesPopup from "./StudentPreferencesPopup";
 
-const ShowClass = () => {
+const ShowClass = ({ triggerReload, setIndexView }) => {
   const [classData, setClassData] = useState([]);
   const [newStudentId, setNewStudentId] = useState(null);
   const [reloadAddStudentTable, setReloadAddStudentTable] = useState(false);
   if (!localStorage.getItem("class")) localStorage.setItem("class", "1TEK1");
 
   useEffect(() => {
+    if (triggerReload) {
+      setIndexView(1);
+    }
     // Fetch class data from the backend when the component mounts or when a student is added
     fetch("http://localhost:3000/getClassInfo", {
       method: "POST",
@@ -33,7 +36,7 @@ const ShowClass = () => {
       })
       .catch((error) => console.error("Error fetching class data:", error));
     fetchClassData();
-  }, [newStudentId, reloadAddStudentTable]);
+  }, [newStudentId, reloadAddStudentTable, triggerReload]);
 
   const fetchClassData = () => {
     fetch("http://localhost:3000/getClassInfo", {
@@ -147,8 +150,7 @@ const ShowClass = () => {
       <button
         id="backButton"
         onClick={() => {
-          localStorage.setItem("indexView", 0);
-          location.reload();
+          setIndexView(0);
         }}
       >
         Back

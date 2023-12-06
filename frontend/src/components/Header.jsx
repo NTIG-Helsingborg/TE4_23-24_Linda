@@ -3,17 +3,19 @@ import ClassSelect from "./ClassSelect.jsx";
 import RandomizeGroups from "./RandomizeGroups.jsx";
 import { useState, useEffect } from "react";
 
-const Header = ({ setTriggerReload }) => {
+const Header = ({ setTriggerReload, setIndexView }) => {
   const [showRandomizeGroups, setShowRandomizeGroups] = useState(false);
 
   const handleEditClassClick = () => {
-    localStorage.setItem("indexView", 1);
-    location.reload();
+    setIndexView(1);
+
+    //localStorage.setItem("indexView", 1);
+    //location.reload();
   };
 
   const handleNewGroupsClick = () => {
-    localStorage.setItem("indexView", 0);
-    setTriggerReload((prevState) => !prevState);
+    setIndexView(0);
+    //setTriggerReload((prevState) => !prevState);
     setShowRandomizeGroups(!showRandomizeGroups); // Toggle the state
   };
   useEffect(() => {
@@ -37,7 +39,7 @@ const Header = ({ setTriggerReload }) => {
       .then((json) => console.log(json))
       .then(() => {
         console.log("Discard");
-        setTriggerReload((prevState) => !prevState);
+        //setTriggerReload((prevState) => !prevState);
       })
       .catch((error) => console.error("Error during fetch:", error));
   }, []); // Empty array means this runs once on initial render
@@ -52,7 +54,10 @@ const Header = ({ setTriggerReload }) => {
           <h3>Archives</h3>
         </div>
         <div id="BottomHeader">
-          <ClassSelect />
+          <ClassSelect
+            setIndexView={setIndexView}
+            shouldReload={setTriggerReload}
+          />
         </div>
         {showRandomizeGroups && (
           <RandomizeGroups setTriggerReload={setTriggerReload} />
