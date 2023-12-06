@@ -152,6 +152,7 @@ const StudentPreferencesPopup = ({
                       type="checkbox"
                       checked={mustSitWith.includes(student.id)}
                       onChange={() => handleToggleMustSitWith(student.id)}
+                      style={{width: "20px", height: "20px",}}
                     />
                   </td>
                   <td>{student.name}</td>
@@ -160,6 +161,7 @@ const StudentPreferencesPopup = ({
                       type="checkbox"
                       checked={cannotSitWith.includes(student.id)}
                       onChange={() => handleToggleCannotSitWith(student.id)}
+                      style={{width: "20px", height: "20px",}}
                     />
                   </td>
                 </tr>
