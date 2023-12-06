@@ -39,7 +39,6 @@ const File_Test = ({ StudentID, image_filepath, setTriggerReload }) => {
 
   return (
     <>
-      <div id="background"></div>
       <div id="main">
         <label htmlFor="fileInput">
           <input
