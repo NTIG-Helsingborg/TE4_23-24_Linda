@@ -85,63 +85,127 @@ const getGroupsFromStudentIds = (db) => (groupedStudentData) => {
 
 // Function to set student preferences
 const setStudentPreference = (db) => (studentID, preferenceArray) => {
-  const mustSitWith = Array.isArray(preferenceArray.mustSitWith)
-    ? preferenceArray.mustSitWith
-    : [];
-  const cannotSitWith = Array.isArray(preferenceArray.cannotSitWith)
-    ? preferenceArray.cannotSitWith
-    : [];
+  try {
+    const currentPrefs = db
+      .prepare(
+        "SELECT id, mustSitWith, cannotSitWith FROM students WHERE id = ?"
+      )
+      .get(studentID);
+    if (currentPrefs.mustSitWith === null) {
+      currentPrefs.mustSitWith = [];
+    }
+    if (currentPrefs.cannotSitWith === null) {
+      currentPrefs.cannotSitWith = [];
+    }
 
-  // Update the current student's preferences
-  const updateStudentStmt = db.prepare(
-    "UPDATE students SET mustSitWith = ?, cannotSitWith = ? WHERE id = ?"
-  );
-  updateStudentStmt.run(
-    JSON.stringify(mustSitWith),
-    JSON.stringify(cannotSitWith),
-    studentID
-  );
+    const mustSitWithChanges = analyzePreferences(
+      currentPrefs.mustSitWith,
+      preferenceArray.mustSitWith
+    );
 
-  // Update other students based on mustSitWith preferences
-  mustSitWith.forEach((partnerId) => {
-    updatePartnerPreferences(db, partnerId, studentID, "mustSitWith");
-  });
+    const cannotSitWithChanges = analyzePreferences(
+      currentPrefs.cannotSitWith,
+      preferenceArray.cannotSitWith
+    );
 
-  // Update other students based on cannotSitWith preferences
-  cannotSitWith.forEach((partnerId) => {
-    updatePartnerPreferences(db, partnerId, studentID, "cannotSitWith");
-  });
-};
+    // Apply changes for mustSitWith
+    applyPreferenceChanges(db, studentID, mustSitWithChanges, "mustSitWith");
+    // Apply changes for cannotSitWith
+    applyPreferenceChanges(
+      db,
+      studentID,
+      cannotSitWithChanges,
+      "cannotSitWith"
+    );
 
-// Helper function to update partner preferences
-const updatePartnerPreferences = (db, partnerId, studentID, preferenceType) => {
-  const getStmt = db.prepare(
-    `SELECT ${preferenceType} FROM students WHERE id = ?`
-  );
-  const result = getStmt.get(partnerId);
-  const partnerPreferences = result
-    ? JSON.parse(result[preferenceType] || "[]")
-    : [];
+    // Update the database with the new preferences
+    db.prepare(
+      "UPDATE students SET mustSitWith = ?, cannotSitWith = ? WHERE id = ?"
+    ).run(
+      JSON.stringify(mustSitWithChanges),
+      JSON.stringify(cannotSitWithChanges),
+      studentID
+    );
 
-  // Add or remove the original student's ID based on preference existence
-  if (
-    preferenceType === "mustSitWith" &&
-    !partnerPreferences.includes(studentID)
-  ) {
-    partnerPreferences.push(studentID);
-  } else if (
-    preferenceType === "cannotSitWith" &&
-    partnerPreferences.includes(studentID)
-  ) {
-    partnerPreferences.splice(partnerPreferences.indexOf(studentID), 1);
+    console.log("Preferences updated successfully!");
+  } catch (error) {
+    console.error("Error updating preferences:", error);
   }
-
-  // Update the partner student's preferences
-  const updatePartnerStmt = db.prepare(
-    `UPDATE students SET ${preferenceType} = ? WHERE id = ?`
-  );
-  updatePartnerStmt.run(JSON.stringify(partnerPreferences), partnerId);
 };
+
+const analyzePreferences = (currentPrefs, newPrefs) => {
+  const currentSet = Array.isArray(currentPrefs)
+    ? currentPrefs
+    : JSON.parse(currentPrefs);
+  const newSet = Array.isArray(newPrefs) ? newPrefs : JSON.parse(newPrefs);
+
+  const addedPrefs = newSet.filter((id) => !currentSet.includes(id));
+  const deletedPrefs = currentSet.filter((id) => !newSet.includes(id));
+
+  return {
+    added: addedPrefs,
+    deleted: deletedPrefs,
+  };
+};
+
+const applyPreferenceChanges = (db, studentID, changes, type) => {
+  const partnerColumn =
+    type === "mustSitWith" ? "mustSitWith" : "cannotSitWith";
+
+  changes.deleted.forEach((partnerID) => {
+    // Remove preference from partner
+    const partnerPrefs = JSON.parse(
+      db
+        .prepare(`SELECT ${partnerColumn} FROM students WHERE id = ?`)
+        .get(partnerID)[partnerColumn]
+    );
+    const partnerIndex = partnerPrefs.indexOf(studentID);
+    if (partnerIndex !== -1) {
+      partnerPrefs.splice(partnerIndex, 1);
+      db.prepare(`UPDATE students SET ${partnerColumn} = ? WHERE id = ?`).run(
+        JSON.stringify(partnerPrefs),
+        partnerID
+      );
+    }
+
+    // Remove preference from current student
+    const currentPrefs = JSON.parse(
+      db.prepare(`SELECT ${type} FROM students WHERE id = ?`).get(studentID)[
+        type
+      ]
+    );
+    const currentIndex = currentPrefs.indexOf(partnerID);
+    if (currentIndex !== -1) {
+      currentPrefs.splice(currentIndex, 1);
+      db.prepare(`UPDATE students SET ${type} = ? WHERE id = ?`).run(
+        JSON.stringify(currentPrefs),
+        studentID
+      );
+    }
+  });
+
+  changes.added.forEach((partnerID) => {
+    // Add preference for partner
+    db.prepare(
+      `UPDATE students SET ${partnerColumn} = json(quote(?)) WHERE id = ?`
+    ).run(
+      db
+        .prepare(`SELECT ${partnerColumn} FROM students WHERE id = ?`)
+        .get(partnerID)[partnerColumn] + `,${studentID}`,
+      partnerID
+    );
+
+    // Add preference for current student
+    db.prepare(`UPDATE students SET ${type} = json(quote(?)) WHERE id = ?`).run(
+      db.prepare(`SELECT ${type} FROM students WHERE id = ?`).get(studentID)[
+        type
+      ] + `,${partnerID}`,
+      studentID
+    );
+  });
+};
+
+///////////////////////////////////////////
 
 const getStudentPreference = (db) => (studentID) => {
   // SQL query to get the student's preferences
