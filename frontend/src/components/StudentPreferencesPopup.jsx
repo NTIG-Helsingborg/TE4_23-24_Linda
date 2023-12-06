@@ -67,6 +67,8 @@ const StudentPreferencesPopup = ({
         ? prevList.filter((id) => id !== studentId)
         : [...prevList, studentId]
     );
+    // If the student is in the cannotSitWith list, remove them
+    setCannotSitWith((prevList) => prevList.filter((id) => id !== studentId));
   };
 
   const handleToggleCannotSitWith = (studentId) => {
@@ -75,6 +77,8 @@ const StudentPreferencesPopup = ({
         ? prevList.filter((id) => id !== studentId)
         : [...prevList, studentId]
     );
+    // If the student is in the mustSitWith list, remove them
+    setMustSitWith((prevList) => prevList.filter((id) => id !== studentId));
   };
 
   const handleSavePreferences = async () => {
