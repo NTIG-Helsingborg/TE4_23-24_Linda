@@ -56,6 +56,7 @@ const StudentPreferencesPopup = ({ currentStudent, setShowPref }) => {
     };
     fetchData();
   }, [currentStudent]);
+  console.log(students);
 
   const handleToggleMustSitWith = (studentId) => {
     setMustSitWith((prevList) =>
@@ -95,11 +96,14 @@ const StudentPreferencesPopup = ({ currentStudent, setShowPref }) => {
       console.error("Error saving preferences:", error);
     }
   };
+  let studentName = students.find(
+    (student) => student.id === currentStudent
+  )?.name;
 
   return (
     <div id="changePrefContainer">
       <button onClick={() => setShowPref(false)}> BACK</button>
-      <h2>Student Preferences for Student ID: {currentStudent}</h2>
+      <h2>Student Preferences for {studentName}</h2>
       <div>
         <h3>Students from the Same Class:</h3>
         <div id="changePrefContent">
