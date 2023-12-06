@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import File_Test from "../Routes/File_Test";
-const StudentPreferencesPopup = ({ currentStudent, setShowPref }) => {
+const StudentPreferencesPopup = ({
+  currentStudent,
+  setShowPref,
+  setTriggerReload,
+}) => {
   const [students, setStudents] = useState([]);
   const [mustSitWith, setMustSitWith] = useState([]);
   const [cannotSitWith, setCannotSitWith] = useState([]);
@@ -55,7 +59,7 @@ const StudentPreferencesPopup = ({ currentStudent, setShowPref }) => {
         });
     };
     fetchData();
-  }, [currentStudent]);
+  }, [currentStudent, setTriggerReload]);
   console.log(students);
 
   const handleToggleMustSitWith = (studentId) => {
@@ -106,7 +110,11 @@ const StudentPreferencesPopup = ({ currentStudent, setShowPref }) => {
   return (
     <div id="changePrefContainer">
       <button onClick={() => setShowPref(false)}> BACK</button>
-      <File_Test StudentID={currentStudent} image_filepath={studentImage} />
+      <File_Test
+        StudentID={currentStudent}
+        image_filepath={studentImage}
+        setTriggerReload={setTriggerReload}
+      />
       <h2>Student Preferences for {studentName}</h2>
       <div>
         <h3>Students from the Same Class:</h3>

@@ -121,11 +121,10 @@ const ShowClass = ({ triggerReload, setIndexView }) => {
       } else {
         setShowPref(true);
       }
-    }
-    else{
+    } else {
       setShowPref(true);
     }
-      setCurrentStudent(studentID);
+    setCurrentStudent(studentID);
   };
   const chunkSize = 9;
   const chunks = [];
@@ -208,6 +207,7 @@ const ShowClass = ({ triggerReload, setIndexView }) => {
           <StudentPreferencesPopup
             currentStudent={currentStudent}
             setShowPref={setShowPref}
+            setTriggerReload={triggerReload}
           />
         )}
       </div>

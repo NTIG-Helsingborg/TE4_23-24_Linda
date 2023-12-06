@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import TempImg from "../assets/NTIPush.jpg";
 
-const File_Test = ({ StudentID, image_filepath }) => {
+const File_Test = ({ StudentID, image_filepath, setTriggerReload }) => {
   const [file, setFile] = useState();
   const [studentId, setStudentId] = useState(""); // Add state for studentId
   const [loading, setIsLoading] = useState(false);
@@ -20,42 +20,21 @@ const File_Test = ({ StudentID, image_filepath }) => {
         method: "POST",
         body: formData,
       });
-      location.reload();
 
-      if (response.ok) console.log("Image uploaded successfully!");
-      else console.error("Failed to upload image");
+      if (response.ok) {
+        console.log("Image uploaded successfully!");
+
+        setTriggerReload(true); // Trigger a reload
+      } else console.error("Failed to upload image");
     } catch (error) {
       console.error("Error uploading image", error);
     }
     setIsLoading(false); // Set isLoading to false after the file is handled
   };
-  /*
-  const downloadImg = async (e) => {
-    const selectedFile = e.target.files[0];
-    setFile(URL.createObjectURL(selectedFile));
-    setIsLoading(false);
-
-    // Send the file to the server
-    const formData = new FormData();
-    formData.append("image", selectedFile);
-    formData.append("studentId", StudentID);
-    try {
-      const response = await fetch("http://localhost:3000/uploadImage", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) console.log("Image uploaded successfully!");
-      else console.error("Failed to upload image");
-    } catch (error) {
-      console.error("Error uploading image", error);
-    }
-  };*/
   if (loading) {
     return <div>Loading...</div>;
   }
-  console.log(StudentID);
-  console.log(file);
+
   return (
     <>
       <div id="background"></div>
