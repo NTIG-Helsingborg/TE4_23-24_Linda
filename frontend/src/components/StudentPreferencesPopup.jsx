@@ -59,8 +59,7 @@ const StudentPreferencesPopup = ({
         });
     };
     fetchData();
-  }, [currentStudent, setTriggerReload]);
-  console.log(students);
+  }, [currentStudent]);
 
   const handleToggleMustSitWith = (studentId) => {
     setMustSitWith((prevList) =>
@@ -100,6 +99,10 @@ const StudentPreferencesPopup = ({
       console.error("Error saving preferences:", error);
     }
   };
+  //Remove the current student from the list of students
+  let filteredStudents = students.filter(
+    (student) => student.id !== currentStudent
+  );
   let studentName = students.find(
     (student) => student.id === currentStudent
   )?.name;
@@ -133,7 +136,7 @@ const StudentPreferencesPopup = ({
               </tr>
             </thead>
             <tbody>
-              {students.map((student) => (
+              {filteredStudents.map((student) => (
                 <tr key={student.id}>
                   <td>
                     <input
