@@ -215,9 +215,9 @@ td {
     var(--colorHeader1) 0%,
     var(--colorHeader2) 50%
   );
-  position: absolute;
-  right: 0;
+  position: fixed;
   top: 0;
+  right: 0;
   width: 725px;
   height: 100%;
   overflow-y: auto;
