@@ -55,26 +55,6 @@ const RandomizeGroups = ({ setTriggerReload }) => {
         setIsSaved(true);
         setTriggerReload((prevState) => !prevState);
       });
-    /* .then(() => {
-        fetch("/archiveAdd", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            className: localStorage.getItem("class").toUpperCase(),
-          }),
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-          })
-          .then((json) => console.log(json))
-          .catch((error) => console.error("Error during fetch:", error));
-      })
-      .catch((error) => console.error("Error during fetch:", error)); */
   };
   const handleDiscardGroups = () => {
     fetch("/discardChanges", {

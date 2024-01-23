@@ -93,7 +93,7 @@ const ClassSelect = ({ setupdGroup, shouldReload, setIndexView }) => {
     <>
       {console.log(localStorage.getItem("class"))}
       <div id="classSelect">
-        <h1>Class Select</h1>
+        <h2>Class Select</h2>
         <ul>
           <hr />
           <li onClick={() => handleToggle("Tek")} className="bold">
