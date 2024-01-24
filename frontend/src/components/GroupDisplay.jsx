@@ -41,20 +41,7 @@ const GroupDisplay = ({ triggerReload, setIndexView, setTriggerReload }) => {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  // Change this value to change the amount of groups there are in a class
-  const groupCount = groupData.length;
-  var groupRows = 2;
-  var groupAmount = 2;
-  if (groupCount < 3) {
-    groupRows = 2;
-    groupAmount = 3;
-  } else if (groupCount > 6) {
-    groupRows = 4;
-    groupAmount = 7;
-  } else {
-    groupRows = 3;
-    groupAmount = 3;
-  }
+
   console.log(groupData);
   return (
     <>
@@ -62,22 +49,14 @@ const GroupDisplay = ({ triggerReload, setIndexView, setTriggerReload }) => {
         <div>
           <h1>{localStorage.getItem("class").toUpperCase()} </h1>
         </div>
-        <div
-          id="groupDisplay"
-          style={{
-            gridTemplateColumns: `repeat(${groupRows}, 1fr)`,
-            maxWidth: groupCount === 6 ? "1500px" : "1000px",
-          }}
-        >
-          {groupData.result.groups.map((group, index) => {
+        <div id="groupDisplay">
+          {groupData.result.groups.map((group) => {
             return (
-              <div id={`group${groupAmount}`} key={index}>
-                <GroupCard
-                  key={group.groupId}
-                  groupName={group.groupName}
-                  groupStudents={group.students}
-                />
-              </div>
+              <GroupCard
+                key={group.groupId}
+                groupName={group.groupName}
+                groupStudents={group.students}
+              />
             );
           })}
         </div>
