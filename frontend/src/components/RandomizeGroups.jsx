@@ -116,13 +116,13 @@ const RandomizeGroups = ({ setTriggerReload }) => {
             NOT SAVED!
           </h1>
         )}
-        <div
+        <button
           onClick={handleNewGroups}
           id="randomButton"
           style={{ marginTop: isSaved ? "118px" : "0px" }}
         >
           <p>Randomize Groups</p>
-        </div>
+        </button>
         <div id="randomizeToggles">
           <p>Assign Leaders</p>
           <input

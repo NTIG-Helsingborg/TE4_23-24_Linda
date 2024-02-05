@@ -185,7 +185,7 @@ button {
       margin-inline: auto;
       align-items: center;
       width: 90%;
-      font-size: 2em;
+      font-size: 1.3em;
 
       &:hover {
         cursor: pointer;
@@ -441,17 +441,14 @@ td {
   }
 
   .student {
+    padding: 5px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 150px;
-    height: 150px;
-    box-sizing: border-box;
-    margin-top: 2px;
     .img {
-      width: 100px;
-      height: 100px;
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
     }
 
